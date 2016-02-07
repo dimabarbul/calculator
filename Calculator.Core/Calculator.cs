@@ -12,13 +12,25 @@ namespace Calculator.Core
     public static class Calculator
     {
         /// <summary>
-        /// Calculates provided formula
+        /// Calculates provided formula.
         /// </summary>
         /// <param name="formula">Formula to calculate.</param>
         /// <returns>Calculation result.</returns>
-        public static int Calculate(string formula)
+        public static decimal Calculate(string formula)
         {
-            return 0;
+            if (string.IsNullOrWhiteSpace(formula))
+            {
+                return 0;
+            }
+
+            string preparedFormula = formula.Replace(" ", string.Empty);
+
+            string[] arguments = preparedFormula.Split('+');
+            decimal[] argumentsAsDecimals = arguments.Select(a => decimal.Parse(a)).ToArray();
+
+            decimal sum = argumentsAsDecimals.Sum();
+
+            return sum;
         }
     }
 }
