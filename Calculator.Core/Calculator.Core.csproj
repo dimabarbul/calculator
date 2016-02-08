@@ -43,6 +43,7 @@
     <Compile Include="FormulaParser.cs" />
     <Compile Include="OperationFactory.cs" />
     <Compile Include="OperationToken.cs" />
+    <Compile Include="Operation\DivideOperation.cs" />
     <Compile Include="Operation\MultiplyOperation.cs" />
     <Compile Include="Operation\OperationBase.cs" />
     <Compile Include="Operation\SubtractOperation.cs" />

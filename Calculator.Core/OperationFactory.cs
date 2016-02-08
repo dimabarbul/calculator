@@ -20,6 +20,9 @@ namespace Calculator.Core
                 case OperationToken.OperationMultiply:
                     operation = new MultiplyOperation();
                     break;
+                case OperationToken.OperationDivide:
+                    operation = new DivideOperation();
+                    break;
                 default:
                     throw new NotImplementedException(string.Format(
                         @"Operation is not defined for token ""{0}"".", token.Value));

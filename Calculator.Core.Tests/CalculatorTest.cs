@@ -38,5 +38,12 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(6, Calculator.Calculate("3 * 2"));
             Assert.AreEqual(9.38m, Calculator.Calculate("1.4 * 6.7"));
         }
+
+        [TestMethod]
+        public void Calculate_SimpleNumbersDivision_Calculated()
+        {
+            Assert.AreEqual(1.5m, Calculator.Calculate("3 / 2"));
+            Assert.AreEqual(7, Calculator.Calculate("14 / 2"));
+        }
     }
 }

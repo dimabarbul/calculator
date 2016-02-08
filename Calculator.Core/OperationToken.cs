@@ -5,5 +5,6 @@
         public const string OperationSum = "+";
         public const string OperationSubtract = "-";
         public const string OperationMultiply = "*";
+        public const string OperationDivide = "/";
     }
 }
