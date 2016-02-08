@@ -129,5 +129,19 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(false, Calculator.Calculate<bool>("true && false"));
             Assert.AreEqual(true, Calculator.Calculate<bool>("true && true"));
         }
+
+        [TestMethod]
+        public void Calculate_NotOperation_Calculate()
+        {
+            Assert.AreEqual(false, Calculator.Calculate<bool>("!true"));
+            Assert.AreEqual(true, Calculator.Calculate<bool>("!false"));
+        }
+
+        [TestMethod]
+        public void Calculate_LogicalOperationsPriority_Calculate()
+        {
+            Assert.AreEqual(false, Calculator.Calculate<bool>("!true && false"));
+            Assert.AreEqual(true, Calculator.Calculate<bool>("!false || true"));
+        }
     }
 }

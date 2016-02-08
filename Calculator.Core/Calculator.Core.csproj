@@ -51,6 +51,7 @@
     <Compile Include="Operation\DivideOperation.cs" />
     <Compile Include="Operation\FloorOperation.cs" />
     <Compile Include="Operation\MultiplyOperation.cs" />
+    <Compile Include="Operation\NotOperation.cs" />
     <Compile Include="Operation\OperationBase.cs" />
     <Compile Include="Operation\OrOperation.cs" />
     <Compile Include="Operation\SubtractOperation.cs" />

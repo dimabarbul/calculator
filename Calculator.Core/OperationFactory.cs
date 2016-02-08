@@ -60,6 +60,9 @@ namespace Calculator.Core
                 case OperationToken.And:
                     operation = new AndOperation();
                     break;
+                case OperationToken.Not:
+                    operation = new NotOperation();
+                    break;
                 default:
                     throw new NotImplementedException(string.Format(
                         @"Operation is not defined for token ""{0}"".", token.Text));
@@ -83,6 +86,7 @@ namespace Calculator.Core
             public const string Ceil = "ceil";
             public const string Or = "||";
             public const string And = "&&";
+            public const string Not = "!";
         }
     }
 }
