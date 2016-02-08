@@ -39,7 +39,7 @@ namespace Calculator.Core
                 }
                 else
                 {
-                    OperationBase operation = OperationFactory.Create(token);
+                    OperationBase operation = OperationFactory.Create(token, operands.Count == 0);
 
                     while (operations.Count > 0)
                     {
@@ -72,10 +72,20 @@ namespace Calculator.Core
         private static void ExecuteOperation(ref Stack<decimal> operands, ref Stack<OperationBase> operations)
         {
             OperationBase operation = operations.Pop();
-            decimal rightOperand = operands.Pop();
-            decimal leftOperand = operands.Pop();
 
-            operation.SetOperands(leftOperand, rightOperand);
+            if (operation.IsUnary)
+            {
+                decimal operand = operands.Pop();
+
+                operation.SetOperands(operand);
+            }
+            else
+            {
+                decimal rightOperand = operands.Pop();
+                decimal leftOperand = operands.Pop();
+
+                operation.SetOperands(leftOperand, rightOperand);
+            }
 
             decimal result = operation.GetResult();
 

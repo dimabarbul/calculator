@@ -77,5 +77,22 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(8, Calculator.Calculate("(2 + 2) * 2"));
             Assert.AreEqual(0.5m, Calculator.Calculate("3 / (3 + 3)"));
         }
+
+        [TestMethod]
+        public void Calculate_UnaryPlusMinusInBeginning_Calculated()
+        {
+            Assert.AreEqual(-1, Calculator.Calculate("-1"));
+            Assert.AreEqual(3, Calculator.Calculate("+3"));
+            Assert.AreEqual(1, Calculator.Calculate("-1 + 2"));
+        }
+
+        [TestMethod]
+        public void Calculate_UnaryPlusMinusInParenthesis_Calculated()
+        {
+            Assert.AreEqual(-3, Calculator.Calculate("2 + (-5)"));
+            Assert.AreEqual(1, Calculator.Calculate("(-2) + (4 - 1)"));
+            Assert.AreEqual(0.5m, Calculator.Calculate("1 / (+2)"));
+            Assert.AreEqual(4, Calculator.Calculate("(+4) * 1"));
+        }
     }
 }

@@ -49,6 +49,8 @@
     <Compile Include="Operation\OperationBase.cs" />
     <Compile Include="Operation\SubtractOperation.cs" />
     <Compile Include="Operation\AddOperation.cs" />
+    <Compile Include="Operation\UnaryMinusOperation.cs" />
+    <Compile Include="Operation\UnaryPlusOperation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
   </ItemGroup>

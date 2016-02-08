@@ -2,14 +2,14 @@
 {
     internal class MultiplyOperation : OperationBase
     {
+        public MultiplyOperation()
+            : base(OperationPriority.Multiply, false)
+        {
+        }
+
         public override decimal GetResult()
         {
             return this.leftOperand * this.rightOperand;
-        }
-
-        public override OperationPriority Priority
-        {
-            get { return OperationPriority.Multiply; }
         }
     }
 }

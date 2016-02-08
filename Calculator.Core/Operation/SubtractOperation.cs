@@ -4,14 +4,14 @@ namespace Calculator.Core.Operation
 {
     internal class SubtractOperation : OperationBase
     {
+        public SubtractOperation()
+            : base(OperationPriority.Subtract, false)
+        {
+        }
+
         public override decimal GetResult()
         {
             return this.leftOperand - this.rightOperand;
-        }
-
-        public override OperationPriority Priority
-        {
-            get { return OperationPriority.Subtract; }
         }
     }
 }
