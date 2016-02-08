@@ -31,6 +31,12 @@ namespace Calculator.Core
                 {
                     operands.Push(token.ToDecimal());
                 }
+                else if (token.IsSubformula)
+                {
+                    result = Calculator.Calculate(token.Value);
+
+                    operands.Push(result);
+                }
                 else
                 {
                     OperationBase operation = OperationFactory.Create(token);

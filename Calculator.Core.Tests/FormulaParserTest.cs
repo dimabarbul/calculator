@@ -21,7 +21,7 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaParser.GetTokens(formula).ToArray();
 
             Assert.AreEqual(1, tokens.Length);
-            this.AssertTokenEqual(tokens[0], formula, true);
+            this.AssertSimpleTokenEqual(tokens[0], formula, true);
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace Calculator.Core.Tests
                 tokens = FormulaParser.GetTokens(formula).ToArray();
 
                 Assert.AreEqual(1, tokens.Length);
-                this.AssertTokenEqual(tokens[0], formula, false);
+                this.AssertSimpleTokenEqual(tokens[0], formula, false);
             }
         }
 
@@ -61,11 +61,11 @@ namespace Calculator.Core.Tests
 
             tokens = FormulaParser.GetTokens(".34").ToArray();
             Assert.AreEqual(1, tokens.Length);
-            this.AssertNumberToken(tokens[0], 0.34m);
+            this.AssertNumberTokenEqual(tokens[0], 0.34m);
 
             tokens = FormulaParser.GetTokens(".").ToArray();
             Assert.AreEqual(1, tokens.Length);
-            this.AssertNumberToken(tokens[0], 0);
+            this.AssertNumberTokenEqual(tokens[0], 0);
         }
 
         [TestMethod]
@@ -74,20 +74,32 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaParser.GetTokens("+.").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
-            this.AssertTokenEqual(tokens[0], "+", false);
-            this.AssertTokenEqual(tokens[1], ".", true);
+            this.AssertSimpleTokenEqual(tokens[0], "+", false);
+            this.AssertSimpleTokenEqual(tokens[1], ".", true);
         }
 
-        private void AssertTokenEqual(Token token, string tokenValue, bool isNumber)
+        [TestMethod]
+        public void GetTokens_ExpressionInParenthesis_IsSubformula()
+        {
+            Token[] tokens = FormulaParser.GetTokens("1 + (2 + 3)").ToArray();
+
+            Assert.AreEqual(3, tokens.Length);
+            Assert.AreEqual(true, tokens[2].IsSubformula);
+            Assert.AreEqual("2+3", tokens[2].Value);
+        }
+
+        private void AssertSimpleTokenEqual(Token token, string tokenValue, bool isNumber)
         {
             Assert.AreEqual(isNumber, token.IsNumber);
             Assert.AreEqual(tokenValue, token.Value);
+            Assert.AreEqual(false, token.IsSubformula);
         }
 
-        private void AssertNumberToken(Token token, decimal value)
+        private void AssertNumberTokenEqual(Token token, decimal value)
         {
             Assert.AreEqual(true, token.IsNumber);
             Assert.AreEqual(value, token.ToDecimal());
+            Assert.AreEqual(false, token.IsSubformula);
         }
     }
 }

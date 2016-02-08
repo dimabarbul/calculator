@@ -5,11 +5,13 @@ namespace Calculator.Core
     {
         public string Value { get; set; }
         public bool IsNumber { get; private set; }
+        public bool IsSubformula { get; private set; }
 
-        public Token(string value, bool isNumber)
+        public Token(string value, bool isNumber = false, bool isSubformula = false)
         {
             this.Value = value;
             this.IsNumber = isNumber;
+            this.IsSubformula = isSubformula;
         }
 
         public decimal ToDecimal()

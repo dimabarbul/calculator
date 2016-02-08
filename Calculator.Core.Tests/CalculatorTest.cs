@@ -70,5 +70,12 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(2m, Calculator.Calculate("2 + 2 - 2"));
             Assert.AreEqual(3m, Calculator.Calculate("3 * 1 / 3 * 3"));
         }
+
+        [TestMethod]
+        public void Calculate_Parenthesis_OverridesPriority()
+        {
+            Assert.AreEqual(8, Calculator.Calculate("(2 + 2) * 2"));
+            Assert.AreEqual(0.5m, Calculator.Calculate("3 / (3 + 3)"));
+        }
     }
 }

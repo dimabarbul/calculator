@@ -28,6 +28,39 @@ namespace Calculator.Core
                     regex = new Regex(NumberPattern);
                     isNumber = true;
                 }
+                else if ('(' == sanitizedFormula[index])
+                {
+                    // Search corresponding closing parenthesis
+                    int openingParenthesisCount = 0;
+                    int startIndex = index;
+
+                    for (index++; index < sanitizedFormula.Length; index++)
+                    {
+                        if ('(' == sanitizedFormula[index])
+                        {
+                            openingParenthesisCount++;
+                        }
+                        else if (')' == sanitizedFormula[index])
+                        {
+                            if (0 == openingParenthesisCount)
+                            {
+                                string subformula = sanitizedFormula.Substring(startIndex + 1, index - startIndex - 1);
+
+                                yield return new Token(subformula, isSubformula: true);
+
+                                index++;
+
+                                break;
+                            }
+                            else
+                            {
+                                openingParenthesisCount--;
+                            }
+                        }
+                    }
+
+                    continue;
+                }
                 else
                 {
                     regex = new Regex(OperationPattern);
