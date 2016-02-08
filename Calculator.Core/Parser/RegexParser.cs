@@ -14,20 +14,21 @@ namespace Calculator.Core.Parser
             this.type = type;
         }
 
-        public Token TryParse(string formula, ref int startIndex)
+        public int TryParse(string formula, out Token token, int startIndex = 0)
         {
+            token = null;
+        
             Regex regex = new Regex(this.pattern);
-
             Match match = regex.Match(formula, startIndex);
 
             if (!match.Success || match.Index != startIndex)
             {
-                return null;
+                return 0;
             }
 
-            startIndex += match.Value.Length;
+            token = new Token(match.Value, this.type);
 
-            return new Token(match.Value, this.type);
+            return match.Value.Length;
         }
     }
 }

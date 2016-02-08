@@ -30,7 +30,7 @@ namespace Calculator.Core
             {
                 foreach (IParser parser in Parsers)
                 {
-                    token = parser.TryParse(sanitizedFormula, ref index);
+                    index += parser.TryParse(sanitizedFormula, out token, index);
 
                     if (token != null)
                     {

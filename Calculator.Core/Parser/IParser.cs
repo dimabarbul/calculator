@@ -2,6 +2,6 @@
 {
     internal interface IParser
     {
-        Token TryParse(string formula, ref int startIndex);
+        int TryParse(string formula, out Token token, int startIndex = 0);
     }
 }
