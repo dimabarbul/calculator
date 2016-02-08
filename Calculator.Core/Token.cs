@@ -1,5 +1,6 @@
 ﻿using System;
 using Calculator.Core.Enum;
+
 namespace Calculator.Core
 {
     internal class Token

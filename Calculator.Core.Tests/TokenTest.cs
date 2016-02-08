@@ -1,5 +1,4 @@
-﻿using System;
-using Calculator.Core.Enum;
+﻿using Calculator.Core.Enum;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests

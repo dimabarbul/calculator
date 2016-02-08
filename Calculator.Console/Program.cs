@@ -1,5 +1,4 @@
 ﻿using System;
-using Core = Calculator.Core;
 
 namespace Calculator.Console
 {
