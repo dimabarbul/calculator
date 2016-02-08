@@ -17,21 +17,21 @@ namespace Calculator.Core
                 throw new ArgumentNullException();
             }
 
-            Stack<dynamic> operands = new Stack<dynamic>();
+            Stack<Token> operands = new Stack<Token>();
             Stack<OperationBase> operations = new Stack<OperationBase>();
-            decimal result = 0;
+            Token resultToken;
 
             foreach (Token token in FormulaParser.GetTokens(formula))
             {
                 if (token.Type == TokenType.Decimal || token.Type == TokenType.Bool)
                 {
-                    operands.Push(token.GetValue());
+                    operands.Push(token);
                 }
                 else if (token.Type == TokenType.Subformula)
                 {
-                    result = Calculator.Calculate(token.Text);
+                    resultToken = Calculator.Calculate<Token>(token.Text);
 
-                    operands.Push(result);
+                    operands.Push(resultToken);
                 }
                 else
                 {
@@ -60,9 +60,20 @@ namespace Calculator.Core
                 ExecuteOperation(ref operands, ref operations);
             }
 
-            result = operands.Pop();
+            resultToken = operands.Pop();
 
-            return (TResult)Convert.ChangeType(result, typeof(TResult));
+            TResult result;
+
+            if (typeof(Token) == typeof(TResult))
+            {
+                result = (TResult)Convert.ChangeType(resultToken, typeof(TResult));
+            }
+            else
+            {
+                result = resultToken.GetValue<TResult>();
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -75,25 +86,25 @@ namespace Calculator.Core
             return Calculate<decimal>(formula);
         }
 
-        private static void ExecuteOperation(ref Stack<dynamic> operands, ref Stack<OperationBase> operations)
+        private static void ExecuteOperation(ref Stack<Token> operands, ref Stack<OperationBase> operations)
         {
             OperationBase operation = operations.Pop();
 
             if (operation.IsUnary)
             {
-                decimal operand = operands.Pop();
+                Token operand = operands.Pop();
 
                 operation.SetOperands(operand);
             }
             else
             {
-                decimal rightOperand = operands.Pop();
-                decimal leftOperand = operands.Pop();
+                Token rightOperand = operands.Pop();
+                Token leftOperand = operands.Pop();
 
                 operation.SetOperands(leftOperand, rightOperand);
             }
 
-            decimal result = operation.GetResult();
+            Token result = operation.GetResult();
 
             operands.Push(result);
         }

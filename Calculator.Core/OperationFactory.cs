@@ -54,6 +54,12 @@ namespace Calculator.Core
                 case OperationToken.Ceil:
                     operation = new CeilOperation();
                     break;
+                case OperationToken.Or:
+                    operation = new OrOperation();
+                    break;
+                case OperationToken.And:
+                    operation = new AndOperation();
+                    break;
                 default:
                     throw new NotImplementedException(string.Format(
                         @"Operation is not defined for token ""{0}"".", token.Text));
@@ -75,6 +81,8 @@ namespace Calculator.Core
             public const string Divide = "/";
             public const string Floor = "floor";
             public const string Ceil = "ceil";
+            public const string Or = "||";
+            public const string And = "&&";
         }
     }
 }

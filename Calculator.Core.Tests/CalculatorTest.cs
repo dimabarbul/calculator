@@ -111,5 +111,23 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(0m, Calculator.Calculate("ceil(-0.5)"));
             Assert.AreEqual(-1, Calculator.Calculate("1 + ceil(-4 / 1.5)"));
         }
+
+        [TestMethod]
+        public void Calculate_OrOperation_Calculate()
+        {
+            Assert.AreEqual(false, Calculator.Calculate<bool>("false || false"));
+            Assert.AreEqual(true, Calculator.Calculate<bool>("false || true"));
+            Assert.AreEqual(true, Calculator.Calculate<bool>("true || false"));
+            Assert.AreEqual(true, Calculator.Calculate<bool>("true || true"));
+        }
+
+        [TestMethod]
+        public void Calculate_AndOperation_Calculate()
+        {
+            Assert.AreEqual(false, Calculator.Calculate<bool>("false && false"));
+            Assert.AreEqual(false, Calculator.Calculate<bool>("false && true"));
+            Assert.AreEqual(false, Calculator.Calculate<bool>("true && false"));
+            Assert.AreEqual(true, Calculator.Calculate<bool>("true && true"));
+        }
     }
 }

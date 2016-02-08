@@ -3,16 +3,16 @@ using Calculator.Core.Enum;
 
 namespace Calculator.Core.Operation
 {
-    internal class FloorOperation : OperationBase
+    internal class FloorOperation : DecimalOperationBase
     {
         public FloorOperation()
             : base(OperationPriority.Unary, true)
         {
         }
 
-        public override decimal GetResult()
+        protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
         {
-            return Math.Floor(this.leftOperand);
+            return Math.Floor(leftOperand);
         }
     }
 }

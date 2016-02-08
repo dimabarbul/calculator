@@ -2,16 +2,16 @@
 
 namespace Calculator.Core.Operation
 {
-    internal class UnaryPlusOperation : OperationBase
+    internal class UnaryPlusOperation : DecimalOperationBase
     {
         public UnaryPlusOperation()
             : base(OperationPriority.Unary, true)
         {
         }
 
-        public override decimal GetResult()
+        protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
         {
-            return this.leftOperand;
+            return leftOperand;
         }
     }
 }

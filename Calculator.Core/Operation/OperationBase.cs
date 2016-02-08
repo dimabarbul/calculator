@@ -4,8 +4,8 @@ namespace Calculator.Core.Operation
 {
     internal abstract class OperationBase
     {
-        protected decimal leftOperand;
-        protected decimal rightOperand;
+        protected Token leftOperand;
+        protected Token rightOperand;
 
         public OperationPriority Priority { get; private set; }
         public bool IsUnary { get; private set; }
@@ -16,16 +16,16 @@ namespace Calculator.Core.Operation
             this.IsUnary = isUnary;
         }
 
-        public void SetOperands(decimal leftOperand, decimal? rightOperand = null)
+        public void SetOperands(Token leftOperand, Token rightOperand = null)
         {
             this.leftOperand = leftOperand;
 
             if (rightOperand != null)
             {
-                this.rightOperand = rightOperand.Value;
+                this.rightOperand = rightOperand;
             }
         }
 
-        public abstract decimal GetResult();
+        public abstract Token GetResult();
     }
 }

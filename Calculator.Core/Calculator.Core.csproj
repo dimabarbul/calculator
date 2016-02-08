@@ -44,11 +44,15 @@
     <Compile Include="FormulaParser.cs" />
     <Compile Include="OperationFactory.cs" />
     <Compile Include="Enum\OperationPriority.cs" />
+    <Compile Include="Operation\AndOperation.cs" />
+    <Compile Include="Operation\BoolOperationBase.cs" />
     <Compile Include="Operation\CeilOperation.cs" />
+    <Compile Include="Operation\DecimalOperationBase.cs" />
     <Compile Include="Operation\DivideOperation.cs" />
     <Compile Include="Operation\FloorOperation.cs" />
     <Compile Include="Operation\MultiplyOperation.cs" />
     <Compile Include="Operation\OperationBase.cs" />
+    <Compile Include="Operation\OrOperation.cs" />
     <Compile Include="Operation\SubtractOperation.cs" />
     <Compile Include="Operation\AddOperation.cs" />
     <Compile Include="Operation\UnaryMinusOperation.cs" />

@@ -6,6 +6,8 @@
         Subtract = 1,
         Multiply = 2,
         Divide = 2,
-        Unary = 3,
+        Or = 3,
+        And = 3,
+        Unary = 10,
     }
 }
