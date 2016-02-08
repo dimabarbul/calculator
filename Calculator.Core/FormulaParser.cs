@@ -6,7 +6,7 @@ namespace Calculator.Core
     internal static class FormulaParser
     {
         const string NumberPattern = @"\d+(\.\d*)?|\.\d*";
-        const string OperationPattern = @"[^\d(.]+";
+        const string OperationPattern = @"[^\da-zA-Z(.]+|[a-zA-Z0-9_]+";
 
         public static IEnumerable<Token> GetTokens(string formula)
         {

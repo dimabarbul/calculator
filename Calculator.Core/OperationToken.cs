@@ -6,5 +6,7 @@
         public const string Subtract = "-";
         public const string Multiply = "*";
         public const string Divide = "/";
+        public const string Floor = "floor";
+        public const string Ceil = "ceil";
     }
 }

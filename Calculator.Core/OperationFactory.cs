@@ -48,12 +48,23 @@ namespace Calculator.Core
                 case OperationToken.Divide:
                     operation = new DivideOperation();
                     break;
+                case OperationToken.Floor:
+                    operation = new FloorOperation();
+                    break;
+                case OperationToken.Ceil:
+                    operation = new CeilOperation();
+                    break;
                 default:
                     throw new NotImplementedException(string.Format(
                         @"Operation is not defined for token ""{0}"".", token.Value));
             }
 
             return operation;
+        }
+
+        private static string GetOperationClassName(string operation)
+        {
+            return string.Concat("Calculator.Core.Operation.", char.ToUpper(operation[0]), operation.Substring(1), "Operation");
         }
     }
 }

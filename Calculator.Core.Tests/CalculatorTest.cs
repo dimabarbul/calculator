@@ -94,5 +94,21 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(0.5m, Calculator.Calculate("1 / (+2)"));
             Assert.AreEqual(4, Calculator.Calculate("(+4) * 1"));
         }
+
+        [TestMethod]
+        public void Calculate_Floor_Calculated()
+        {
+            Assert.AreEqual(2m, Calculator.Calculate("floor(2.4)"));
+            Assert.AreEqual(-1m, Calculator.Calculate("floor(-0.5)"));
+            Assert.AreEqual(3, Calculator.Calculate("1 + floor(4 / 1.5)"));
+        }
+
+        [TestMethod]
+        public void Calculate_Ceil_Calculated()
+        {
+            Assert.AreEqual(3m, Calculator.Calculate("ceil(2.4)"));
+            Assert.AreEqual(0m, Calculator.Calculate("ceil(-0.5)"));
+            Assert.AreEqual(-1, Calculator.Calculate("1 + ceil(-4 / 1.5)"));
+        }
     }
 }
