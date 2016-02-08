@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Calculator.Core.Operation;
 
 namespace Calculator.Core
 {
@@ -23,14 +21,41 @@ namespace Calculator.Core
                 return 0;
             }
 
-            string preparedFormula = formula.Replace(" ", string.Empty);
+            string sanitizedFormula = formula.Replace(" ", string.Empty);
+            Stack<decimal> operands = new Stack<decimal>();
+            Stack<OperationBase> operations = new Stack<OperationBase>();
+            decimal result = 0;
 
-            string[] arguments = preparedFormula.Split('+');
-            decimal[] argumentsAsDecimals = arguments.Select(a => decimal.Parse(a)).ToArray();
+            foreach (Token token in FormulaParser.GetTokens(sanitizedFormula))
+            {
+                if (token.IsNumber)
+                {
+                    operands.Push(token.ToDecimal());
+                }
+                else
+                {
+                    OperationBase operation = OperationFactory.Create(token);
 
-            decimal sum = argumentsAsDecimals.Sum();
+                    operations.Push(operation);
+                }
+            }
 
-            return sum;
+            while (operations.Count > 0)
+            {
+                OperationBase operation = operations.Pop();
+                decimal rightOperand = operands.Pop();
+                decimal leftOperand = operands.Pop();
+
+                operation.SetOperands(leftOperand, rightOperand);
+
+                result = operation.GetResult();
+
+                operands.Push(result);
+            }
+
+            result = operands.Pop();
+
+            return result;
         }
     }
 }

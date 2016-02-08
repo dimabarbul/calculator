@@ -1,28 +1,34 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Calculator.Core;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests
 {
     [TestClass]
     public class CalculatorTest
     {
-        [TestMethod]
-        public void Calculate_EmptyFormula_Zero()
+        public void Calculate_PeriodWithNumbers_MeansZeroPeriodNumber()
         {
-            string formula = string.Empty;
-            decimal result = Calculator.Calculate(formula);
-
-            Assert.AreEqual(0, result);
+            Assert.AreEqual(2, Calculator.Calculate(".5 + 1.5"));
+            Assert.AreEqual(1, Calculator.Calculate("1 - ."));
         }
 
         [TestMethod]
-        public void Calculate_SimpleNumberSum_Calculated()
+        public void Calculate_EmptyFormula_Zero()
         {
-            string formula = "1 + 2";
-            decimal result = Calculator.Calculate(formula);
+            Assert.AreEqual(0, Calculator.Calculate(string.Empty));
+        }
 
-            Assert.AreEqual(3, result);
+        [TestMethod]
+        public void Calculate_SimpleNumbersSum_Calculated()
+        {
+            Assert.AreEqual(3, Calculator.Calculate("1 + 2"));
+            Assert.AreEqual(4, Calculator.Calculate("1.5 + 2.5"));
+        }
+
+        [TestMethod]
+        public void Calculate_SimpleNumbersSubtraction_Calculated()
+        {
+            Assert.AreEqual(2, Calculator.Calculate("4 - 2"));
+            Assert.AreEqual(2.3m, Calculator.Calculate("10.4 - 8.1"));
         }
     }
 }
