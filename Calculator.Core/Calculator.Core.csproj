@@ -42,6 +42,7 @@
     <Compile Include="Calculator.cs" />
     <Compile Include="FormulaParser.cs" />
     <Compile Include="OperationFactory.cs" />
+    <Compile Include="OperationPriority.cs" />
     <Compile Include="OperationToken.cs" />
     <Compile Include="Operation\DivideOperation.cs" />
     <Compile Include="Operation\MultiplyOperation.cs" />

@@ -45,5 +45,12 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(1.5m, Calculator.Calculate("3 / 2"));
             Assert.AreEqual(7, Calculator.Calculate("14 / 2"));
         }
+
+        [TestMethod]
+        public void Calculate_OperationsWithDifferentPriorities_Calculated()
+        {
+            Assert.AreEqual(6, Calculator.Calculate("2 + 2 * 2"));
+            Assert.AreEqual(0, Calculator.Calculate("3 / 3 - 1"));
+        }
     }
 }

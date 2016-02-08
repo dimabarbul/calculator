@@ -36,26 +36,45 @@ namespace Calculator.Core
                 {
                     OperationBase operation = OperationFactory.Create(token);
 
+                    while (operations.Count > 0)
+                    {
+                        OperationBase previousOperation = operations.Peek();
+
+                        if (previousOperation.Priority >= operation.Priority)
+                        {
+                            ExecuteOperation(ref operands, ref operations);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
                     operations.Push(operation);
                 }
             }
 
             while (operations.Count > 0)
             {
-                OperationBase operation = operations.Pop();
-                decimal rightOperand = operands.Pop();
-                decimal leftOperand = operands.Pop();
-
-                operation.SetOperands(leftOperand, rightOperand);
-
-                result = operation.GetResult();
-
-                operands.Push(result);
+                ExecuteOperation(ref operands, ref operations);
             }
 
             result = operands.Pop();
 
             return result;
+        }
+
+        private static void ExecuteOperation(ref Stack<decimal> operands, ref Stack<OperationBase> operations)
+        {
+            OperationBase operation = operations.Pop();
+            decimal rightOperand = operands.Pop();
+            decimal leftOperand = operands.Pop();
+
+            operation.SetOperands(leftOperand, rightOperand);
+
+            decimal result = operation.GetResult();
+
+            operands.Push(result);
         }
     }
 }

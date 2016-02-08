@@ -6,5 +6,10 @@
         {
             return this.leftOperand * this.rightOperand;
         }
+
+        public override OperationPriority Priority
+        {
+            get { return OperationPriority.Multiply; }
+        }
     }
 }
