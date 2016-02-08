@@ -15,13 +15,15 @@ namespace Calculator.Core
                 yield break;
             }
 
+            string sanitizedFormula = (new Regex(@"\s*")).Replace(formula, string.Empty);
+
             int index = 0;
             Regex regex;
             bool isNumber;
 
-            while (index < formula.Length)
+            while (index < sanitizedFormula.Length)
             {
-                if (char.IsDigit(formula[index]) || '.' == formula[index])
+                if (char.IsDigit(sanitizedFormula[index]) || '.' == sanitizedFormula[index])
                 {
                     regex = new Regex(NumberPattern);
                     isNumber = true;
@@ -32,7 +34,7 @@ namespace Calculator.Core
                     isNumber = false;
                 }
 
-                Match match = regex.Match(formula, index);
+                Match match = regex.Match(sanitizedFormula, index);
                 index += match.Value.Length;
 
                 yield return new Token(match.Value, isNumber);

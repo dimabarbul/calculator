@@ -21,12 +21,11 @@ namespace Calculator.Core
                 return 0;
             }
 
-            string sanitizedFormula = formula.Replace(" ", string.Empty);
             Stack<decimal> operands = new Stack<decimal>();
             Stack<OperationBase> operations = new Stack<OperationBase>();
             decimal result = 0;
 
-            foreach (Token token in FormulaParser.GetTokens(sanitizedFormula))
+            foreach (Token token in FormulaParser.GetTokens(formula))
             {
                 if (token.IsNumber)
                 {

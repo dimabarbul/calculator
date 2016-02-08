@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="CalculatorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FormulaParserTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Calculator.Core\Calculator.Core.csproj">
