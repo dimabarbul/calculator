@@ -52,6 +52,7 @@ namespace Calculator.Core.Tests
         {
             Assert.AreEqual(6, Calculator.Calculate("2 + 2 * 2"));
             Assert.AreEqual(0, Calculator.Calculate("3 / 3 - 1"));
+            Assert.AreEqual(5, Calculator.Calculate("7 - 4 / 2"));
         }
 
         [TestMethod]
@@ -59,6 +60,15 @@ namespace Calculator.Core.Tests
         public void Calculate_SimpleDivisionByZero_ThrowsException()
         {
             Calculator.Calculate("1 / 0");
+        }
+
+        [TestMethod]
+        public void Calculate_SeveralOperationsWithSamePriority_LeftToRightOrder()
+        {
+            Assert.AreEqual(2m, Calculator.Calculate("2 - 2 + 2"));
+            Assert.AreEqual(9m, Calculator.Calculate("3 / 1 * 3"));
+            Assert.AreEqual(2m, Calculator.Calculate("2 + 2 - 2"));
+            Assert.AreEqual(3m, Calculator.Calculate("3 * 1 / 3 * 3"));
         }
     }
 }
