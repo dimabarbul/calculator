@@ -11,16 +11,16 @@ namespace Calculator.Core
 
             switch (token.Value)
             {
-                case OperationToken.OperationSum:
-                    operation = new SumOperation();
+                case OperationToken.Add:
+                    operation = new AddOperation();
                     break;
-                case OperationToken.OperationSubtract:
+                case OperationToken.Subtract:
                     operation = new SubtractOperation();
                     break;
-                case OperationToken.OperationMultiply:
+                case OperationToken.Multiply:
                     operation = new MultiplyOperation();
                     break;
-                case OperationToken.OperationDivide:
+                case OperationToken.Divide:
                     operation = new DivideOperation();
                     break;
                 default:

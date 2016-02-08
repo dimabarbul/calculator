@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Operation
 {
-    internal class SumOperation : OperationBase
+    internal class AddOperation : OperationBase
     {
         public override decimal GetResult()
         {
@@ -9,7 +9,7 @@
 
         public override OperationPriority Priority
         {
-            get { return OperationPriority.Sum; }
+            get { return OperationPriority.Add; }
         }
     }
 }

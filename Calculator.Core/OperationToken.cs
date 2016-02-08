@@ -2,9 +2,9 @@
 {
     internal static class OperationToken
     {
-        public const string OperationSum = "+";
-        public const string OperationSubtract = "-";
-        public const string OperationMultiply = "*";
-        public const string OperationDivide = "/";
+        public const string Add = "+";
+        public const string Subtract = "-";
+        public const string Multiply = "*";
+        public const string Divide = "/";
     }
 }
