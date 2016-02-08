@@ -1,12 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Calculator.Core.Parser;
 
 namespace Calculator.Core
 {
     internal static class FormulaParser
     {
-        const string NumberPattern = @"\d+(\.\d*)?|\.\d*";
-        const string OperationPattern = @"[^\da-zA-Z(.]+|[a-zA-Z0-9_]+";
+        private static readonly IParser[] Parsers = new IParser[]
+        {
+            new DecimalParser(),
+            new SubformulaParser(),
+            new BoolParser(),
+            new OperationParser(),
+        };
 
         public static IEnumerable<Token> GetTokens(string formula)
         {
@@ -18,59 +24,26 @@ namespace Calculator.Core
             string sanitizedFormula = (new Regex(@"\s*")).Replace(formula, string.Empty);
 
             int index = 0;
-            Regex regex;
-            bool isNumber;
+            Token token = null;
 
             while (index < sanitizedFormula.Length)
             {
-                if (char.IsDigit(sanitizedFormula[index]) || '.' == sanitizedFormula[index])
+                foreach (IParser parser in Parsers)
                 {
-                    regex = new Regex(NumberPattern);
-                    isNumber = true;
-                }
-                else if ('(' == sanitizedFormula[index])
-                {
-                    // Search corresponding closing parenthesis
-                    int openingParenthesisCount = 0;
-                    int startIndex = index;
+                    token = parser.TryParse(sanitizedFormula, ref index);
 
-                    for (index++; index < sanitizedFormula.Length; index++)
+                    if (token != null)
                     {
-                        if ('(' == sanitizedFormula[index])
-                        {
-                            openingParenthesisCount++;
-                        }
-                        else if (')' == sanitizedFormula[index])
-                        {
-                            if (0 == openingParenthesisCount)
-                            {
-                                string subformula = sanitizedFormula.Substring(startIndex + 1, index - startIndex - 1);
-
-                                yield return new Token(subformula, isSubformula: true);
-
-                                index++;
-
-                                break;
-                            }
-                            else
-                            {
-                                openingParenthesisCount--;
-                            }
-                        }
+                        break;
                     }
-
-                    continue;
                 }
-                else
+
+                if (token == null)
                 {
-                    regex = new Regex(OperationPattern);
-                    isNumber = false;
+                    // TODO: throw exception - cannot find correct parser
                 }
 
-                Match match = regex.Match(sanitizedFormula, index);
-                index += match.Value.Length;
-
-                yield return new Token(match.Value, isNumber);
+                yield return token;
             }
         }
     }

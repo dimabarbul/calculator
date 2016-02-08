@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Calculator.Core.Enum;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests
@@ -50,7 +51,7 @@ namespace Calculator.Core.Tests
                 tokens = FormulaParser.GetTokens(formula).ToArray();
 
                 Assert.AreEqual(1, tokens.Length);
-                Assert.AreEqual(formula.Trim(), tokens[0].Value);
+                Assert.AreEqual(formula.Trim(), tokens[0].Text);
             }
         }
 
@@ -84,8 +85,8 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaParser.GetTokens("1 + (2 + 3)").ToArray();
 
             Assert.AreEqual(3, tokens.Length);
-            Assert.AreEqual(true, tokens[2].IsSubformula);
-            Assert.AreEqual("2+3", tokens[2].Value);
+            Assert.AreEqual(TokenType.Subformula, tokens[2].Type);
+            Assert.AreEqual("2+3", tokens[2].Text);
         }
 
         [TestMethod]
@@ -108,18 +109,24 @@ namespace Calculator.Core.Tests
             this.AssertNumberTokenEqual(tokens[1], 5);
         }
 
+        public void GetTokens_TrueFalse_Parsed()
+        {
+            Token[] tokens = FormulaParser.GetTokens("true").ToArray();
+
+            Assert.AreEqual(1, tokens.Length);
+            Assert.AreEqual("true", tokens[0].Text);
+        }
+
         private void AssertSimpleTokenEqual(Token token, string tokenValue, bool isNumber)
         {
-            Assert.AreEqual(isNumber, token.IsNumber);
-            Assert.AreEqual(tokenValue, token.Value);
-            Assert.AreEqual(false, token.IsSubformula);
+            Assert.AreEqual(isNumber ? TokenType.Decimal : TokenType.Operation, token.Type);
+            Assert.AreEqual(tokenValue, token.Text);
         }
 
         private void AssertNumberTokenEqual(Token token, decimal value)
         {
-            Assert.AreEqual(true, token.IsNumber);
-            Assert.AreEqual(value, token.ToDecimal());
-            Assert.AreEqual(false, token.IsSubformula);
+            Assert.AreEqual(TokenType.Decimal, token.Type);
+            Assert.AreEqual(value, token.GetValue<decimal>());
         }
     }
 }

@@ -1,30 +1,59 @@
 ﻿using System;
+using Calculator.Core.Enum;
 namespace Calculator.Core
 {
     internal class Token
     {
-        public string Value { get; set; }
-        public bool IsNumber { get; private set; }
-        public bool IsSubformula { get; private set; }
+        public string Text { get; set; }
+        public TokenType Type { get; set; }
 
-        public Token(string value, bool isNumber = false, bool isSubformula = false)
+        public Token(string text, TokenType type)
         {
-            this.Value = value;
-            this.IsNumber = isNumber;
-            this.IsSubformula = isSubformula;
+            this.Text = text;
+            this.Type = type;
         }
 
-        public decimal ToDecimal()
+        public TResult GetValue<TResult>()
         {
-            if (!this.IsNumber)
+            object value;
+
+            switch (this.Type)
             {
-                throw new InvalidOperationException(string.Format(
-                    @"Token ""{0}"" is not a number.", this.Value));
+                case TokenType.Decimal:
+                    string fullNumber = (this.Text[0] == '.' ? "0" : string.Empty) + this.Text;
+
+                    value = decimal.Parse(fullNumber);
+
+                    break;
+                case TokenType.Bool:
+                    value = bool.Parse(this.Text);
+                    break;
+                default:
+                    value = this.Text;
+                    break;
             }
 
-            string fullNumber = (this.Value[0] == '.' ? "0" : string.Empty) + this.Value;
+            return (TResult)Convert.ChangeType(value, typeof(TResult));
+        }
 
-            return decimal.Parse(fullNumber);
+        public dynamic GetValue()
+        {
+            dynamic value;
+
+            switch (this.Type)
+            {
+                case TokenType.Decimal:
+                    value = this.GetValue<decimal>();
+                    break;
+                case TokenType.Bool:
+                    value = this.GetValue<bool>();
+                    break;
+                default:
+                    value = this.GetValue<string>();
+                    break;
+            }
+
+            return value;
         }
     }
 }

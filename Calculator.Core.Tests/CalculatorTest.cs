@@ -7,9 +7,10 @@ namespace Calculator.Core.Tests
     public class CalculatorTest
     {
         [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
         public void Calculate_EmptyFormula_Zero()
         {
-            Assert.AreEqual(0, Calculator.Calculate(string.Empty));
+            Calculator.Calculate(string.Empty);
         }
 
         [TestMethod]

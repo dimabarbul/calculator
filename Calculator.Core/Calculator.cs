@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using Calculator.Core.Enum;
 using Calculator.Core.Operation;
 
 namespace Calculator.Core
@@ -9,31 +10,26 @@ namespace Calculator.Core
     /// </summary>
     public static class Calculator
     {
-        /// <summary>
-        /// Calculates provided formula.
-        /// </summary>
-        /// <param name="formula">Formula to calculate.</param>
-        /// <returns>Calculation result.</returns>
-        public static decimal Calculate(string formula)
+        public static TResult Calculate<TResult>(string formula)
         {
             if (string.IsNullOrWhiteSpace(formula))
             {
-                return 0;
+                throw new ArgumentNullException();
             }
 
-            Stack<decimal> operands = new Stack<decimal>();
+            Stack<dynamic> operands = new Stack<dynamic>();
             Stack<OperationBase> operations = new Stack<OperationBase>();
             decimal result = 0;
 
             foreach (Token token in FormulaParser.GetTokens(formula))
             {
-                if (token.IsNumber)
+                if (token.Type == TokenType.Decimal || token.Type == TokenType.Bool)
                 {
-                    operands.Push(token.ToDecimal());
+                    operands.Push(token.GetValue());
                 }
-                else if (token.IsSubformula)
+                else if (token.Type == TokenType.Subformula)
                 {
-                    result = Calculator.Calculate(token.Value);
+                    result = Calculator.Calculate(token.Text);
 
                     operands.Push(result);
                 }
@@ -66,10 +62,20 @@ namespace Calculator.Core
 
             result = operands.Pop();
 
-            return result;
+            return (TResult)Convert.ChangeType(result, typeof(TResult));
         }
 
-        private static void ExecuteOperation(ref Stack<decimal> operands, ref Stack<OperationBase> operations)
+        /// <summary>
+        /// Calculates provided formula.
+        /// </summary>
+        /// <param name="formula">Formula to calculate.</param>
+        /// <returns>Calculation result.</returns>
+        public static decimal Calculate(string formula)
+        {
+            return Calculate<decimal>(formula);
+        }
+
+        private static void ExecuteOperation(ref Stack<dynamic> operands, ref Stack<OperationBase> operations)
         {
             OperationBase operation = operations.Pop();
 

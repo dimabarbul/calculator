@@ -18,7 +18,7 @@ namespace Calculator.Core
         {
             OperationBase operation;
 
-            switch (token.Value)
+            switch (token.Text)
             {
                 case OperationToken.Add:
                     if (isUnary)
@@ -56,7 +56,7 @@ namespace Calculator.Core
                     break;
                 default:
                     throw new NotImplementedException(string.Format(
-                        @"Operation is not defined for token ""{0}"".", token.Value));
+                        @"Operation is not defined for token ""{0}"".", token.Text));
             }
 
             return operation;
@@ -65,6 +65,16 @@ namespace Calculator.Core
         private static string GetOperationClassName(string operation)
         {
             return string.Concat("Calculator.Core.Operation.", char.ToUpper(operation[0]), operation.Substring(1), "Operation");
+        }
+
+        private static class OperationToken
+        {
+            public const string Add = "+";
+            public const string Subtract = "-";
+            public const string Multiply = "*";
+            public const string Divide = "/";
+            public const string Floor = "floor";
+            public const string Ceil = "ceil";
         }
     }
 }

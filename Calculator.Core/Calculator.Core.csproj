@@ -40,10 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculator.cs" />
+    <Compile Include="Enum\TokenType.cs" />
     <Compile Include="FormulaParser.cs" />
     <Compile Include="OperationFactory.cs" />
-    <Compile Include="OperationPriority.cs" />
-    <Compile Include="OperationToken.cs" />
+    <Compile Include="Enum\OperationPriority.cs" />
     <Compile Include="Operation\CeilOperation.cs" />
     <Compile Include="Operation\DivideOperation.cs" />
     <Compile Include="Operation\FloorOperation.cs" />
@@ -53,6 +53,12 @@
     <Compile Include="Operation\AddOperation.cs" />
     <Compile Include="Operation\UnaryMinusOperation.cs" />
     <Compile Include="Operation\UnaryPlusOperation.cs" />
+    <Compile Include="Parser\BoolParser.cs" />
+    <Compile Include="Parser\DecimalParser.cs" />
+    <Compile Include="Parser\IParser.cs" />
+    <Compile Include="Parser\OperationParser.cs" />
+    <Compile Include="Parser\RegexParser.cs" />
+    <Compile Include="Parser\SubformulaParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
   </ItemGroup>

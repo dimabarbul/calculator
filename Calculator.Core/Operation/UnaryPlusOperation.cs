@@ -1,4 +1,6 @@
-﻿namespace Calculator.Core.Operation
+﻿using Calculator.Core.Enum;
+
+namespace Calculator.Core.Operation
 {
     internal class UnaryPlusOperation : OperationBase
     {

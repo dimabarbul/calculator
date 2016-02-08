@@ -1,4 +1,4 @@
-﻿namespace Calculator.Core
+﻿namespace Calculator.Core.Enum
 {
     internal enum OperationPriority
     {

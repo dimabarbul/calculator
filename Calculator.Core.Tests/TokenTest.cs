@@ -1,4 +1,5 @@
 ﻿using System;
+using Calculator.Core.Enum;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests
@@ -7,32 +8,29 @@ namespace Calculator.Core.Tests
     public class TokenTest
     {
         [TestMethod]
-        public void ToDecimal_Number_IsCorrectNumber()
+        public void GetValueDecimal_Number_CorrectValue()
         {
-            Token token = new Token("2", true);
+            Token token = new Token("2", TokenType.Decimal);
 
-            Assert.AreEqual(true, token.IsNumber);
-            Assert.AreEqual("2", token.Value);
-            Assert.AreEqual(2m, token.ToDecimal());
+            Assert.AreEqual(2m, token.GetValue<decimal>());
         }
 
         [TestMethod]
-        public void ToDecimal_Number_ValueNotChanged()
+        public void GetValueDecimal_DecimalWithLeadingPeriod_CorrectValue()
         {
-            Token token = new Token(".3", true);
+            Token token = new Token(".3", TokenType.Decimal);
 
-            Assert.AreEqual(true, token.IsNumber);
-            Assert.AreEqual(".3", token.Value);
-            Assert.AreEqual(0.3m, token.ToDecimal());
+            Assert.AreEqual(0.3m, token.GetValue<decimal>());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void ToDecimal_NotNumberWithDigits_ThrowsException()
+        public void GetValue_WithTypeDecimal_Decimal()
         {
-            Token token = new Token("3", false);
+            Token token = new Token("4", TokenType.Decimal);
 
-            token.ToDecimal();
+            dynamic value = token.GetValue();
+            Assert.AreEqual(typeof(decimal), value.GetType());
+            Assert.AreEqual(4m, value);
         }
     }
 }
