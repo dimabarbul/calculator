@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests
 {
@@ -51,6 +52,13 @@ namespace Calculator.Core.Tests
         {
             Assert.AreEqual(6, Calculator.Calculate("2 + 2 * 2"));
             Assert.AreEqual(0, Calculator.Calculate("3 / 3 - 1"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(DivideByZeroException))]
+        public void Calculate_SimpleDivisionByZero_ThrowsException()
+        {
+            Calculator.Calculate("1 / 0");
         }
     }
 }
