@@ -5,12 +5,6 @@ namespace Calculator.Core.Tests
     [TestClass]
     public class CalculatorTest
     {
-        public void Calculate_PeriodWithNumbers_MeansZeroPeriodNumber()
-        {
-            Assert.AreEqual(2, Calculator.Calculate(".5 + 1.5"));
-            Assert.AreEqual(1, Calculator.Calculate("1 - ."));
-        }
-
         [TestMethod]
         public void Calculate_EmptyFormula_Zero()
         {
@@ -29,6 +23,13 @@ namespace Calculator.Core.Tests
         {
             Assert.AreEqual(2, Calculator.Calculate("4 - 2"));
             Assert.AreEqual(2.3m, Calculator.Calculate("10.4 - 8.1"));
+        }
+
+        [TestMethod]
+        public void Calculate_PeriodWithNumbers_MeansZeroPeriodNumber()
+        {
+            Assert.AreEqual(2, Calculator.Calculate(".5 + 1.5"));
+            Assert.AreEqual(1, Calculator.Calculate("1 - ."));
         }
     }
 }

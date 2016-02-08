@@ -20,7 +20,9 @@ namespace Calculator.Core
                     @"Token ""{0}"" is not a number.", this.Value));
             }
 
-            return decimal.Parse(this.Value);
+            string fullNumber = (this.Value[0] == '.' ? "0" : string.Empty) + this.Value;
+
+            return decimal.Parse(fullNumber);
         }
     }
 }

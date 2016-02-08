@@ -21,7 +21,7 @@ namespace Calculator.Core
 
             while (index < formula.Length)
             {
-                if (char.IsDigit(formula[index]))
+                if (char.IsDigit(formula[index]) || '.' == formula[index])
                 {
                     regex = new Regex(NumberPattern);
                     isNumber = true;
