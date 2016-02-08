@@ -31,5 +31,12 @@ namespace Calculator.Core.Tests
             Assert.AreEqual(2, Calculator.Calculate(".5 + 1.5"));
             Assert.AreEqual(1, Calculator.Calculate("1 - ."));
         }
+
+        [TestMethod]
+        public void Calculate_SimpleNumbersMultiplication_Calculated()
+        {
+            Assert.AreEqual(6, Calculator.Calculate("3 * 2"));
+            Assert.AreEqual(9.38m, Calculator.Calculate("1.4 * 6.7"));
+        }
     }
 }

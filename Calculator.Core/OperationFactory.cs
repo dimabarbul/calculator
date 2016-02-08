@@ -17,9 +17,12 @@ namespace Calculator.Core
                 case OperationToken.OperationSubtract:
                     operation = new SubtractOperation();
                     break;
+                case OperationToken.OperationMultiply:
+                    operation = new MultiplyOperation();
+                    break;
                 default:
                     throw new NotImplementedException(string.Format(
-                        "Operation is not defined for token {0}.", token));
+                        @"Operation is not defined for token ""{0}"".", token.Value));
             }
 
             return operation;
