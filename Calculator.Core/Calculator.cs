@@ -40,10 +40,15 @@ namespace Calculator.Core
                             throw new CalculateException(CalculateExceptionCode.UnknownVariable);
                         }
 
-                        operands.Push(new Token(
-                            variables[token.Text].ToString(),
-                            FormulaTokenizer.DetectTokenType(variables[token.Text])
-                        ));
+                        TokenType variableType = FormulaTokenizer.DetectTokenType(variables[token.Text]);
+                        if (!FormulaTokenizer.IsValueTokenType(variableType))
+                        {
+                            throw new CalculateException(CalculateExceptionCode.StringVariable);
+                        }
+
+                        Token variableToken = new Token(variables[token.Text].ToString(), variableType);
+
+                        operands.Push(variableToken);
                         break;
                     default:
                         OperationBase operation = OperationFactory.Create(token, operands.Count == 0);

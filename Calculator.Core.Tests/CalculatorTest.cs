@@ -255,5 +255,45 @@ namespace Calculator.Core.Tests
         {
             Calculator.Calculate("a");
         }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.StringVariable)]
+        public void Calculate_StringVariable_ThrowsException()
+        {
+            Calculator.Calculate(
+                "a + c",
+                new Dictionary<string, object>()
+                {
+                    { "a", 1 },
+                    { "c", "test" }
+                }
+            );
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.StringVariable)]
+        public void Calculate_OperationVariable_ThrowsException()
+        {
+            Calculator.Calculate(
+                "c / 0",
+                new Dictionary<string, object>()
+                {
+                    { "c", "-" }
+                }
+            );
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.StringVariable)]
+        public void Calculate_SubformulaVariable_ThrowsException()
+        {
+            Calculator.Calculate(
+                "v",
+                new Dictionary<string, object>()
+                {
+                    { "v", "(1+2)" }
+                }
+            );
+        }
     }
 }

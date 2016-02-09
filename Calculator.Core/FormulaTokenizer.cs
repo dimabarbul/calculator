@@ -78,5 +78,10 @@ namespace Calculator.Core
 
             return token.Type;
         }
+
+        public static bool IsValueTokenType(TokenType type)
+        {
+            return type == TokenType.Bool || type == TokenType.Decimal;
+        }
     }
 }

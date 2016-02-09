@@ -6,5 +6,6 @@
         NotSingleResult = 2,
         MissingOperand = 3,
         UnknownVariable = 4,
+        StringVariable = 5,
     }
 }
