@@ -63,6 +63,15 @@ namespace Calculator.Core.Tests.Parser
             this.AssertSubformulaTokenEqual(token, "1+3");
         }
 
+        [TestMethod]
+        public void TryParse_NoClosingParenthesis_Null()
+        {
+            Token token;
+
+            this.parser.TryParse("(1-2", out token);
+            Assert.IsNull(token);
+        }
+
         private void AssertSubformulaTokenEqual(Token token, string value)
         {
             Assert.AreEqual(TokenType.Subformula, token.Type);

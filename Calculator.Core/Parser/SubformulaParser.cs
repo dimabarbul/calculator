@@ -48,7 +48,14 @@ namespace Calculator.Core.Parser
                 }
             }
 
-            return token.Text.Length + 2;
+            int result = 0;
+
+            if (token != null)
+            {
+                result = token.Text.Length + 2;
+            }
+
+            return result;
         }
 
         private bool IsOpeningParenthesis(char c)
