@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Calculator.Core.Enum;
 
 namespace Calculator.Core.Parser
@@ -22,28 +23,31 @@ namespace Calculator.Core.Parser
                 return 0;
             }
 
-            // Search corresponding closing parenthesis
-            int openingParenthesisCount = 0;
+            Stack<char> openingParenthesis = new Stack<char>();
+            openingParenthesis.Push(formula[startIndex]);
 
             for (int index = startIndex + 1; index < formula.Length; index++)
             {
                 if (this.IsOpeningParenthesis(formula[index]))
                 {
-                    openingParenthesisCount++;
+                    openingParenthesis.Push(formula[index]);
                 }
                 else if (this.IsClosingParenthesis(formula[index]))
                 {
-                    if (0 == openingParenthesisCount)
+                    char previousOpeningParenthesis = openingParenthesis.Pop();
+
+                    if (!this.AreParenthesisOfSameType(previousOpeningParenthesis, formula[index]))
+                    {
+                        break;
+                    }
+
+                    if (0 == openingParenthesis.Count)
                     {
                         string subformula = formula.Substring(startIndex + 1, index - startIndex - 1);
 
                         token = new Token(subformula, TokenType.Subformula);
 
                         break;
-                    }
-                    else
-                    {
-                        openingParenthesisCount--;
                     }
                 }
             }
@@ -66,6 +70,16 @@ namespace Calculator.Core.Parser
         private bool IsClosingParenthesis(char c)
         {
             return new char[] { ')', ']', '}', '>' }.Contains(c);
+        }
+
+        private bool AreParenthesisOfSameType(char openingParenthesis, char closingParenthesis)
+        {
+            return (
+                (openingParenthesis == '(' && closingParenthesis == ')')
+                || (openingParenthesis == '[' && closingParenthesis == ']')
+                || (openingParenthesis == '{' && closingParenthesis == '}')
+                || (openingParenthesis == '<' && closingParenthesis == '>')
+            );
         }
     }
 }

@@ -72,6 +72,24 @@ namespace Calculator.Core.Tests.Parser
             Assert.IsNull(token);
         }
 
+        [TestMethod]
+        public void TryParse_ClosingParenthesisOfDifferentType_Null()
+        {
+            Token token;
+
+            this.parser.TryParse("<3}", out token);
+            Assert.IsNull(token);
+        }
+
+        [TestMethod]
+        public void TryParse_CrossingParenthesisGroupsOfDifferentTypes_Null()
+        {
+            Token token;
+
+            this.parser.TryParse("(1+<3-4)*1>", out token);
+            Assert.IsNull(token);
+        }
+
         private void AssertSubformulaTokenEqual(Token token, string value)
         {
             Assert.AreEqual(TokenType.Subformula, token.Type);
