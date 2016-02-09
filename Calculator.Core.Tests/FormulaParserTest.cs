@@ -109,6 +109,7 @@ namespace Calculator.Core.Tests
             this.AssertNumberTokenEqual(tokens[1], 5);
         }
 
+        [TestMethod]
         public void GetTokens_TrueFalse_Parsed()
         {
             Token[] tokens = FormulaParser.GetTokens("true").ToArray();
