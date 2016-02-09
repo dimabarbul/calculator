@@ -18,7 +18,7 @@ namespace Calculator.Core.Parser
         {
             token = null;
         
-            Regex regex = new Regex(this.pattern);
+            Regex regex = new Regex(this.pattern, RegexOptions.IgnoreCase);
             Match match = regex.Match(formula, startIndex);
 
             if (!match.Success || match.Index != startIndex)
