@@ -187,5 +187,19 @@ namespace Calculator.Core.Tests
         {
             Calculator.Calculate("+");
         }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void GetTokens_NoClosingParenthesis_ThrowsException()
+        {
+            Calculator.Calculate("2*(3-4");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void GetTokens_ClosingParenthesisOfDifferentType_ThrowsException()
+        {
+            Calculator.Calculate("2*(3-4>/4");
+        }
     }
 }

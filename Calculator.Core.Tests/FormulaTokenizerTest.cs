@@ -154,6 +154,20 @@ namespace Calculator.Core.Tests
             FormulaTokenizer.GetTokens(")-1)").ToArray();
         }
 
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void GetTokens_NoClosingParenthesis_ThrowsException()
+        {
+            FormulaTokenizer.GetTokens("2*(3-4").ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void GetTokens_ClosingParenthesisOfDifferentType_ThrowsException()
+        {
+            FormulaTokenizer.GetTokens("2*(3-4>/4").ToArray();
+        }
+
         private void AssertTokenEqual(Token token, string value, TokenType type)
         {
             Assert.AreEqual(type, token.Type);
