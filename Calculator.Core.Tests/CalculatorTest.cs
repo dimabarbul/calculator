@@ -1,4 +1,6 @@
 ﻿using System;
+using Calculator.Core.Enum;
+using Calculator.Core.Exception;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests
@@ -142,6 +144,27 @@ namespace Calculator.Core.Tests
         {
             Assert.AreEqual(false, Calculator.Calculate<bool>("!true && false"));
             Assert.AreEqual(true, Calculator.Calculate<bool>("!false || true"));
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void Calculate_UnmatchedClosingParenthesis_ThrowsParseException()
+        {
+            Calculator.Calculate(")+3");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.UnknownOperation)]
+        public void Calculate_UnknownOperation_ThrowsCalculateException()
+        {
+            Calculator.Calculate("1+-2");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.NotSingleResult)]
+        public void Calculate_SeveralResults_ThrowsCalculateException()
+        {
+            Calculator.Calculate("(1)(2)(3)");
         }
     }
 }

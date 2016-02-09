@@ -1,4 +1,6 @@
 ﻿using System;
+using Calculator.Core.Enum;
+using Calculator.Core.Exception;
 using Calculator.Core.Operation;
 
 namespace Calculator.Core
@@ -64,8 +66,7 @@ namespace Calculator.Core
                     operation = new NotOperation();
                     break;
                 default:
-                    throw new NotImplementedException(string.Format(
-                        @"Operation is not defined for token ""{0}"".", token.Text));
+                    throw new CalculateException(CalculateExceptionCode.UnknownOperation, token.Text);
             }
 
             return operation;

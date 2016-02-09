@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Calculator.Core.Enum;
+using Calculator.Core.Exception;
 using Calculator.Core.Operation;
 
 namespace Calculator.Core
@@ -58,6 +59,11 @@ namespace Calculator.Core
             while (operations.Count > 0)
             {
                 ExecuteOperation(ref operands, ref operations);
+            }
+
+            if (operands.Count != 1)
+            {
+                throw new CalculateException(CalculateExceptionCode.NotSingleResult);
             }
 
             resultToken = operands.Pop();

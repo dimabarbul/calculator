@@ -4,7 +4,8 @@
     {
         public int Code { get; private set; }
 
-        public ExceptionWithCode(int code)
+        public ExceptionWithCode(int code, string message = null)
+            : base(message)
         {
             this.Code = code;
         }

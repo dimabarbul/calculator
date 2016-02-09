@@ -40,8 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculator.cs" />
+    <Compile Include="Enum\CalculateExceptionCode.cs" />
     <Compile Include="Enum\ParseExceptionCode.cs" />
     <Compile Include="Enum\TokenType.cs" />
+    <Compile Include="Exception\CalculateException.cs" />
     <Compile Include="Exception\ExceptionWithCode.cs" />
     <Compile Include="Exception\ParseException.cs" />
     <Compile Include="FormulaTokenizer.cs" />
