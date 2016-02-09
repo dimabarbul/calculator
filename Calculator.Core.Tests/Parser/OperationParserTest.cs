@@ -55,6 +55,21 @@ namespace Calculator.Core.Tests.Parser
             this.AssertOperationTokenEqual(token, formula);
         }
 
+        [TestMethod]
+        public void TryParse_OperationFollowedByDifferentParenthesis_CorrectOperation()
+        {
+            Token token;
+
+            this.parser.TryParse("1+<3>", out token, 1);
+            this.AssertOperationTokenEqual(token, "+");
+
+            this.parser.TryParse("1+ceil[3]", out token, 2);
+            this.AssertOperationTokenEqual(token, "ceil");
+
+            this.parser.TryParse("1+(2*{1+3})", out token, 4);
+            this.AssertOperationTokenEqual(token, "*");
+        }
+
         private void AssertOperationTokenEqual(Token token, string value)
         {
             Assert.AreEqual(TokenType.Operation, token.Type);
