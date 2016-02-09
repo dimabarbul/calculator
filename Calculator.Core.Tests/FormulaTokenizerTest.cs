@@ -37,7 +37,7 @@ namespace Calculator.Core.Tests
                 tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
                 Assert.AreEqual(1, tokens.Length);
-                this.AssertSimpleTokenEqual(tokens[0], formula, false);
+                this.AssertTokenEqual(tokens[0], formula, TokenType.Operation);
             }
         }
 
@@ -76,8 +76,8 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaTokenizer.GetTokens("+.").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
-            this.AssertSimpleTokenEqual(tokens[0], "+", false);
-            this.AssertSimpleTokenEqual(tokens[1], ".", true);
+            this.AssertTokenEqual(tokens[0], "+", TokenType.Operation);
+            this.AssertTokenEqual(tokens[1], ".", TokenType.Decimal);
         }
 
         [TestMethod]
@@ -86,8 +86,7 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaTokenizer.GetTokens("1 + (2 + 3)").ToArray();
 
             Assert.AreEqual(3, tokens.Length);
-            Assert.AreEqual(TokenType.Subformula, tokens[2].Type);
-            Assert.AreEqual("2+3", tokens[2].Text);
+            this.AssertTokenEqual(tokens[2], "2+3", TokenType.Subformula);
         }
 
         [TestMethod]
@@ -96,7 +95,7 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaTokenizer.GetTokens("+2").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
-            this.AssertSimpleTokenEqual(tokens[0], "+", false);
+            this.AssertTokenEqual(tokens[0], "+", TokenType.Operation);
             this.AssertNumberTokenEqual(tokens[1], 2);
         }
 
@@ -106,7 +105,7 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaTokenizer.GetTokens("-5").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
-            this.AssertSimpleTokenEqual(tokens[0], "-", false);
+            this.AssertTokenEqual(tokens[0], "-", TokenType.Operation);
             this.AssertNumberTokenEqual(tokens[1], 5);
         }
 
@@ -116,7 +115,12 @@ namespace Calculator.Core.Tests
             Token[] tokens = FormulaTokenizer.GetTokens("true").ToArray();
 
             Assert.AreEqual(1, tokens.Length);
-            Assert.AreEqual("true", tokens[0].Text);
+            this.AssertTokenEqual(tokens[0], "true", TokenType.Bool);
+            
+            tokens = FormulaTokenizer.GetTokens("false").ToArray();
+
+            Assert.AreEqual(1, tokens.Length);
+            this.AssertTokenEqual(tokens[0], "false", TokenType.Bool);
         }
 
         [TestMethod]
@@ -126,16 +130,34 @@ namespace Calculator.Core.Tests
         }
 
         [TestMethod]
+        public void GetTokens_DifferentParenthesis_ParsedAsSubformula()
+        {
+            Token[] tokens;
+
+            tokens = FormulaTokenizer.GetTokens("[1 + 2]").ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            this.AssertTokenEqual(tokens[0], "1+2", TokenType.Subformula);
+
+            tokens = FormulaTokenizer.GetTokens("{ 5.2 }").ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            this.AssertTokenEqual(tokens[0], "5.2", TokenType.Subformula);
+
+            tokens = FormulaTokenizer.GetTokens("<8 / 0>").ToArray();
+            Assert.AreEqual(1, tokens.Length);
+            this.AssertTokenEqual(tokens[0], "8/0", TokenType.Subformula);
+        }
+
+        [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
         public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
         {
             FormulaTokenizer.GetTokens(")-1)").ToArray();
         }
 
-        private void AssertSimpleTokenEqual(Token token, string tokenValue, bool isNumber)
+        private void AssertTokenEqual(Token token, string value, TokenType type)
         {
-            Assert.AreEqual(isNumber ? TokenType.Decimal : TokenType.Operation, token.Type);
-            Assert.AreEqual(tokenValue, token.Text);
+            Assert.AreEqual(type, token.Type);
+            Assert.AreEqual(value, token.Text);
         }
 
         private void AssertNumberTokenEqual(Token token, decimal value)

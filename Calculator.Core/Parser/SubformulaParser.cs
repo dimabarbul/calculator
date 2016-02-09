@@ -1,4 +1,5 @@
-﻿using Calculator.Core.Enum;
+﻿using System.Linq;
+using Calculator.Core.Enum;
 
 namespace Calculator.Core.Parser
 {
@@ -16,7 +17,7 @@ namespace Calculator.Core.Parser
         {
             token = null;
 
-            if ('(' != formula[startIndex])
+            if (!this.IsOpeningParenthesis(formula[startIndex]))
             {
                 return 0;
             }
@@ -26,11 +27,11 @@ namespace Calculator.Core.Parser
 
             for (int index = startIndex + 1; index < formula.Length; index++)
             {
-                if ('(' == formula[index])
+                if (this.IsOpeningParenthesis(formula[index]))
                 {
                     openingParenthesisCount++;
                 }
-                else if (')' == formula[index])
+                else if (this.IsClosingParenthesis(formula[index]))
                 {
                     if (0 == openingParenthesisCount)
                     {
@@ -48,6 +49,16 @@ namespace Calculator.Core.Parser
             }
 
             return token.Text.Length + 2;
+        }
+
+        private bool IsOpeningParenthesis(char c)
+        {
+            return new char[] { '(', '[', '{', '<' }.Contains(c);
+        }
+
+        private bool IsClosingParenthesis(char c)
+        {
+            return new char[] { ')', ']', '}', '>' }.Contains(c);
         }
     }
 }

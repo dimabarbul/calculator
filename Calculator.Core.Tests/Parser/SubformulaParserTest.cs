@@ -45,6 +45,24 @@ namespace Calculator.Core.Tests.Parser
             Assert.IsNull(token);
         }
 
+        [TestMethod]
+        public void TryParse_DifferentParenthesis_Correct()
+        {
+            Token token;
+
+            this.parser.TryParse("[0-9]", out token);
+            Assert.IsNotNull(token);
+            this.AssertSubformulaTokenEqual(token, "0-9");
+
+            this.parser.TryParse("{7+3}", out token);
+            Assert.IsNotNull(token);
+            this.AssertSubformulaTokenEqual(token, "7+3");
+
+            this.parser.TryParse("<1+3>*4", out token);
+            Assert.IsNotNull(token);
+            this.AssertSubformulaTokenEqual(token, "1+3");
+        }
+
         private void AssertSubformulaTokenEqual(Token token, string value)
         {
             Assert.AreEqual(TokenType.Subformula, token.Type);
