@@ -147,6 +147,12 @@ namespace Calculator.Core.Tests
         }
 
         [TestMethod]
+        public void Calculate_DifferentParenthesis_Calculated()
+        {
+            Assert.AreEqual(2.5m, Calculator.Calculate<decimal>("< 2 + 3 > * (1 - { 3 / 6 })"));
+        }
+
+        [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
         public void Calculate_UnmatchedClosingParenthesis_ThrowsParseException()
         {
