@@ -148,6 +148,29 @@ namespace Calculator.Core.Tests
         }
 
         [TestMethod]
+        public void GetTokens_Variable_Parsed()
+        {
+            Token[] tokens = FormulaTokenizer.GetTokens("test + test2").ToArray();
+
+            Assert.AreEqual(3, tokens.Length);
+            this.AssertTokenEqual(tokens[0], "test", TokenType.Variable);
+            this.AssertTokenEqual(tokens[1], "+", TokenType.Operation);
+            this.AssertTokenEqual(tokens[2], "test2", TokenType.Variable);
+        }
+
+        [TestMethod]
+        public void GetTokens_VariableAndOperation_Parsed()
+        {
+            Token[] tokens = FormulaTokenizer.GetTokens("test() / test").ToArray();
+
+            Assert.AreEqual(4, tokens.Length);
+            this.AssertTokenEqual(tokens[0], "test", TokenType.Operation);
+            this.AssertTokenEqual(tokens[1], "", TokenType.Subformula);
+            this.AssertTokenEqual(tokens[2], "/", TokenType.Operation);
+            this.AssertTokenEqual(tokens[3], "test", TokenType.Variable);
+        }
+
+        [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
         public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
         {

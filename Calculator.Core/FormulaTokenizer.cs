@@ -14,6 +14,7 @@ namespace Calculator.Core
             new SubformulaParser(),
             new BoolParser(),
             new OperationParser(),
+            new VariableParser(),
         };
 
         public static IEnumerable<Token> GetTokens(string formula)

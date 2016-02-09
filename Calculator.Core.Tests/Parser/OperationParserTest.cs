@@ -49,10 +49,9 @@ namespace Calculator.Core.Tests.Parser
         public void TryParse_UnknownOperation_CorrectOperation()
         {
             Token token;
-            string formula = "some_unknown_function";
-            this.parser.TryParse(formula, out token);
+            this.parser.TryParse("some_unknown_function()", out token);
 
-            this.AssertOperationTokenEqual(token, formula);
+            this.AssertOperationTokenEqual(token, "some_unknown_function");
         }
 
         [TestMethod]
