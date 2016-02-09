@@ -55,6 +55,18 @@ namespace Calculator.Core.Tests.Parser
             Assert.IsNull(token);
         }
 
+        [TestMethod]
+        public void TryParse_TrueFalse_Null()
+        {
+            Token token;
+
+            this.parser.TryParse("true", out token);
+            Assert.IsNull(token);
+
+            this.parser.TryParse("false", out token);
+            Assert.IsNull(token);
+        }
+
         private void AssertVariableTokenEqual(Token token, string value)
         {
             Assert.AreEqual(TokenType.Variable, token.Type);
