@@ -6,5 +6,6 @@
         Subformula = 2,
         Operation = 3,
         Bool = 4,
+        Variable = 5,
     }
 }

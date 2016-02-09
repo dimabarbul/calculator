@@ -57,6 +57,7 @@
     <Compile Include="Parser\BoolParserTest.cs" />
     <Compile Include="Parser\OperationParserTest.cs" />
     <Compile Include="Parser\SubformulaParserTest.cs" />
+    <Compile Include="Parser\VariableParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FormulaTokenizerTest.cs" />
     <Compile Include="TokenTest.cs" />

@@ -69,6 +69,7 @@
     <Compile Include="Parser\OperationParser.cs" />
     <Compile Include="Parser\RegexParser.cs" />
     <Compile Include="Parser\SubformulaParser.cs" />
+    <Compile Include="Parser\VariableParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
   </ItemGroup>
