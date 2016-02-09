@@ -4,5 +4,6 @@
     {
         UnknownOperation = 1,
         NotSingleResult = 2,
+        MissingOperand = 3,
     }
 }

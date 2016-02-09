@@ -166,5 +166,26 @@ namespace Calculator.Core.Tests
         {
             Calculator.Calculate("(1)(2)(3)");
         }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.MissingOperand)]
+        public void Calculate_BinaryOperationMissingLeftOperand_ThrowsException()
+        {
+            Calculator.Calculate("*2");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.MissingOperand)]
+        public void Calculate_BinaryOperationMissingBothOperands_ThrowsException()
+        {
+            Calculator.Calculate("/");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.MissingOperand)]
+        public void Calculate_UnaryOperationMissingOperand_ThrowsException()
+        {
+            Calculator.Calculate("+");
+        }
     }
 }

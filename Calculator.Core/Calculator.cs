@@ -98,12 +98,22 @@ namespace Calculator.Core
 
             if (operation.IsUnary)
             {
+                if (operands.Count < 1)
+                {
+                    throw new CalculateException(CalculateExceptionCode.MissingOperand);
+                }
+
                 Token operand = operands.Pop();
 
                 operation.SetOperands(operand);
             }
             else
             {
+                if (operands.Count < 2)
+                {
+                    throw new CalculateException(CalculateExceptionCode.MissingOperand);
+                }
+
                 Token rightOperand = operands.Pop();
                 Token leftOperand = operands.Pop();
 
