@@ -18,6 +18,11 @@ namespace Calculator.Core.Parser
         {
             token = null;
 
+            if (string.IsNullOrEmpty(formula))
+            {
+                return 0;
+            }
+
             if (!this.IsOpeningParenthesis(formula[startIndex]))
             {
                 return 0;

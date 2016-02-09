@@ -69,6 +69,15 @@ namespace Calculator.Core.Tests.Parser
             this.AssertOperationTokenEqual(token, "*");
         }
 
+        [TestMethod]
+        public void TryParse_EmptyString_Null()
+        {
+            Token token;
+
+            this.parser.TryParse(string.Empty, out token);
+            Assert.IsNull(token);
+        }
+
         private void AssertOperationTokenEqual(Token token, string value)
         {
             Assert.AreEqual(TokenType.Operation, token.Type);

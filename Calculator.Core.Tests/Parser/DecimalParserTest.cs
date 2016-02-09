@@ -45,6 +45,15 @@ namespace Calculator.Core.Tests.Parser
             Assert.IsNull(token);
         }
 
+        [TestMethod]
+        public void TryParse_EmptyString_Null()
+        {
+            Token token;
+
+            this.parser.TryParse(string.Empty, out token);
+            Assert.IsNull(token);
+        }
+
         private void AssertDecimalTokenEqual(Token token, decimal value)
         {
             Assert.AreEqual(TokenType.Decimal, token.Type);
