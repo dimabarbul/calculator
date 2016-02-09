@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Calculator.Core.Enum;
+using Calculator.Core.Exception;
 using Calculator.Core.Parser;
 
 namespace Calculator.Core
@@ -40,7 +42,7 @@ namespace Calculator.Core
 
                 if (token == null)
                 {
-                    // TODO: throw exception - cannot find correct parser
+                    throw new ParseException(ParseExceptionCode.UnmatchedParenthesis);
                 }
 
                 yield return token;

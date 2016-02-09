@@ -52,6 +52,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CalculatorTest.cs" />
+    <Compile Include="ExpectedExceptionWithCodeAttribute.cs" />
     <Compile Include="Parser\DecimalParserTest.cs" />
     <Compile Include="Parser\BoolParserTest.cs" />
     <Compile Include="Parser\OperationParserTest.cs" />

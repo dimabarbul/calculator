@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Calculator.Core.Enum;
+using Calculator.Core.Exception;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Calculator.Core.Tests
@@ -116,6 +117,19 @@ namespace Calculator.Core.Tests
 
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual("true", tokens[0].Text);
+        }
+
+        [TestMethod]
+        public void GetTokens_UnknownOperation_DontThrowException()
+        {
+            FormulaParser.GetTokens("1+-2").ToArray();
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnmatchedParenthesis)]
+        public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
+        {
+            FormulaParser.GetTokens(")-1)").ToArray();
         }
 
         private void AssertSimpleTokenEqual(Token token, string tokenValue, bool isNumber)
