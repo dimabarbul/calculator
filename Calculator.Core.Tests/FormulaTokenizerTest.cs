@@ -126,7 +126,7 @@ namespace Calculator.Core.Tests
         }
 
         [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnmatchedParenthesis)]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
         public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
         {
             FormulaTokenizer.GetTokens(")-1)").ToArray();

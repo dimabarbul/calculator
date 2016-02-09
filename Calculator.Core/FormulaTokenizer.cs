@@ -42,7 +42,7 @@ namespace Calculator.Core
 
                 if (token == null)
                 {
-                    throw new ParseException(ParseExceptionCode.UnmatchedParenthesis);
+                    throw new ParseException(ParseExceptionCode.UnparsedToken);
                 }
 
                 yield return token;

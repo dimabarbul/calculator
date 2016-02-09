@@ -2,6 +2,6 @@
 {
     internal enum ParseExceptionCode
     {
-        UnmatchedParenthesis = 1,
+        UnparsedToken = 1,
     }
 }
