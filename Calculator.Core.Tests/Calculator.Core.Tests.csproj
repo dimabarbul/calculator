@@ -58,7 +58,7 @@
     <Compile Include="Parser\OperationParserTest.cs" />
     <Compile Include="Parser\SubformulaParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FormulaParserTest.cs" />
+    <Compile Include="FormulaTokenizerTest.cs" />
     <Compile Include="TokenTest.cs" />
   </ItemGroup>
   <ItemGroup>

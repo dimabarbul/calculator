@@ -21,7 +21,7 @@ namespace Calculator.Core
             Stack<OperationBase> operations = new Stack<OperationBase>();
             Token resultToken;
 
-            foreach (Token token in FormulaParser.GetTokens(formula))
+            foreach (Token token in FormulaTokenizer.GetTokens(formula))
             {
                 if (token.Type == TokenType.Decimal || token.Type == TokenType.Bool)
                 {

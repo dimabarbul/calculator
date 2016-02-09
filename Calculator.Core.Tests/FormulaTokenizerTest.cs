@@ -6,12 +6,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Calculator.Core.Tests
 {
     [TestClass]
-    public class FormulaParserTest
+    public class FormulaTokenizerTest
     {
         [TestMethod]
         public void GetTokens_EmptyString_ReturnsEmptyCollection()
         {
-            Token[] tokens = FormulaParser.GetTokens(string.Empty).ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens(string.Empty).ToArray();
 
             Assert.AreEqual(0, tokens.Length);
         }
@@ -20,7 +20,7 @@ namespace Calculator.Core.Tests
         public void GetTokens_OneNumber_ReturnsNumberToken()
         {
             string formula = "1";
-            Token[] tokens = FormulaParser.GetTokens(formula).ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
             Assert.AreEqual(1, tokens.Length);
             this.AssertNumberTokenEqual(tokens[0], 1);
@@ -34,7 +34,7 @@ namespace Calculator.Core.Tests
 
             foreach (string formula in formulas)
             {
-                tokens = FormulaParser.GetTokens(formula).ToArray();
+                tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
                 Assert.AreEqual(1, tokens.Length);
                 this.AssertSimpleTokenEqual(tokens[0], formula, false);
@@ -49,7 +49,7 @@ namespace Calculator.Core.Tests
 
             foreach (string formula in formulas)
             {
-                tokens = FormulaParser.GetTokens(formula).ToArray();
+                tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
                 Assert.AreEqual(1, tokens.Length);
                 Assert.AreEqual(formula.Trim(), tokens[0].Text);
@@ -61,11 +61,11 @@ namespace Calculator.Core.Tests
         {
             Token[] tokens;
 
-            tokens = FormulaParser.GetTokens(".34").ToArray();
+            tokens = FormulaTokenizer.GetTokens(".34").ToArray();
             Assert.AreEqual(1, tokens.Length);
             this.AssertNumberTokenEqual(tokens[0], 0.34m);
 
-            tokens = FormulaParser.GetTokens(".").ToArray();
+            tokens = FormulaTokenizer.GetTokens(".").ToArray();
             Assert.AreEqual(1, tokens.Length);
             this.AssertNumberTokenEqual(tokens[0], 0);
         }
@@ -73,7 +73,7 @@ namespace Calculator.Core.Tests
         [TestMethod]
         public void GetTokens_OperationBeforeLeadingPeriod_SeparateTokens()
         {
-            Token[] tokens = FormulaParser.GetTokens("+.").ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens("+.").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
             this.AssertSimpleTokenEqual(tokens[0], "+", false);
@@ -83,7 +83,7 @@ namespace Calculator.Core.Tests
         [TestMethod]
         public void GetTokens_ExpressionInParenthesis_IsSubformula()
         {
-            Token[] tokens = FormulaParser.GetTokens("1 + (2 + 3)").ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens("1 + (2 + 3)").ToArray();
 
             Assert.AreEqual(3, tokens.Length);
             Assert.AreEqual(TokenType.Subformula, tokens[2].Type);
@@ -93,7 +93,7 @@ namespace Calculator.Core.Tests
         [TestMethod]
         public void GetTokens_UnaryPlus_Parsed()
         {
-            Token[] tokens = FormulaParser.GetTokens("+2").ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens("+2").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
             this.AssertSimpleTokenEqual(tokens[0], "+", false);
@@ -103,7 +103,7 @@ namespace Calculator.Core.Tests
         [TestMethod]
         public void GetTokens_UnaryMinus_Parsed()
         {
-            Token[] tokens = FormulaParser.GetTokens("-5").ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens("-5").ToArray();
 
             Assert.AreEqual(2, tokens.Length);
             this.AssertSimpleTokenEqual(tokens[0], "-", false);
@@ -113,7 +113,7 @@ namespace Calculator.Core.Tests
         [TestMethod]
         public void GetTokens_TrueFalse_Parsed()
         {
-            Token[] tokens = FormulaParser.GetTokens("true").ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens("true").ToArray();
 
             Assert.AreEqual(1, tokens.Length);
             Assert.AreEqual("true", tokens[0].Text);
@@ -122,14 +122,14 @@ namespace Calculator.Core.Tests
         [TestMethod]
         public void GetTokens_UnknownOperation_DontThrowException()
         {
-            FormulaParser.GetTokens("1+-2").ToArray();
+            FormulaTokenizer.GetTokens("1+-2").ToArray();
         }
 
         [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnmatchedParenthesis)]
         public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
         {
-            FormulaParser.GetTokens(")-1)").ToArray();
+            FormulaTokenizer.GetTokens(")-1)").ToArray();
         }
 
         private void AssertSimpleTokenEqual(Token token, string tokenValue, bool isNumber)
