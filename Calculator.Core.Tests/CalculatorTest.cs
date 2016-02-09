@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Calculator.Core.Enum;
 using Calculator.Core.Exception;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -153,6 +154,46 @@ namespace Calculator.Core.Tests
         }
 
         [TestMethod]
+        public void Calculate_OneVariable_Calculated()
+        {
+            Assert.AreEqual(
+                4.5m,
+                Calculator.Calculate(
+                    "var1",
+                    new Dictionary<string, object>()
+                    {
+                        { "var1", 4.5m }
+                    }
+                )
+            );
+            Assert.AreEqual(
+                true,
+                Calculator.Calculate<bool>(
+                    "testVar",
+                    new Dictionary<string, object>()
+                    {
+                        { "testVar", true }
+                    }
+                )
+            );
+        }
+
+        [TestMethod]
+        public void Calculate_VariableAndNumber_Calculated()
+        {
+            Assert.AreEqual(
+                7.5m,
+                Calculator.Calculate(
+                    "2.5 * my_var",
+                    new Dictionary<string, object>()
+                    {
+                        { "my_var", 3 }
+                    }
+                )
+            );
+        }
+
+        [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
         public void Calculate_UnmatchedClosingParenthesis_ThrowsParseException()
         {
@@ -196,16 +237,23 @@ namespace Calculator.Core.Tests
 
         [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
-        public void GetTokens_NoClosingParenthesis_ThrowsException()
+        public void Calculate_NoClosingParenthesis_ThrowsException()
         {
             Calculator.Calculate("2*(3-4");
         }
 
         [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
-        public void GetTokens_ClosingParenthesisOfDifferentType_ThrowsException()
+        public void Calculate_ClosingParenthesisOfDifferentType_ThrowsException()
         {
             Calculator.Calculate("2*(3-4>/4");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.UnknownVariable)]
+        public void Calculate_UndefinedVariable_ThrowsException()
+        {
+            Calculator.Calculate("a");
         }
     }
 }

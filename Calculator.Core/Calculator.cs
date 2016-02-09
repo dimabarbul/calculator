@@ -11,7 +11,7 @@ namespace Calculator.Core
     /// </summary>
     public static class Calculator
     {
-        public static TResult Calculate<TResult>(string formula)
+        public static TResult Calculate<TResult>(string formula, Dictionary<string, object> variables = null)
         {
             if (string.IsNullOrWhiteSpace(formula))
             {
@@ -24,35 +24,46 @@ namespace Calculator.Core
 
             foreach (Token token in FormulaTokenizer.GetTokens(formula))
             {
-                if (token.Type == TokenType.Decimal || token.Type == TokenType.Bool)
+                switch (token.Type)
                 {
-                    operands.Push(token);
-                }
-                else if (token.Type == TokenType.Subformula)
-                {
-                    resultToken = Calculator.Calculate<Token>(token.Text);
-
-                    operands.Push(resultToken);
-                }
-                else
-                {
-                    OperationBase operation = OperationFactory.Create(token, operands.Count == 0);
-
-                    while (operations.Count > 0)
-                    {
-                        OperationBase previousOperation = operations.Peek();
-
-                        if (previousOperation.Priority >= operation.Priority)
+                    case TokenType.Decimal:
+                    case TokenType.Bool:
+                        operands.Push(token);
+                        break;
+                    case TokenType.Subformula:
+                        resultToken = Calculator.Calculate<Token>(token.Text);
+                        operands.Push(resultToken);
+                        break;
+                    case TokenType.Variable:
+                        if (variables == null || !variables.ContainsKey(token.Text))
                         {
-                            ExecuteOperation(ref operands, ref operations);
+                            throw new CalculateException(CalculateExceptionCode.UnknownVariable);
                         }
-                        else
-                        {
-                            break;
-                        }
-                    }
 
-                    operations.Push(operation);
+                        operands.Push(new Token(
+                            variables[token.Text].ToString(),
+                            FormulaTokenizer.DetectTokenType(variables[token.Text])
+                        ));
+                        break;
+                    default:
+                        OperationBase operation = OperationFactory.Create(token, operands.Count == 0);
+
+                        while (operations.Count > 0)
+                        {
+                            OperationBase previousOperation = operations.Peek();
+
+                            if (previousOperation.Priority >= operation.Priority)
+                            {
+                                ExecuteOperation(ref operands, ref operations);
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        operations.Push(operation);
+                        break;
                 }
             }
 
@@ -82,14 +93,9 @@ namespace Calculator.Core
             return result;
         }
 
-        /// <summary>
-        /// Calculates provided formula.
-        /// </summary>
-        /// <param name="formula">Formula to calculate.</param>
-        /// <returns>Calculation result.</returns>
-        public static decimal Calculate(string formula)
+        public static decimal Calculate(string formula, Dictionary<string, object> variables = null)
         {
-            return Calculate<decimal>(formula);
+            return Calculate<decimal>(formula, variables);
         }
 
         private static void ExecuteOperation(ref Stack<Token> operands, ref Stack<OperationBase> operations)

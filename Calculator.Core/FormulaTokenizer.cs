@@ -49,5 +49,34 @@ namespace Calculator.Core
                 yield return token;
             }
         }
+
+        public static TokenType DetectTokenType(object value)
+        {
+            Token token = null;
+            string stringValue = value.ToString();
+            int tokenLength = 0;
+
+            foreach (IParser parser in Parsers)
+            {
+                tokenLength = parser.TryParse(stringValue, out token);
+
+                if (token != null)
+                {
+                    break;
+                }
+            }
+
+            if (token == null)
+            {
+                throw new ParseException(ParseExceptionCode.UnparsedToken);
+            }
+
+            if (stringValue.Length != tokenLength)
+            {
+                throw new ParseException(ParseExceptionCode.UnparsedToken);
+            }
+
+            return token.Type;
+        }
     }
 }

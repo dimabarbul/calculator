@@ -171,6 +171,54 @@ namespace Calculator.Core.Tests
         }
 
         [TestMethod]
+        public void DetectTokenType_Decimal_Correct()
+        {
+            Assert.AreEqual(TokenType.Decimal, FormulaTokenizer.DetectTokenType(2.3));
+            Assert.AreEqual(TokenType.Decimal, FormulaTokenizer.DetectTokenType("4"));
+        }
+
+        [TestMethod]
+        public void DetectTokenType_Bool_Correct()
+        {
+            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType(true));
+            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType("true"));
+            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType(false));
+            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType("false"));
+        }
+
+        [TestMethod]
+        public void DetectTokenType_Operation_Correct()
+        {
+            Assert.AreEqual(TokenType.Operation, FormulaTokenizer.DetectTokenType("+"));
+        }
+
+        [TestMethod]
+        public void DetectTokenType_Subformula_Correct()
+        {
+            Assert.AreEqual(TokenType.Subformula, FormulaTokenizer.DetectTokenType("<1 - 3 + 5>"));
+        }
+
+        [TestMethod]
+        public void DetectTokenType_Variable_Correct()
+        {
+            Assert.AreEqual(TokenType.Variable, FormulaTokenizer.DetectTokenType("test"));
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void DetectTokenType_SeveralTokens_ThrowsException()
+        {
+            FormulaTokenizer.DetectTokenType("1+2");
+        }
+
+        [TestMethod]
+        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        public void DetectTokenType_EmptyString_ThrowsException()
+        {
+            FormulaTokenizer.DetectTokenType(string.Empty);
+        }
+
+        [TestMethod]
         [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
         public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
         {
