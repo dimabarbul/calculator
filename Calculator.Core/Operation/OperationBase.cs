@@ -2,7 +2,7 @@
 
 namespace Calculator.Core.Operation;
 
-internal abstract class OperationBase
+public abstract class OperationBase
 {
     public OperationPriority Priority { get; }
     public int OperandsCount { get; }

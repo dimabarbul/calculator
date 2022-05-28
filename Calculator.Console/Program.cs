@@ -1,4 +1,7 @@
-﻿namespace Calculator.Console;
+﻿using Calculator.Core.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Calculator.Console;
 
 public class Program
 {
@@ -10,9 +13,15 @@ public class Program
             return;
         }
 
+        IServiceProvider servicesProvider = SetupDI();
+
+        using IServiceScope serviceScope = servicesProvider.CreateScope();
+
+        Core.Calculator calculator = serviceScope.ServiceProvider.GetRequiredService<Core.Calculator>();
+
         if (args.Length == 1)
         {
-            System.Console.Write(Core.Calculator.Calculate(args[0]));
+            System.Console.Write(calculator.Calculate(args[0]));
         }
         else
         {
@@ -20,8 +29,15 @@ public class Program
             string? formula = System.Console.ReadLine();
             if (!string.IsNullOrWhiteSpace(formula))
             {
-                System.Console.WriteLine("{0} = {1}", formula, Core.Calculator.Calculate(formula));
+                System.Console.WriteLine("{0} = {1}", formula, calculator.Calculate(formula));
             }
         }
+    }
+
+    private static IServiceProvider SetupDI()
+    {
+        return new ServiceCollection()
+            .AddCalculator()
+            .BuildServiceProvider(validateScopes: true);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Enum;
 
-internal enum OperationPriority
+public enum OperationPriority
 {
     Add = 1,
     Subtract = 1,

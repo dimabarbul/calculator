@@ -4,12 +4,18 @@ using Calculator.Core.Operation;
 
 namespace Calculator.Core;
 
-/// <summary>
-/// Provides functionality to calculate formula values.
-/// </summary>
-public static class Calculator
+public class Calculator
 {
-    public static TResult Calculate<TResult>(string formula, Dictionary<string, object>? variables = null)
+    private readonly FormulaTokenizer tokenizer;
+    private readonly OperationFactory operationFactory;
+
+    public Calculator(FormulaTokenizer tokenizer, OperationFactory operationFactory)
+    {
+        this.tokenizer = tokenizer;
+        this.operationFactory = operationFactory;
+    }
+
+    public TResult Calculate<TResult>(string formula, Dictionary<string, object>? variables = null)
     {
         if (string.IsNullOrWhiteSpace(formula))
         {
@@ -19,8 +25,9 @@ public static class Calculator
         Stack<Token> operands = new();
         Stack<OperationBase> operations = new();
         Token resultToken;
+        Token? lastToken = null;
 
-        foreach (Token token in FormulaTokenizer.GetTokens(formula))
+        foreach (Token token in this.tokenizer.GetTokens(formula))
         {
             switch (token.Type)
             {
@@ -29,7 +36,7 @@ public static class Calculator
                     operands.Push(token);
                     break;
                 case TokenType.Subformula:
-                        resultToken = Calculator.Calculate<Token>(token.Text);
+                        resultToken = this.Calculate<Token>(token.Text);
                     operands.Push(resultToken);
                     break;
                 case TokenType.Variable:
@@ -38,8 +45,8 @@ public static class Calculator
                         throw new CalculateException(CalculateExceptionCode.UnknownVariable);
                     }
 
-                    TokenType variableType = FormulaTokenizer.DetectTokenType(variables[token.Text]);
-                    if (!FormulaTokenizer.IsValueTokenType(variableType))
+                    TokenType variableType = this.tokenizer.DetectTokenType(variables[token.Text]);
+                    if (!this.tokenizer.IsValueTokenType(variableType))
                     {
                         throw new CalculateException(CalculateExceptionCode.StringVariable);
                     }
@@ -49,7 +56,7 @@ public static class Calculator
                     operands.Push(variableToken);
                     break;
                 default:
-                    OperationBase operation = OperationFactory.Create(token, operands.Count == 0);
+                    OperationBase operation = this.operationFactory.Create(token, lastToken == null || lastToken.Type == TokenType.Operation);
 
                     while (operations.Count > 0)
                     {
@@ -57,7 +64,7 @@ public static class Calculator
 
                         if (previousOperation.Priority >= operation.Priority)
                         {
-                            ExecuteOperation(operands, operations);
+                            this.ExecuteOperation(operands, operations);
                         }
                         else
                         {
@@ -68,11 +75,13 @@ public static class Calculator
                     operations.Push(operation);
                     break;
             }
+
+            lastToken = token;
         }
 
         while (operations.Count > 0)
         {
-            ExecuteOperation(operands, operations);
+            this.ExecuteOperation(operands, operations);
         }
 
         if (operands.Count != 1)
@@ -96,12 +105,12 @@ public static class Calculator
         return result;
     }
 
-    public static decimal Calculate(string formula, Dictionary<string, object>? variables = null)
+    public decimal Calculate(string formula, Dictionary<string, object>? variables = null)
     {
-        return Calculate<decimal>(formula, variables);
+        return this.Calculate<decimal>(formula, variables);
     }
 
-    private static void ExecuteOperation(Stack<Token> operands, Stack<OperationBase> operations)
+    private void ExecuteOperation(Stack<Token> operands, Stack<OperationBase> operations)
     {
         OperationBase operation = operations.Pop();
 

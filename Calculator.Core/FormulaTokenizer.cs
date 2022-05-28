@@ -5,32 +5,30 @@ using Calculator.Core.Parser;
 
 namespace Calculator.Core;
 
-public static class FormulaTokenizer
+public class FormulaTokenizer
 {
-    private static readonly IParser[] Parsers =
-    {
-        new DecimalParser(),
-        new SubformulaParser(),
-        new BoolParser(),
-        new OperationParser(),
-        new VariableParser(),
-    };
+    private readonly IParser[] parsers;
 
-    public static IEnumerable<Token> GetTokens(string formula)
+    public FormulaTokenizer(IEnumerable<IParser> parsers)
+    {
+        this.parsers = parsers.ToArray();
+    }
+
+    public IEnumerable<Token> GetTokens(string formula)
     {
         if (string.IsNullOrWhiteSpace(formula))
         {
             yield break;
         }
 
-        string sanitizedFormula = (new Regex(@"\s*")).Replace(formula, string.Empty);
+        string sanitizedFormula = (new Regex(@"\s+")).Replace(formula, string.Empty);
 
         int index = 0;
-        Token token = null;
+        Token? token = null;
 
         while (index < sanitizedFormula.Length)
         {
-            foreach (IParser parser in Parsers)
+            foreach (IParser parser in this.parsers)
             {
                 index += parser.TryParse(sanitizedFormula, out token, index);
 
@@ -49,13 +47,13 @@ public static class FormulaTokenizer
         }
     }
 
-    public static TokenType DetectTokenType(object value)
+    public TokenType DetectTokenType(object value)
     {
-        Token token = null;
+        Token? token = null;
         string stringValue = value.ToString();
         int tokenLength = 0;
 
-        foreach (IParser parser in Parsers)
+        foreach (IParser parser in this.parsers)
         {
             tokenLength = parser.TryParse(stringValue, out token);
 
@@ -78,7 +76,7 @@ public static class FormulaTokenizer
         return token.Type;
     }
 
-    public static bool IsValueTokenType(TokenType type)
+    public bool IsValueTokenType(TokenType type)
     {
         return type == TokenType.Bool || type == TokenType.Decimal;
     }

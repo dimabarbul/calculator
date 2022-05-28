@@ -4,7 +4,7 @@ using Calculator.Core.Operation;
 
 namespace Calculator.Core;
 
-internal static class OperationFactory
+public class OperationFactory
 {
     /// <summary>
     /// Creates operation based on token and flag that operation is unary.
@@ -15,7 +15,7 @@ internal static class OperationFactory
     /// Makes sense only for unary "+" and unary "-".
     /// </param>
     /// <returns>The operation.</returns>
-    public static OperationBase Create(Token token, bool isUnary = false)
+    public OperationBase Create(Token token, bool isUnary = false)
     {
         OperationBase operation;
 
@@ -65,15 +65,10 @@ internal static class OperationFactory
                 operation = new NotOperation();
                 break;
             default:
-                throw new CalculateException(CalculateExceptionCode.UnknownOperation, token.Text);
+                throw new CalculateException(CalculateExceptionCode.UnknownOperation, $"Unknown operator {token.Text}");
         }
 
         return operation;
-    }
-
-    private static string GetOperationClassName(string operation)
-    {
-        return string.Concat("Calculator.Core.Operation.", char.ToUpper(operation[0]), operation.Substring(1), "Operation");
     }
 
     private static class OperationToken
