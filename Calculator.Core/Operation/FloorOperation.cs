@@ -5,12 +5,12 @@ namespace Calculator.Core.Operation;
 internal class FloorOperation : DecimalOperationBase
 {
     public FloorOperation()
-        : base(OperationPriority.Unary, true)
+        : base(OperationPriority.Unary, 1)
     {
     }
 
-    protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
+    protected override decimal GetDecimalResult(params decimal[] operands)
     {
-        return Math.Floor(leftOperand);
+        return Math.Floor(operands[0]);
     }
 }

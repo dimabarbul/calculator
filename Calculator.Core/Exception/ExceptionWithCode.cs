@@ -2,9 +2,9 @@
 
 public abstract class ExceptionWithCode : System.Exception
 {
-    public int Code { get; private set; }
+    public int Code { get; }
 
-    public ExceptionWithCode(int code, string message = null)
+    protected ExceptionWithCode(int code, string? message = null)
         : base(message)
     {
         this.Code = code;

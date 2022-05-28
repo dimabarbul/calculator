@@ -4,16 +4,15 @@ namespace Calculator.Core.Operation;
 
 internal abstract class BoolOperationBase : OperationBase
 {
-    public BoolOperationBase(OperationPriority priority, bool isUnary)
-        : base(priority, isUnary)
+    public BoolOperationBase(OperationPriority priority, int operandsCount)
+        : base(priority, operandsCount)
     {
     }
 
-    public override Token GetResult()
+    public override Token Perform(params Token[] operands)
     {
         bool result = this.GetBoolResult(
-            this.leftOperand.GetValue<bool>(),
-            this.rightOperand == null ? (bool?)null : this.rightOperand.GetValue<bool>()
+            operands.Select(o => o.GetValue<bool>()).ToArray()
         );
 
         Token token = new(result.ToString(), TokenType.Bool);
@@ -21,5 +20,5 @@ internal abstract class BoolOperationBase : OperationBase
         return token;
     }
 
-    protected abstract bool GetBoolResult(bool leftOperand, bool? rightOperand);
+    protected abstract bool GetBoolResult(params bool[] operands);
 }

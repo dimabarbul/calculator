@@ -5,12 +5,12 @@ namespace Calculator.Core.Operation;
 internal class CeilOperation : DecimalOperationBase
 {
     public CeilOperation()
-        : base(OperationPriority.Unary, true)
+        : base(OperationPriority.Unary, 1)
     {
     }
 
-    protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
+    protected override decimal GetDecimalResult(params decimal[] operands)
     {
-        return Math.Ceiling(leftOperand);
+        return Math.Ceiling(operands[0]);
     }
 }

@@ -5,12 +5,12 @@ namespace Calculator.Core.Operation;
 internal class SubtractOperation : DecimalOperationBase
 {
     public SubtractOperation()
-        : base(OperationPriority.Subtract, false)
+        : base(OperationPriority.Subtract, 2)
     {
     }
 
-    protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
+    protected override decimal GetDecimalResult(params decimal[] operands)
     {
-        return leftOperand - rightOperand.Value;
+        return operands[0] - operands[1];
     }
 }

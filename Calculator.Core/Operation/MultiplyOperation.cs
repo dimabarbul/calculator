@@ -5,12 +5,12 @@ namespace Calculator.Core.Operation;
 internal class MultiplyOperation : DecimalOperationBase
 {
     public MultiplyOperation()
-        : base(OperationPriority.Multiply, false)
+        : base(OperationPriority.Multiply, 2)
     {
     }
 
-    protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
+    protected override decimal GetDecimalResult(params decimal[] operands)
     {
-        return leftOperand * rightOperand.Value;
+        return operands[0] * operands[1];
     }
 }

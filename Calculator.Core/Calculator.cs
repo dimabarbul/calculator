@@ -9,7 +9,7 @@ namespace Calculator.Core;
 /// </summary>
 public static class Calculator
 {
-    public static TResult Calculate<TResult>(string formula, Dictionary<string, object> variables = null)
+    public static TResult Calculate<TResult>(string formula, Dictionary<string, object>? variables = null)
     {
         if (string.IsNullOrWhiteSpace(formula))
         {
@@ -57,7 +57,7 @@ public static class Calculator
 
                         if (previousOperation.Priority >= operation.Priority)
                         {
-                            ExecuteOperation(ref operands, ref operations);
+                            ExecuteOperation(operands, operations);
                         }
                         else
                         {
@@ -72,7 +72,7 @@ public static class Calculator
 
         while (operations.Count > 0)
         {
-            ExecuteOperation(ref operands, ref operations);
+            ExecuteOperation(operands, operations);
         }
 
         if (operands.Count != 1)
@@ -96,40 +96,26 @@ public static class Calculator
         return result;
     }
 
-    public static decimal Calculate(string formula, Dictionary<string, object> variables = null)
+    public static decimal Calculate(string formula, Dictionary<string, object>? variables = null)
     {
         return Calculate<decimal>(formula, variables);
     }
 
-    private static void ExecuteOperation(ref Stack<Token> operands, ref Stack<OperationBase> operations)
+    private static void ExecuteOperation(Stack<Token> operands, Stack<OperationBase> operations)
     {
         OperationBase operation = operations.Pop();
 
-        if (operation.IsUnary)
+        if (operands.Count < operation.OperandsCount)
         {
-            if (operands.Count < 1)
-            {
-                throw new CalculateException(CalculateExceptionCode.MissingOperand);
-            }
-
-            Token operand = operands.Pop();
-
-            operation.SetOperands(operand);
-        }
-        else
-        {
-            if (operands.Count < 2)
-            {
-                throw new CalculateException(CalculateExceptionCode.MissingOperand);
-            }
-
-            Token rightOperand = operands.Pop();
-            Token leftOperand = operands.Pop();
-
-            operation.SetOperands(leftOperand, rightOperand);
+            throw new CalculateException(CalculateExceptionCode.MissingOperand);
         }
 
-        Token result = operation.GetResult();
+        Token[] operandTokens = Enumerable.Range(0, operation.OperandsCount)
+            .Select(_ => operands.Pop())
+            .Reverse()
+            .ToArray();
+
+        Token result = operation.Perform(operandTokens);
 
         operands.Push(result);
     }

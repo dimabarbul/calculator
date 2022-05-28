@@ -5,12 +5,12 @@ namespace Calculator.Core.Operation;
 internal class OrOperation : BoolOperationBase
 {
     public OrOperation()
-        : base(OperationPriority.Or, false)
+        : base(OperationPriority.Or, 2)
     {
     }
 
-    protected override bool GetBoolResult(bool leftOperand, bool? rightOperand)
+    protected override bool GetBoolResult(params bool[] operands)
     {
-        return leftOperand || rightOperand.Value;
+        return operands[0] || operands[1];
     }
 }
