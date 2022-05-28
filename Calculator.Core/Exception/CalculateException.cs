@@ -2,7 +2,7 @@
 
 namespace Calculator.Core.Exception
 {
-    internal class CalculateException : ExceptionWithCode
+    public class CalculateException : ExceptionWithCode
     {
         public CalculateException(CalculateExceptionCode code, string message = null)
             : base((int)code, message)

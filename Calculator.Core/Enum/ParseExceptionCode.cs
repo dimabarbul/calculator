@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Enum
 {
-    internal enum ParseExceptionCode
+    public enum ParseExceptionCode
     {
         UnparsedToken = 1,
     }

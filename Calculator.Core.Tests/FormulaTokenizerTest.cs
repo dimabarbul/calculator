@@ -1,254 +1,239 @@
 ﻿using System.Linq;
 using Calculator.Core.Enum;
 using Calculator.Core.Exception;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Calculator.Core.Tests
 {
-    [TestClass]
     public class FormulaTokenizerTest
     {
-        [TestMethod]
+        [Fact]
         public void GetTokens_EmptyString_ReturnsEmptyCollection()
         {
             Token[] tokens = FormulaTokenizer.GetTokens(string.Empty).ToArray();
 
-            Assert.AreEqual(0, tokens.Length);
+            Assert.Empty(tokens);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_OneNumber_ReturnsNumberToken()
         {
             string formula = "1";
             Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
-            Assert.AreEqual(1, tokens.Length);
+            Assert.Single(tokens);
             this.AssertNumberTokenEqual(tokens[0], 1);
         }
 
-        [TestMethod]
-        public void GetTokens_OneOperation_ReturnsOperationToken()
+        [Theory]
+        [InlineData("-")]
+        [InlineData("+")]
+        [InlineData("*")]
+        [InlineData("/")]
+        public void GetTokens_OneOperation_ReturnsOperationToken(string formula)
         {
-            string[] formulas = new string[] { "-", "+", "*", "/" };
-            Token[] tokens;
+            Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
-            foreach (string formula in formulas)
-            {
-                tokens = FormulaTokenizer.GetTokens(formula).ToArray();
-
-                Assert.AreEqual(1, tokens.Length);
-                this.AssertTokenEqual(tokens[0], formula, TokenType.Operation);
-            }
+            Assert.Single(tokens);
+            this.AssertTokenEqual(tokens[0], formula, TokenType.Operation);
         }
 
-        [TestMethod]
-        public void GetTokens_FormulaWithSpaces_TokensWithoutSpaces()
+        [Theory]
+        [InlineData("  1   ")]
+        [InlineData("-")]
+        [InlineData(" +")]
+        [InlineData("*  ")]
+        public void GetTokens_FormulaWithSpaces_TokensWithoutSpaces(string formula)
         {
-            string[] formulas = new string[] { "  1   ", "-", " +", "*  " };
-            Token[] tokens;
+            Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
-            foreach (string formula in formulas)
-            {
-                tokens = FormulaTokenizer.GetTokens(formula).ToArray();
-
-                Assert.AreEqual(1, tokens.Length);
-                Assert.AreEqual(formula.Trim(), tokens[0].Text);
-            }
+            Assert.Single(tokens);
+            Assert.Equal(formula.Trim(), tokens[0].Text);
         }
 
-        [TestMethod]
-        public void GetTokens_NumberWithLeadingPeriod_CorrectNumberToken()
+        [Theory]
+        [InlineData(".34", 0.34)]
+        [InlineData(".", 0)]
+        public void GetTokens_NumberWithLeadingPeriod_CorrectNumberToken(string formula, decimal expectedValue)
         {
-            Token[] tokens;
-
-            tokens = FormulaTokenizer.GetTokens(".34").ToArray();
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertNumberTokenEqual(tokens[0], 0.34m);
-
-            tokens = FormulaTokenizer.GetTokens(".").ToArray();
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertNumberTokenEqual(tokens[0], 0);
+            Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
+            Assert.Single(tokens);
+            this.AssertNumberTokenEqual(tokens[0], expectedValue);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_OperationBeforeLeadingPeriod_SeparateTokens()
         {
             Token[] tokens = FormulaTokenizer.GetTokens("+.").ToArray();
 
-            Assert.AreEqual(2, tokens.Length);
+            Assert.Equal(2, tokens.Length);
             this.AssertTokenEqual(tokens[0], "+", TokenType.Operation);
             this.AssertTokenEqual(tokens[1], ".", TokenType.Decimal);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_ExpressionInParenthesis_IsSubformula()
         {
             Token[] tokens = FormulaTokenizer.GetTokens("1 + (2 + 3)").ToArray();
 
-            Assert.AreEqual(3, tokens.Length);
+            Assert.Equal(3, tokens.Length);
             this.AssertTokenEqual(tokens[2], "2+3", TokenType.Subformula);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_UnaryPlus_Parsed()
         {
             Token[] tokens = FormulaTokenizer.GetTokens("+2").ToArray();
 
-            Assert.AreEqual(2, tokens.Length);
+            Assert.Equal(2, tokens.Length);
             this.AssertTokenEqual(tokens[0], "+", TokenType.Operation);
             this.AssertNumberTokenEqual(tokens[1], 2);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_UnaryMinus_Parsed()
         {
             Token[] tokens = FormulaTokenizer.GetTokens("-5").ToArray();
 
-            Assert.AreEqual(2, tokens.Length);
+            Assert.Equal(2, tokens.Length);
             this.AssertTokenEqual(tokens[0], "-", TokenType.Operation);
             this.AssertNumberTokenEqual(tokens[1], 5);
         }
 
-        [TestMethod]
-        public void GetTokens_TrueFalse_Parsed()
+        [Theory]
+        [InlineData("true")]
+        [InlineData("false")]
+        public void GetTokens_TrueFalse_Parsed(string formula)
         {
-            Token[] tokens = FormulaTokenizer.GetTokens("true").ToArray();
+            Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
 
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertTokenEqual(tokens[0], "true", TokenType.Bool);
-            
-            tokens = FormulaTokenizer.GetTokens("false").ToArray();
-
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertTokenEqual(tokens[0], "false", TokenType.Bool);
+            Assert.Single(tokens);
+            this.AssertTokenEqual(tokens[0], formula, TokenType.Bool);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_UnknownOperation_DontThrowException()
         {
-            FormulaTokenizer.GetTokens("1+-2").ToArray();
+            System.Exception? exception = Record.Exception(() => FormulaTokenizer.GetTokens("1+-2").ToArray());
+            
+            Assert.Null(exception);
         }
 
-        [TestMethod]
-        public void GetTokens_DifferentParenthesis_ParsedAsSubformula()
+        [Theory]
+        [InlineData("[1 + 2]", "1+2")]
+        [InlineData("{ 5.2 }", "5.2")]
+        [InlineData("<8 / 0>", "8/0")]
+        public void GetTokens_DifferentParenthesis_ParsedAsSubformula(string formula, string subformula)
         {
-            Token[] tokens;
-
-            tokens = FormulaTokenizer.GetTokens("[1 + 2]").ToArray();
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertTokenEqual(tokens[0], "1+2", TokenType.Subformula);
-
-            tokens = FormulaTokenizer.GetTokens("{ 5.2 }").ToArray();
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertTokenEqual(tokens[0], "5.2", TokenType.Subformula);
-
-            tokens = FormulaTokenizer.GetTokens("<8 / 0>").ToArray();
-            Assert.AreEqual(1, tokens.Length);
-            this.AssertTokenEqual(tokens[0], "8/0", TokenType.Subformula);
+            Token[] tokens = FormulaTokenizer.GetTokens(formula).ToArray();
+            Assert.Single(tokens);
+            this.AssertTokenEqual(tokens[0], subformula, TokenType.Subformula);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_Variable_Parsed()
         {
             Token[] tokens = FormulaTokenizer.GetTokens("test + test2").ToArray();
 
-            Assert.AreEqual(3, tokens.Length);
+            Assert.Equal(3, tokens.Length);
             this.AssertTokenEqual(tokens[0], "test", TokenType.Variable);
             this.AssertTokenEqual(tokens[1], "+", TokenType.Operation);
             this.AssertTokenEqual(tokens[2], "test2", TokenType.Variable);
         }
 
-        [TestMethod]
+        [Fact]
         public void GetTokens_VariableAndOperation_Parsed()
         {
             Token[] tokens = FormulaTokenizer.GetTokens("test() / test").ToArray();
 
-            Assert.AreEqual(4, tokens.Length);
+            Assert.Equal(4, tokens.Length);
             this.AssertTokenEqual(tokens[0], "test", TokenType.Operation);
             this.AssertTokenEqual(tokens[1], "", TokenType.Subformula);
             this.AssertTokenEqual(tokens[2], "/", TokenType.Operation);
             this.AssertTokenEqual(tokens[3], "test", TokenType.Variable);
         }
 
-        [TestMethod]
-        public void DetectTokenType_Decimal_Correct()
+        [Theory]
+        [InlineData(2.3)]
+        [InlineData("4")]
+        public void DetectTokenType_Decimal_Correct(object value)
         {
-            Assert.AreEqual(TokenType.Decimal, FormulaTokenizer.DetectTokenType(2.3));
-            Assert.AreEqual(TokenType.Decimal, FormulaTokenizer.DetectTokenType("4"));
+            Assert.Equal(TokenType.Decimal, FormulaTokenizer.DetectTokenType(value));
         }
 
-        [TestMethod]
-        public void DetectTokenType_Bool_Correct()
+        [Theory]
+        [InlineData(true)]
+        [InlineData("true")]
+        [InlineData(false)]
+        [InlineData("false")]
+        public void DetectTokenType_Bool_Correct(object value)
         {
-            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType(true));
-            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType("true"));
-            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType(false));
-            Assert.AreEqual(TokenType.Bool, FormulaTokenizer.DetectTokenType("false"));
+            Assert.Equal(TokenType.Bool, FormulaTokenizer.DetectTokenType(value));
         }
 
-        [TestMethod]
+        [Fact]
         public void DetectTokenType_Operation_Correct()
         {
-            Assert.AreEqual(TokenType.Operation, FormulaTokenizer.DetectTokenType("+"));
+            Assert.Equal(TokenType.Operation, FormulaTokenizer.DetectTokenType("+"));
         }
 
-        [TestMethod]
+        [Fact]
         public void DetectTokenType_Subformula_Correct()
         {
-            Assert.AreEqual(TokenType.Subformula, FormulaTokenizer.DetectTokenType("<1 - 3 + 5>"));
+            Assert.Equal(TokenType.Subformula, FormulaTokenizer.DetectTokenType("<1 - 3 + 5>"));
         }
 
-        [TestMethod]
+        [Fact]
         public void DetectTokenType_Variable_Correct()
         {
-            Assert.AreEqual(TokenType.Variable, FormulaTokenizer.DetectTokenType("test"));
+            Assert.Equal(TokenType.Variable, FormulaTokenizer.DetectTokenType("test"));
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void DetectTokenType_SeveralTokens_ThrowsException()
         {
-            FormulaTokenizer.DetectTokenType("1+2");
+            ParseException exception = Assert.Throws<ParseException>(() => FormulaTokenizer.DetectTokenType("1+2"));
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void DetectTokenType_EmptyString_ThrowsException()
         {
-            FormulaTokenizer.DetectTokenType(string.Empty);
+            ParseException exception = Assert.Throws<ParseException>(() => FormulaTokenizer.DetectTokenType(string.Empty));
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void GetTokens_UnmatchedClosingParenthesis_ThrowsException()
         {
-            FormulaTokenizer.GetTokens(")-1)").ToArray();
+            ParseException exception = Assert.Throws<ParseException>(() => FormulaTokenizer.GetTokens(")-1)").ToArray());
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void GetTokens_NoClosingParenthesis_ThrowsException()
         {
-            FormulaTokenizer.GetTokens("2*(3-4").ToArray();
+            ParseException exception = Assert.Throws<ParseException>(() => FormulaTokenizer.GetTokens("2*(3-4").ToArray());
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void GetTokens_ClosingParenthesisOfDifferentType_ThrowsException()
         {
-            FormulaTokenizer.GetTokens("2*(3-4>/4").ToArray();
+            ParseException exception = Assert.Throws<ParseException>(() => FormulaTokenizer.GetTokens("2*(3-4>/4").ToArray());
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
         private void AssertTokenEqual(Token token, string value, TokenType type)
         {
-            Assert.AreEqual(type, token.Type);
-            Assert.AreEqual(value, token.Text);
+            Assert.Equal(type, token.Type);
+            Assert.Equal(value, token.Text);
         }
 
         private void AssertNumberTokenEqual(Token token, decimal value)
         {
-            Assert.AreEqual(TokenType.Decimal, token.Type);
-            Assert.AreEqual(value, token.GetValue<decimal>());
+            Assert.Equal(TokenType.Decimal, token.Type);
+            Assert.Equal(value, token.GetValue<decimal>());
         }
     }
 }

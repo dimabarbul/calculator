@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Enum
 {
-    internal enum CalculateExceptionCode
+    public enum CalculateExceptionCode
     {
         UnknownOperation = 1,
         NotSingleResult = 2,

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Calculator.Console
+﻿namespace Calculator.Console
 {
     public class Program
     {

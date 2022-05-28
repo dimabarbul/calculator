@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.Enum
 {
-    internal enum TokenType
+    public enum TokenType
     {
         Decimal = 1,
         Subformula = 2,

@@ -1,15 +1,14 @@
 ﻿using Calculator.Core.Enum;
 using Calculator.Core.Parser;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Calculator.Core.Tests.Parser
 {
-    [TestClass]
     public class SubformulaParserTest
     {
         private SubformulaParser parser = new SubformulaParser();
 
-        [TestMethod]
+        [Fact]
         public void TryParse_SubformulaAtBeginning_Correct()
         {
             Token token;
@@ -18,7 +17,7 @@ namespace Calculator.Core.Tests.Parser
             this.AssertSubformulaTokenEqual(token, "1+2");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_SubformulaAtStartIndex_Correct()
         {
             Token token;
@@ -27,82 +26,82 @@ namespace Calculator.Core.Tests.Parser
             this.AssertSubformulaTokenEqual(token, "2*4");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_SubformulaNotAtBeginning_Null()
         {
             Token token;
             this.parser.TryParse("1+(2*4)", out token);
 
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_SubformulaNotAtStartIndex_Null()
         {
             Token token;
             this.parser.TryParse("1+(2*4)", out token, 4);
 
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_DifferentParenthesis_Correct()
         {
             Token token;
 
             this.parser.TryParse("[0-9]", out token);
-            Assert.IsNotNull(token);
+            Assert.NotNull(token);
             this.AssertSubformulaTokenEqual(token, "0-9");
 
             this.parser.TryParse("{7+3}", out token);
-            Assert.IsNotNull(token);
+            Assert.NotNull(token);
             this.AssertSubformulaTokenEqual(token, "7+3");
 
             this.parser.TryParse("<1+3>*4", out token);
-            Assert.IsNotNull(token);
+            Assert.NotNull(token);
             this.AssertSubformulaTokenEqual(token, "1+3");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_NoClosingParenthesis_Null()
         {
             Token token;
 
             this.parser.TryParse("(1-2", out token);
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_ClosingParenthesisOfDifferentType_Null()
         {
             Token token;
 
             this.parser.TryParse("<3}", out token);
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_CrossingParenthesisGroupsOfDifferentTypes_Null()
         {
             Token token;
 
             this.parser.TryParse("(1+<3-4)*1>", out token);
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_EmptyString_Null()
         {
             Token token;
 
             this.parser.TryParse(string.Empty, out token);
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
         private void AssertSubformulaTokenEqual(Token token, string value)
         {
-            Assert.AreEqual(TokenType.Subformula, token.Type);
-            Assert.AreEqual(value, token.GetValue());
+            Assert.Equal(TokenType.Subformula, token.Type);
+            Assert.Equal(value, token.GetValue());
         }
     }
 }

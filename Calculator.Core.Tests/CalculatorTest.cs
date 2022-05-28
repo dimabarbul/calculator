@@ -2,161 +2,158 @@
 using System.Collections.Generic;
 using Calculator.Core.Enum;
 using Calculator.Core.Exception;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Calculator.Core.Tests
 {
-    [TestClass]
     public class CalculatorTest
     {
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [Fact]
         public void Calculate_EmptyFormula_Zero()
         {
-            Calculator.Calculate(string.Empty);
+            Assert.Throws<ArgumentNullException>(() => Calculator.Calculate(string.Empty));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_SimpleNumbersSum_Calculated()
         {
-            Assert.AreEqual(3, Calculator.Calculate("1 + 2"));
-            Assert.AreEqual(4, Calculator.Calculate("1.5 + 2.5"));
+            Assert.Equal(3, Calculator.Calculate("1 + 2"));
+            Assert.Equal(4, Calculator.Calculate("1.5 + 2.5"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_SimpleNumbersSubtraction_Calculated()
         {
-            Assert.AreEqual(2, Calculator.Calculate("4 - 2"));
-            Assert.AreEqual(2.3m, Calculator.Calculate("10.4 - 8.1"));
+            Assert.Equal(2, Calculator.Calculate("4 - 2"));
+            Assert.Equal(2.3m, Calculator.Calculate("10.4 - 8.1"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_PeriodWithNumbers_MeansZeroPeriodNumber()
         {
-            Assert.AreEqual(2, Calculator.Calculate(".5 + 1.5"));
-            Assert.AreEqual(1, Calculator.Calculate("1 - ."));
+            Assert.Equal(2, Calculator.Calculate(".5 + 1.5"));
+            Assert.Equal(1, Calculator.Calculate("1 - ."));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_SimpleNumbersMultiplication_Calculated()
         {
-            Assert.AreEqual(6, Calculator.Calculate("3 * 2"));
-            Assert.AreEqual(9.38m, Calculator.Calculate("1.4 * 6.7"));
+            Assert.Equal(6, Calculator.Calculate("3 * 2"));
+            Assert.Equal(9.38m, Calculator.Calculate("1.4 * 6.7"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_SimpleNumbersDivision_Calculated()
         {
-            Assert.AreEqual(1.5m, Calculator.Calculate("3 / 2"));
-            Assert.AreEqual(7, Calculator.Calculate("14 / 2"));
+            Assert.Equal(1.5m, Calculator.Calculate("3 / 2"));
+            Assert.Equal(7, Calculator.Calculate("14 / 2"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_OperationsWithDifferentPriorities_Calculated()
         {
-            Assert.AreEqual(6, Calculator.Calculate("2 + 2 * 2"));
-            Assert.AreEqual(0, Calculator.Calculate("3 / 3 - 1"));
-            Assert.AreEqual(5, Calculator.Calculate("7 - 4 / 2"));
+            Assert.Equal(6, Calculator.Calculate("2 + 2 * 2"));
+            Assert.Equal(0, Calculator.Calculate("3 / 3 - 1"));
+            Assert.Equal(5, Calculator.Calculate("7 - 4 / 2"));
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(DivideByZeroException))]
+        [Fact]
         public void Calculate_SimpleDivisionByZero_ThrowsException()
         {
-            Calculator.Calculate("1 / 0");
+            Assert.Throws<DivideByZeroException>(() => Calculator.Calculate("1 / 0"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_SeveralOperationsWithSamePriority_LeftToRightOrder()
         {
-            Assert.AreEqual(2m, Calculator.Calculate("2 - 2 + 2"));
-            Assert.AreEqual(9m, Calculator.Calculate("3 / 1 * 3"));
-            Assert.AreEqual(2m, Calculator.Calculate("2 + 2 - 2"));
-            Assert.AreEqual(3m, Calculator.Calculate("3 * 1 / 3 * 3"));
+            Assert.Equal(2m, Calculator.Calculate("2 - 2 + 2"));
+            Assert.Equal(9m, Calculator.Calculate("3 / 1 * 3"));
+            Assert.Equal(2m, Calculator.Calculate("2 + 2 - 2"));
+            Assert.Equal(3m, Calculator.Calculate("3 * 1 / 3 * 3"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_Parenthesis_OverridesPriority()
         {
-            Assert.AreEqual(8, Calculator.Calculate("(2 + 2) * 2"));
-            Assert.AreEqual(0.5m, Calculator.Calculate("3 / (3 + 3)"));
+            Assert.Equal(8, Calculator.Calculate("(2 + 2) * 2"));
+            Assert.Equal(0.5m, Calculator.Calculate("3 / (3 + 3)"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_UnaryPlusMinusInBeginning_Calculated()
         {
-            Assert.AreEqual(-1, Calculator.Calculate("-1"));
-            Assert.AreEqual(3, Calculator.Calculate("+3"));
-            Assert.AreEqual(1, Calculator.Calculate("-1 + 2"));
+            Assert.Equal(-1, Calculator.Calculate("-1"));
+            Assert.Equal(3, Calculator.Calculate("+3"));
+            Assert.Equal(1, Calculator.Calculate("-1 + 2"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_UnaryPlusMinusInParenthesis_Calculated()
         {
-            Assert.AreEqual(-3, Calculator.Calculate("2 + (-5)"));
-            Assert.AreEqual(1, Calculator.Calculate("(-2) + (4 - 1)"));
-            Assert.AreEqual(0.5m, Calculator.Calculate("1 / (+2)"));
-            Assert.AreEqual(4, Calculator.Calculate("(+4) * 1"));
+            Assert.Equal(-3, Calculator.Calculate("2 + (-5)"));
+            Assert.Equal(1, Calculator.Calculate("(-2) + (4 - 1)"));
+            Assert.Equal(0.5m, Calculator.Calculate("1 / (+2)"));
+            Assert.Equal(4, Calculator.Calculate("(+4) * 1"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_Floor_Calculated()
         {
-            Assert.AreEqual(2m, Calculator.Calculate("floor(2.4)"));
-            Assert.AreEqual(-1m, Calculator.Calculate("floor(-0.5)"));
-            Assert.AreEqual(3, Calculator.Calculate("1 + floor(4 / 1.5)"));
+            Assert.Equal(2m, Calculator.Calculate("floor(2.4)"));
+            Assert.Equal(-1m, Calculator.Calculate("floor(-0.5)"));
+            Assert.Equal(3, Calculator.Calculate("1 + floor(4 / 1.5)"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_Ceil_Calculated()
         {
-            Assert.AreEqual(3m, Calculator.Calculate("ceil(2.4)"));
-            Assert.AreEqual(0m, Calculator.Calculate("ceil(-0.5)"));
-            Assert.AreEqual(-1, Calculator.Calculate("1 + ceil(-4 / 1.5)"));
+            Assert.Equal(3m, Calculator.Calculate("ceil(2.4)"));
+            Assert.Equal(0m, Calculator.Calculate("ceil(-0.5)"));
+            Assert.Equal(-1, Calculator.Calculate("1 + ceil(-4 / 1.5)"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_OrOperation_Calculate()
         {
-            Assert.AreEqual(false, Calculator.Calculate<bool>("false || false"));
-            Assert.AreEqual(true, Calculator.Calculate<bool>("false || true"));
-            Assert.AreEqual(true, Calculator.Calculate<bool>("true || false"));
-            Assert.AreEqual(true, Calculator.Calculate<bool>("true || true"));
+            Assert.Equal(false, Calculator.Calculate<bool>("false || false"));
+            Assert.Equal(true, Calculator.Calculate<bool>("false || true"));
+            Assert.Equal(true, Calculator.Calculate<bool>("true || false"));
+            Assert.Equal(true, Calculator.Calculate<bool>("true || true"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_AndOperation_Calculate()
         {
-            Assert.AreEqual(false, Calculator.Calculate<bool>("false && false"));
-            Assert.AreEqual(false, Calculator.Calculate<bool>("false && true"));
-            Assert.AreEqual(false, Calculator.Calculate<bool>("true && false"));
-            Assert.AreEqual(true, Calculator.Calculate<bool>("true && true"));
+            Assert.Equal(false, Calculator.Calculate<bool>("false && false"));
+            Assert.Equal(false, Calculator.Calculate<bool>("false && true"));
+            Assert.Equal(false, Calculator.Calculate<bool>("true && false"));
+            Assert.Equal(true, Calculator.Calculate<bool>("true && true"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_NotOperation_Calculate()
         {
-            Assert.AreEqual(false, Calculator.Calculate<bool>("!true"));
-            Assert.AreEqual(true, Calculator.Calculate<bool>("!false"));
+            Assert.Equal(false, Calculator.Calculate<bool>("!true"));
+            Assert.Equal(true, Calculator.Calculate<bool>("!false"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_LogicalOperationsPriority_Calculate()
         {
-            Assert.AreEqual(false, Calculator.Calculate<bool>("!true && false"));
-            Assert.AreEqual(true, Calculator.Calculate<bool>("!false || true"));
+            Assert.Equal(false, Calculator.Calculate<bool>("!true && false"));
+            Assert.Equal(true, Calculator.Calculate<bool>("!false || true"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_DifferentParenthesis_Calculated()
         {
-            Assert.AreEqual(2.5m, Calculator.Calculate<decimal>("< 2 + 3 > * (1 - { 3 / 6 })"));
+            Assert.Equal(2.5m, Calculator.Calculate<decimal>("< 2 + 3 > * (1 - { 3 / 6 })"));
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_OneVariable_Calculated()
         {
-            Assert.AreEqual(
+            Assert.Equal(
                 4.5m,
                 Calculator.Calculate(
                     "var1",
@@ -166,7 +163,7 @@ namespace Calculator.Core.Tests
                     }
                 )
             );
-            Assert.AreEqual(
+            Assert.Equal(
                 true,
                 Calculator.Calculate<bool>(
                     "testVar",
@@ -178,10 +175,10 @@ namespace Calculator.Core.Tests
             );
         }
 
-        [TestMethod]
+        [Fact]
         public void Calculate_VariableAndNumber_Calculated()
         {
-            Assert.AreEqual(
+            Assert.Equal(
                 7.5m,
                 Calculator.Calculate(
                     "2.5 * my_var",
@@ -193,107 +190,107 @@ namespace Calculator.Core.Tests
             );
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void Calculate_UnmatchedClosingParenthesis_ThrowsParseException()
         {
-            Calculator.Calculate(")+3");
+            ParseException exception = Assert.Throws<ParseException>(() => Calculator.Calculate(")+3"));
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.UnknownOperation)]
+        [Fact]
         public void Calculate_UnknownOperation_ThrowsCalculateException()
         {
-            Calculator.Calculate("1+-2");
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate("1+-2"));
+            Assert.Equal((int)CalculateExceptionCode.UnknownOperation, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.NotSingleResult)]
+        [Fact]
         public void Calculate_SeveralResults_ThrowsCalculateException()
         {
-            Calculator.Calculate("(1)(2)(3)");
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate("(1)(2)(3)"));
+            Assert.Equal((int)CalculateExceptionCode.NotSingleResult, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.MissingOperand)]
+        [Fact]
         public void Calculate_BinaryOperationMissingLeftOperand_ThrowsException()
         {
-            Calculator.Calculate("*2");
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate("*2"));
+            Assert.Equal((int)CalculateExceptionCode.MissingOperand, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.MissingOperand)]
+        [Fact]
         public void Calculate_BinaryOperationMissingBothOperands_ThrowsException()
         {
-            Calculator.Calculate("/");
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate("/"));
+            Assert.Equal((int)CalculateExceptionCode.MissingOperand, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.MissingOperand)]
+        [Fact]
         public void Calculate_UnaryOperationMissingOperand_ThrowsException()
         {
-            Calculator.Calculate("+");
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate("+"));
+            Assert.Equal((int)CalculateExceptionCode.MissingOperand, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void Calculate_NoClosingParenthesis_ThrowsException()
         {
-            Calculator.Calculate("2*(3-4");
+            ParseException exception = Assert.Throws<ParseException>(() => Calculator.Calculate("2*(3-4"));
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(ParseException), (int)ParseExceptionCode.UnparsedToken)]
+        [Fact]
         public void Calculate_ClosingParenthesisOfDifferentType_ThrowsException()
         {
-            Calculator.Calculate("2*(3-4>/4");
+            ParseException exception = Assert.Throws<ParseException>(() => Calculator.Calculate("2*(3-4>/4"));
+            Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.UnknownVariable)]
+        [Fact]
         public void Calculate_UndefinedVariable_ThrowsException()
         {
-            Calculator.Calculate("a");
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate("a"));
+            Assert.Equal((int)CalculateExceptionCode.UnknownVariable, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.StringVariable)]
+        [Fact]
         public void Calculate_StringVariable_ThrowsException()
         {
-            Calculator.Calculate(
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate(
                 "a + c",
                 new Dictionary<string, object>()
                 {
                     { "a", 1 },
                     { "c", "test" }
                 }
-            );
+            ));
+            Assert.Equal((int)CalculateExceptionCode.StringVariable, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.StringVariable)]
+        [Fact]
         public void Calculate_OperationVariable_ThrowsException()
         {
-            Calculator.Calculate(
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate(
                 "c / 0",
                 new Dictionary<string, object>()
                 {
                     { "c", "-" }
                 }
-            );
+            ));
+            Assert.Equal((int)CalculateExceptionCode.StringVariable, exception.Code);
         }
 
-        [TestMethod]
-        [ExpectedExceptionWithCode(typeof(CalculateException), (int)CalculateExceptionCode.StringVariable)]
+        [Fact]
         public void Calculate_SubformulaVariable_ThrowsException()
         {
-            Calculator.Calculate(
+            CalculateException exception = Assert.Throws<CalculateException>(() => Calculator.Calculate(
                 "v",
                 new Dictionary<string, object>()
                 {
                     { "v", "(1+2)" }
                 }
-            );
+            ));
+            Assert.Equal((int)CalculateExceptionCode.StringVariable, exception.Code);
         }
     }
 }

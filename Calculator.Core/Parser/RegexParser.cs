@@ -3,7 +3,7 @@ using Calculator.Core.Enum;
 
 namespace Calculator.Core.Parser
 {
-    internal abstract class RegexParser : IParser
+    public abstract class RegexParser : IParser
     {
         protected string pattern;
         protected TokenType type;

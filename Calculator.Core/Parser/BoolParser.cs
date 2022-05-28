@@ -2,7 +2,7 @@
 
 namespace Calculator.Core.Parser
 {
-    internal class BoolParser : RegexParser
+    public class BoolParser : RegexParser
     {
         public BoolParser()
             : base(@"true|false", TokenType.Bool)

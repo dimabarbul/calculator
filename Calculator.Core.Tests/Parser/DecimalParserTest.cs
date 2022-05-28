@@ -1,15 +1,14 @@
 ﻿using Calculator.Core.Enum;
 using Calculator.Core.Parser;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Calculator.Core.Tests.Parser
 {
-    [TestClass]
     public class DecimalParserTest
     {
         private DecimalParser parser = new DecimalParser();
 
-        [TestMethod]
+        [Fact]
         public void TryParse_NumberAtBeginning_CorrectNumber()
         {
             Token token;
@@ -18,7 +17,7 @@ namespace Calculator.Core.Tests.Parser
             this.AssertDecimalTokenEqual(token, 13.9m);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_NumberAtStartIndex_CorrectNumber()
         {
             Token token;
@@ -27,37 +26,37 @@ namespace Calculator.Core.Tests.Parser
             this.AssertDecimalTokenEqual(token, 2m);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_NumberNotAtBeginning_Null()
         {
             Token token;
             this.parser.TryParse("-1", out token);
 
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_NumberNotAtStartIndex_Null()
         {
             Token token;
             this.parser.TryParse("1+2", out token, 1);
 
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_EmptyString_Null()
         {
             Token token;
 
             this.parser.TryParse(string.Empty, out token);
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
         private void AssertDecimalTokenEqual(Token token, decimal value)
         {
-            Assert.AreEqual(TokenType.Decimal, token.Type);
-            Assert.AreEqual(value, token.GetValue());
+            Assert.Equal(TokenType.Decimal, token.Type);
+            Assert.Equal(value, token.GetValue());
         }
     }
 }

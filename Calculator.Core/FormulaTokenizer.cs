@@ -6,7 +6,7 @@ using Calculator.Core.Parser;
 
 namespace Calculator.Core
 {
-    internal static class FormulaTokenizer
+    public static class FormulaTokenizer
     {
         private static readonly IParser[] Parsers = new IParser[]
         {

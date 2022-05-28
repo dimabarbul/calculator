@@ -1,15 +1,14 @@
 ﻿using Calculator.Core.Enum;
 using Calculator.Core.Parser;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Calculator.Core.Tests.Parser
 {
-    [TestClass]
     public class OperationParserTest
     {
         private OperationParser parser = new OperationParser();
 
-        [TestMethod]
+        [Fact]
         public void TryParse_OperationAtBeginning_CorrectOperation()
         {
             Token token;
@@ -18,7 +17,7 @@ namespace Calculator.Core.Tests.Parser
             this.AssertOperationTokenEqual(token, "-");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_OperationAtStartIndex_CorrectOperation()
         {
             Token token;
@@ -27,25 +26,25 @@ namespace Calculator.Core.Tests.Parser
             this.AssertOperationTokenEqual(token, "/");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_OperationNotAtBeginning_Null()
         {
             Token token;
             this.parser.TryParse("1-3+5", out token);
 
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_OperationNotAtStartIndex_Null()
         {
             Token token;
             this.parser.TryParse("1-3+5", out token, 2);
 
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_UnknownOperation_CorrectOperation()
         {
             Token token;
@@ -54,7 +53,7 @@ namespace Calculator.Core.Tests.Parser
             this.AssertOperationTokenEqual(token, "some_unknown_function");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_OperationFollowedByDifferentParenthesis_CorrectOperation()
         {
             Token token;
@@ -69,19 +68,19 @@ namespace Calculator.Core.Tests.Parser
             this.AssertOperationTokenEqual(token, "*");
         }
 
-        [TestMethod]
+        [Fact]
         public void TryParse_EmptyString_Null()
         {
             Token token;
 
             this.parser.TryParse(string.Empty, out token);
-            Assert.IsNull(token);
+            Assert.Null(token);
         }
 
         private void AssertOperationTokenEqual(Token token, string value)
         {
-            Assert.AreEqual(TokenType.Operation, token.Type);
-            Assert.AreEqual(value, token.GetValue());
+            Assert.Equal(TokenType.Operation, token.Type);
+            Assert.Equal(value, token.GetValue());
         }
     }
 }

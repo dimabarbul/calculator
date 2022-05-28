@@ -1,35 +1,34 @@
 ﻿using Calculator.Core.Enum;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace Calculator.Core.Tests
 {
-    [TestClass]
     public class TokenTest
     {
-        [TestMethod]
+        [Fact]
         public void GetValueDecimal_Number_CorrectValue()
         {
             Token token = new Token("2", TokenType.Decimal);
 
-            Assert.AreEqual(2m, token.GetValue<decimal>());
+            Assert.Equal(2m, token.GetValue<decimal>());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetValueDecimal_DecimalWithLeadingPeriod_CorrectValue()
         {
             Token token = new Token(".3", TokenType.Decimal);
 
-            Assert.AreEqual(0.3m, token.GetValue<decimal>());
+            Assert.Equal(0.3m, token.GetValue<decimal>());
         }
 
-        [TestMethod]
+        [Fact]
         public void GetValue_WithTypeDecimal_Decimal()
         {
             Token token = new Token("4", TokenType.Decimal);
 
             dynamic value = token.GetValue();
-            Assert.AreEqual(typeof(decimal), value.GetType());
-            Assert.AreEqual(4m, value);
+            Assert.Equal(typeof(decimal), value.GetType());
+            Assert.Equal(4m, value);
         }
     }
 }

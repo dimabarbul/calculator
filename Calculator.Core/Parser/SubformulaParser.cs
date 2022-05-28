@@ -4,7 +4,7 @@ using Calculator.Core.Enum;
 
 namespace Calculator.Core.Parser
 {
-    internal class SubformulaParser : IParser
+    public class SubformulaParser : IParser
     {
         /// <summary>
         /// Tries to parse formula for subformula from specified position.
