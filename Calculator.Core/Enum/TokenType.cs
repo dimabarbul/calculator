@@ -1,11 +1,10 @@
-﻿namespace Calculator.Core.Enum
+﻿namespace Calculator.Core.Enum;
+
+public enum TokenType
 {
-    public enum TokenType
-    {
-        Decimal = 1,
-        Subformula = 2,
-        Operation = 3,
-        Bool = 4,
-        Variable = 5,
-    }
+    Decimal = 1,
+    Subformula = 2,
+    Operation = 3,
+    Bool = 4,
+    Variable = 5,
 }

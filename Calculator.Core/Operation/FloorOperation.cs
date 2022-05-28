@@ -1,18 +1,16 @@
-﻿using System;
-using Calculator.Core.Enum;
+﻿using Calculator.Core.Enum;
 
-namespace Calculator.Core.Operation
+namespace Calculator.Core.Operation;
+
+internal class FloorOperation : DecimalOperationBase
 {
-    internal class FloorOperation : DecimalOperationBase
+    public FloorOperation()
+        : base(OperationPriority.Unary, true)
     {
-        public FloorOperation()
-            : base(OperationPriority.Unary, true)
-        {
-        }
+    }
 
-        protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
-        {
-            return Math.Floor(leftOperand);
-        }
+    protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
+    {
+        return Math.Floor(leftOperand);
     }
 }

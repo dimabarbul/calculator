@@ -1,18 +1,16 @@
-﻿using System;
-using Calculator.Core.Enum;
+﻿using Calculator.Core.Enum;
 
-namespace Calculator.Core.Operation
+namespace Calculator.Core.Operation;
+
+internal class CeilOperation : DecimalOperationBase
 {
-    internal class CeilOperation : DecimalOperationBase
+    public CeilOperation()
+        : base(OperationPriority.Unary, true)
     {
-        public CeilOperation()
-            : base(OperationPriority.Unary, true)
-        {
-        }
+    }
 
-        protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
-        {
-            return Math.Ceiling(leftOperand);
-        }
+    protected override decimal GetDecimalResult(decimal leftOperand, decimal? rightOperand)
+    {
+        return Math.Ceiling(leftOperand);
     }
 }

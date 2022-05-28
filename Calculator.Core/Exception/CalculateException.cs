@@ -1,12 +1,11 @@
 ﻿using Calculator.Core.Enum;
 
-namespace Calculator.Core.Exception
+namespace Calculator.Core.Exception;
+
+public class CalculateException : ExceptionWithCode
 {
-    public class CalculateException : ExceptionWithCode
+    public CalculateException(CalculateExceptionCode code, string message = null)
+        : base((int)code, message)
     {
-        public CalculateException(CalculateExceptionCode code, string message = null)
-            : base((int)code, message)
-        {
-        }
     }
 }

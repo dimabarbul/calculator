@@ -2,70 +2,69 @@
 using Calculator.Core.Parser;
 using Xunit;
 
-namespace Calculator.Core.Tests.Parser
+namespace Calculator.Core.Tests.Parser;
+
+public class BoolParserTest
 {
-    public class BoolParserTest
+    private BoolParser parser = new();
+
+    [Fact]
+    public void TryParse_TrueAtBeginning_Correct()
     {
-        private BoolParser parser = new BoolParser();
+        Token token;
+        this.parser.TryParse("true", out token);
 
-        [Fact]
-        public void TryParse_TrueAtBeginning_Correct()
-        {
-            Token token;
-            this.parser.TryParse("true", out token);
+        this.AssertBoolTokenEqual(token, true);
+    }
 
-            this.AssertBoolTokenEqual(token, true);
-        }
+    [Fact]
+    public void TryParse_FalseAtBeginning_Correct()
+    {
+        Token token;
+        this.parser.TryParse("false", out token);
 
-        [Fact]
-        public void TryParse_FalseAtBeginning_Correct()
-        {
-            Token token;
-            this.parser.TryParse("false", out token);
+        this.AssertBoolTokenEqual(token, false);
+    }
 
-            this.AssertBoolTokenEqual(token, false);
-        }
+    [Fact]
+    public void TryParse_BoolAtStartIndex_Correct()
+    {
+        Token token;
+        this.parser.TryParse("true||false", out token, 6);
 
-        [Fact]
-        public void TryParse_BoolAtStartIndex_Correct()
-        {
-            Token token;
-            this.parser.TryParse("true||false", out token, 6);
+        this.AssertBoolTokenEqual(token, false);
+    }
 
-            this.AssertBoolTokenEqual(token, false);
-        }
+    [Fact]
+    public void TryParse_BoolNotAtStartIndex_Null()
+    {
+        Token token;
+        this.parser.TryParse("true&&false", out token, 4);
 
-        [Fact]
-        public void TryParse_BoolNotAtStartIndex_Null()
-        {
-            Token token;
-            this.parser.TryParse("true&&false", out token, 4);
+        Assert.Null(token);
+    }
 
-            Assert.Null(token);
-        }
+    [Fact]
+    public void TryParse_BoolNotAtBeginning_Null()
+    {
+        Token token;
+        this.parser.TryParse("1||false", out token);
 
-        [Fact]
-        public void TryParse_BoolNotAtBeginning_Null()
-        {
-            Token token;
-            this.parser.TryParse("1||false", out token);
+        Assert.Null(token);
+    }
 
-            Assert.Null(token);
-        }
+    [Fact]
+    public void TryParse_EmptyString_Null()
+    {
+        Token token;
 
-        [Fact]
-        public void TryParse_EmptyString_Null()
-        {
-            Token token;
+        this.parser.TryParse(string.Empty, out token);
+        Assert.Null(token);
+    }
 
-            this.parser.TryParse(string.Empty, out token);
-            Assert.Null(token);
-        }
-
-        private void AssertBoolTokenEqual(Token token, bool value)
-        {
-            Assert.Equal(TokenType.Bool, token.Type);
-            Assert.Equal(value, token.GetValue());
-        }
+    private void AssertBoolTokenEqual(Token token, bool value)
+    {
+        Assert.Equal(TokenType.Bool, token.Type);
+        Assert.Equal(value, token.GetValue());
     }
 }

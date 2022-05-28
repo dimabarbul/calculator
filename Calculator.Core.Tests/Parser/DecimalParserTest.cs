@@ -2,61 +2,60 @@
 using Calculator.Core.Parser;
 using Xunit;
 
-namespace Calculator.Core.Tests.Parser
+namespace Calculator.Core.Tests.Parser;
+
+public class DecimalParserTest
 {
-    public class DecimalParserTest
+    private DecimalParser parser = new();
+
+    [Fact]
+    public void TryParse_NumberAtBeginning_CorrectNumber()
     {
-        private DecimalParser parser = new DecimalParser();
+        Token token;
+        this.parser.TryParse("13.9 - 7", out token);
 
-        [Fact]
-        public void TryParse_NumberAtBeginning_CorrectNumber()
-        {
-            Token token;
-            this.parser.TryParse("13.9 - 7", out token);
+        this.AssertDecimalTokenEqual(token, 13.9m);
+    }
 
-            this.AssertDecimalTokenEqual(token, 13.9m);
-        }
+    [Fact]
+    public void TryParse_NumberAtStartIndex_CorrectNumber()
+    {
+        Token token;
+        this.parser.TryParse("1+2", out token, 2);
 
-        [Fact]
-        public void TryParse_NumberAtStartIndex_CorrectNumber()
-        {
-            Token token;
-            this.parser.TryParse("1+2", out token, 2);
+        this.AssertDecimalTokenEqual(token, 2m);
+    }
 
-            this.AssertDecimalTokenEqual(token, 2m);
-        }
+    [Fact]
+    public void TryParse_NumberNotAtBeginning_Null()
+    {
+        Token token;
+        this.parser.TryParse("-1", out token);
 
-        [Fact]
-        public void TryParse_NumberNotAtBeginning_Null()
-        {
-            Token token;
-            this.parser.TryParse("-1", out token);
+        Assert.Null(token);
+    }
 
-            Assert.Null(token);
-        }
+    [Fact]
+    public void TryParse_NumberNotAtStartIndex_Null()
+    {
+        Token token;
+        this.parser.TryParse("1+2", out token, 1);
 
-        [Fact]
-        public void TryParse_NumberNotAtStartIndex_Null()
-        {
-            Token token;
-            this.parser.TryParse("1+2", out token, 1);
+        Assert.Null(token);
+    }
 
-            Assert.Null(token);
-        }
+    [Fact]
+    public void TryParse_EmptyString_Null()
+    {
+        Token token;
 
-        [Fact]
-        public void TryParse_EmptyString_Null()
-        {
-            Token token;
+        this.parser.TryParse(string.Empty, out token);
+        Assert.Null(token);
+    }
 
-            this.parser.TryParse(string.Empty, out token);
-            Assert.Null(token);
-        }
-
-        private void AssertDecimalTokenEqual(Token token, decimal value)
-        {
-            Assert.Equal(TokenType.Decimal, token.Type);
-            Assert.Equal(value, token.GetValue());
-        }
+    private void AssertDecimalTokenEqual(Token token, decimal value)
+    {
+        Assert.Equal(TokenType.Decimal, token.Type);
+        Assert.Equal(value, token.GetValue());
     }
 }

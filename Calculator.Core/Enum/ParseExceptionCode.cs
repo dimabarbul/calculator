@@ -1,7 +1,6 @@
-﻿namespace Calculator.Core.Enum
+﻿namespace Calculator.Core.Enum;
+
+public enum ParseExceptionCode
 {
-    public enum ParseExceptionCode
-    {
-        UnparsedToken = 1,
-    }
+    UnparsedToken = 1,
 }

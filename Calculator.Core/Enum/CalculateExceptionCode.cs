@@ -1,11 +1,10 @@
-﻿namespace Calculator.Core.Enum
+﻿namespace Calculator.Core.Enum;
+
+public enum CalculateExceptionCode
 {
-    public enum CalculateExceptionCode
-    {
-        UnknownOperation = 1,
-        NotSingleResult = 2,
-        MissingOperand = 3,
-        UnknownVariable = 4,
-        StringVariable = 5,
-    }
+    UnknownOperation = 1,
+    NotSingleResult = 2,
+    MissingOperand = 3,
+    UnknownVariable = 4,
+    StringVariable = 5,
 }

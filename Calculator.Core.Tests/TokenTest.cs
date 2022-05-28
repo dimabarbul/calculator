@@ -1,34 +1,33 @@
 ﻿using Calculator.Core.Enum;
 using Xunit;
 
-namespace Calculator.Core.Tests
+namespace Calculator.Core.Tests;
+
+public class TokenTest
 {
-    public class TokenTest
+    [Fact]
+    public void GetValueDecimal_Number_CorrectValue()
     {
-        [Fact]
-        public void GetValueDecimal_Number_CorrectValue()
-        {
-            Token token = new Token("2", TokenType.Decimal);
+        Token token = new("2", TokenType.Decimal);
 
-            Assert.Equal(2m, token.GetValue<decimal>());
-        }
+        Assert.Equal(2m, token.GetValue<decimal>());
+    }
 
-        [Fact]
-        public void GetValueDecimal_DecimalWithLeadingPeriod_CorrectValue()
-        {
-            Token token = new Token(".3", TokenType.Decimal);
+    [Fact]
+    public void GetValueDecimal_DecimalWithLeadingPeriod_CorrectValue()
+    {
+        Token token = new(".3", TokenType.Decimal);
 
-            Assert.Equal(0.3m, token.GetValue<decimal>());
-        }
+        Assert.Equal(0.3m, token.GetValue<decimal>());
+    }
 
-        [Fact]
-        public void GetValue_WithTypeDecimal_Decimal()
-        {
-            Token token = new Token("4", TokenType.Decimal);
+    [Fact]
+    public void GetValue_WithTypeDecimal_Decimal()
+    {
+        Token token = new("4", TokenType.Decimal);
 
-            dynamic value = token.GetValue();
-            Assert.Equal(typeof(decimal), value.GetType());
-            Assert.Equal(4m, value);
-        }
+        dynamic value = token.GetValue();
+        Assert.Equal(typeof(decimal), value.GetType());
+        Assert.Equal(4m, value);
     }
 }

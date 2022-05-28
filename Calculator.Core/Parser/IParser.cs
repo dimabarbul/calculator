@@ -1,7 +1,6 @@
-﻿namespace Calculator.Core.Parser
+﻿namespace Calculator.Core.Parser;
+
+public interface IParser
 {
-    internal interface IParser
-    {
-        int TryParse(string formula, out Token token, int startIndex = 0);
-    }
+    int TryParse(string formula, out Token token, int startIndex = 0);
 }
