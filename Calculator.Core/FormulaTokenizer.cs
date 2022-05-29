@@ -21,43 +21,41 @@ public class FormulaTokenizer
             yield break;
         }
 
-        string sanitizedFormula = (new Regex(@"\s+")).Replace(formula, string.Empty);
+        ReadOnlyMemory<char> sanitizedFormula = new Regex(@"\s+").Replace(formula, string.Empty).AsMemory();
 
         int index = 0;
-        Token? token = null;
+        Token? token;
 
         while (index < sanitizedFormula.Length)
         {
+            token = null;
             foreach (IParser parser in this.parsers)
             {
-                index += parser.TryParse(sanitizedFormula, out token, index);
-
-                if (token != null)
+                if (parser.TryParse(sanitizedFormula[index..].Span, out token, out int parsedLength))
                 {
+                    index += parsedLength;
                     break;
                 }
             }
 
             if (token == null)
             {
-                throw new ParseException(ParseExceptionCode.UnparsedToken);
+                throw new ParseException(ParseExceptionCode.UnparsedToken, formula, index);
             }
 
             yield return token;
         }
     }
 
-    public TokenType DetectTokenType(object value)
+    public TokenType? DetectTokenType(object value)
     {
         Token? token = null;
         string stringValue = value.ToString();
-        int tokenLength = 0;
+        int parsedLength = default;
 
         foreach (IParser parser in this.parsers)
         {
-            tokenLength = parser.TryParse(stringValue, out token);
-
-            if (token != null)
+            if (parser.TryParse(stringValue, out token, out parsedLength))
             {
                 break;
             }
@@ -65,12 +63,12 @@ public class FormulaTokenizer
 
         if (token == null)
         {
-            throw new ParseException(ParseExceptionCode.UnparsedToken);
+            return null;
         }
 
-        if (stringValue.Length != tokenLength)
+        if (stringValue.Length != parsedLength)
         {
-            throw new ParseException(ParseExceptionCode.UnparsedToken);
+            return null;
         }
 
         return token.Type;
@@ -78,6 +76,6 @@ public class FormulaTokenizer
 
     public bool IsValueTokenType(TokenType type)
     {
-        return type == TokenType.Bool || type == TokenType.Decimal;
+        return type is TokenType.Bool or TokenType.Decimal;
     }
 }

@@ -18,6 +18,7 @@ public class FormulaTokenizerTest
             new BoolParser(),
             new OperationParser(),
             new VariableParser(),
+            new FunctionParser(),
         });
     }
 
@@ -147,7 +148,7 @@ public class FormulaTokenizerTest
     [Fact]
     public void GetTokens_Variable_Parsed()
     {
-        Token[] tokens = this.tokenizer.GetTokens("test + test2").ToArray();
+        Token[] tokens = this.tokenizer.GetTokens("$test + $test2").ToArray();
 
         Assert.Equal(3, tokens.Length);
         this.AssertTokenEqual(tokens[0], "test", TokenType.Variable);
@@ -158,7 +159,7 @@ public class FormulaTokenizerTest
     [Fact]
     public void GetTokens_VariableAndOperation_Parsed()
     {
-        Token[] tokens = this.tokenizer.GetTokens("test() / test").ToArray();
+        Token[] tokens = this.tokenizer.GetTokens("test() / $test").ToArray();
 
         Assert.Equal(4, tokens.Length);
         this.AssertTokenEqual(tokens[0], "test", TokenType.Operation);
@@ -200,21 +201,21 @@ public class FormulaTokenizerTest
     [Fact]
     public void DetectTokenType_Variable_Correct()
     {
-        Assert.Equal(TokenType.Variable, this.tokenizer.DetectTokenType("test"));
+        Assert.Equal(TokenType.Variable, this.tokenizer.DetectTokenType("$test"));
     }
 
     [Fact]
-    public void DetectTokenType_SeveralTokens_ThrowsException()
+    public void DetectTokenType_SeveralTokens_Null()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.DetectTokenType("1+2"));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        TokenType? tokenType = this.tokenizer.DetectTokenType("1+2");
+        Assert.Null(tokenType);
     }
 
     [Fact]
-    public void DetectTokenType_EmptyString_ThrowsException()
+    public void DetectTokenType_EmptyString_Null()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.DetectTokenType(string.Empty));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        TokenType? tokenType = this.tokenizer.DetectTokenType(string.Empty);
+        Assert.Null(tokenType);
     }
 
     [Fact]

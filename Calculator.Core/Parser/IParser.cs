@@ -1,6 +1,8 @@
-﻿namespace Calculator.Core.Parser;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Calculator.Core.Parser;
 
 public interface IParser
 {
-    int TryParse(string formula, out Token? token, int startIndex = 0);
+    bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength);
 }

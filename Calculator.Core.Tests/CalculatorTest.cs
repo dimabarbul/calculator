@@ -21,6 +21,7 @@ public class CalculatorTest
                     new BoolParser(),
                     new OperationParser(),
                     new VariableParser(),
+                    new FunctionParser(),
                 }
             ),
             new OperationFactory()
@@ -175,7 +176,7 @@ public class CalculatorTest
         Assert.Equal(
             4.5m,
             this.calculator.Calculate(
-                "var1",
+                "$var1",
                 new Dictionary<string, object>()
                 {
                     { "var1", 4.5m }
@@ -185,7 +186,7 @@ public class CalculatorTest
         Assert.Equal(
             true,
             this.calculator.Calculate<bool>(
-                "testVar",
+                "$testVar",
                 new Dictionary<string, object>()
                 {
                     { "testVar", true }
@@ -200,7 +201,7 @@ public class CalculatorTest
         Assert.Equal(
             7.5m,
             this.calculator.Calculate(
-                "2.5 * my_var",
+                "2.5 * $my_var",
                 new Dictionary<string, object>()
                 {
                     { "my_var", 3 }
@@ -261,7 +262,7 @@ public class CalculatorTest
     [Fact]
     public void Calculate_UndefinedVariable_ThrowsException()
     {
-        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate("a"));
+        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate("$a"));
         Assert.Equal((int)CalculateExceptionCode.UnknownVariable, exception.Code);
     }
 
@@ -269,7 +270,7 @@ public class CalculatorTest
     public void Calculate_StringVariable_ThrowsException()
     {
         CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate(
-            "a + c",
+            "$a + $c",
             new Dictionary<string, object>()
             {
                 { "a", 1 },
@@ -280,10 +281,25 @@ public class CalculatorTest
     }
 
     [Fact]
+    public void Calculate_VariableVariable_Calculated()
+    {
+        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate(
+            "$a + $c",
+            new Dictionary<string, object>()
+            {
+                { "a", 1 },
+                { "c", "$test" },
+                { "test", 3 },
+            }
+        ));
+        Assert.Equal((int)CalculateExceptionCode.StringVariable, exception.Code);
+    }
+
+    [Fact]
     public void Calculate_OperationVariable_ThrowsException()
     {
         CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate(
-            "c / 0",
+            "$c / 0",
             new Dictionary<string, object>()
             {
                 { "c", "-" }
@@ -296,7 +312,7 @@ public class CalculatorTest
     public void Calculate_SubformulaVariable_ThrowsException()
     {
         CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate(
-            "v",
+            "$v",
             new Dictionary<string, object>()
             {
                 { "v", "(1+2)" }

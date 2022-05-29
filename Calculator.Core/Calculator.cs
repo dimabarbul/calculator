@@ -45,13 +45,14 @@ public class Calculator
                         throw new CalculateException(CalculateExceptionCode.UnknownVariable);
                     }
 
-                    TokenType variableType = this.tokenizer.DetectTokenType(variables[token.Text]);
-                    if (!this.tokenizer.IsValueTokenType(variableType))
+                    TokenType? variableType = this.tokenizer.DetectTokenType(variables[token.Text]);
+                    if (variableType == null ||
+                        !this.tokenizer.IsValueTokenType(variableType.Value))
                     {
                         throw new CalculateException(CalculateExceptionCode.StringVariable);
                     }
 
-                    Token variableToken = new(variables[token.Text].ToString(), variableType);
+                    Token variableToken = new(variables[token.Text].ToString(), variableType.Value);
 
                     operands.Push(variableToken);
                     break;

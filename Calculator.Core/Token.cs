@@ -4,8 +4,8 @@ namespace Calculator.Core;
 
 public class Token
 {
-    public string Text { get; set; }
-    public TokenType Type { get; set; }
+    public string Text { get; }
+    public TokenType Type { get; }
 
     public Token(string text, TokenType type)
     {

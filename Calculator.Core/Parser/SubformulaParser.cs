@@ -1,35 +1,29 @@
-﻿using Calculator.Core.Enum;
+﻿using System.Diagnostics.CodeAnalysis;
+using Calculator.Core.Enum;
 
 namespace Calculator.Core.Parser;
 
 public class SubformulaParser : IParser
 {
-    /// <summary>
-    /// Tries to parse formula for subformula from specified position.
-    /// Token is considered found only if it starts at startIndex.
-    /// </summary>
-    /// <param name="formula">Formula to parse.</param>
-    /// <param name="token">Found token.</param>
-    /// <param name="startIndex">Index to start searching at.</param>
-    /// <returns>Number of characters token occupies.</returns>
-    public int TryParse(string formula, out Token token, int startIndex = 0)
+    public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
     {
         token = null;
+        parsedLength = default;
 
-        if (string.IsNullOrEmpty(formula))
+        if (formula.IsEmpty)
         {
-            return 0;
+            return false;
         }
 
-        if (!this.IsOpeningParenthesis(formula[startIndex]))
+        if (!this.IsOpeningParenthesis(formula[0]))
         {
-            return 0;
+            return false;
         }
 
         Stack<char> openingParenthesis = new();
-        openingParenthesis.Push(formula[startIndex]);
+        openingParenthesis.Push(formula[0]);
 
-        for (int index = startIndex + 1; index < formula.Length; index++)
+        for (int index = 1; index < formula.Length; index++)
         {
             if (this.IsOpeningParenthesis(formula[index]))
             {
@@ -46,7 +40,7 @@ public class SubformulaParser : IParser
 
                 if (0 == openingParenthesis.Count)
                 {
-                    string subformula = formula.Substring(startIndex + 1, index - startIndex - 1);
+                    string subformula = formula[1..index].ToString();
 
                     token = new Token(subformula, TokenType.Subformula);
 
@@ -55,24 +49,22 @@ public class SubformulaParser : IParser
             }
         }
 
-        int result = 0;
-
         if (token != null)
         {
-            result = token.Text.Length + 2;
+            parsedLength = token.Text.Length + 2;
         }
 
-        return result;
+        return token != null;
     }
 
     private bool IsOpeningParenthesis(char c)
     {
-        return new char[] { '(', '[', '{', '<' }.Contains(c);
+        return new[] { '(', '[', '{', '<' }.Contains(c);
     }
 
     private bool IsClosingParenthesis(char c)
     {
-        return new char[] { ')', ']', '}', '>' }.Contains(c);
+        return new[] { ')', ']', '}', '>' }.Contains(c);
     }
 
     private bool AreParenthesisOfSameType(char openingParenthesis, char closingParenthesis)
