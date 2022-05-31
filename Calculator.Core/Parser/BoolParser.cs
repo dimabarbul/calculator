@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Calculator.Core.Enum;
+using Calculator.Core.Operands;
 
 namespace Calculator.Core.Parser;
 
@@ -8,6 +8,9 @@ public class BoolParser : IParser
     private const string TrueString = "true";
     private const string FalseString = "false";
 
+    private static readonly Operand<bool> True = new(true);
+    private static readonly Operand<bool> False = new(false);
+
     public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
     {
         token = null;
@@ -15,7 +18,7 @@ public class BoolParser : IParser
 
         if (formula.StartsWith(TrueString, StringComparison.OrdinalIgnoreCase))
         {
-            token = new Token(TrueString, TokenType.Bool);
+            token = True;
             parsedLength = TrueString.Length;
 
             return true;
@@ -23,7 +26,7 @@ public class BoolParser : IParser
 
         if (formula.StartsWith(FalseString, StringComparison.OrdinalIgnoreCase))
         {
-            token = new Token(FalseString, TokenType.Bool);
+            token = False;
             parsedLength = FalseString.Length;
 
             return true;

@@ -1,67 +1,70 @@
 ﻿using Calculator.Core.Enum;
 using Calculator.Core.Exception;
-using Calculator.Core.Operation;
+using Calculator.Core.Operands;
 
 namespace Calculator.Core;
 
 public class Calculator
 {
     private readonly FormulaTokenizer tokenizer;
-    private readonly OperationFactory operationFactory;
 
-    public Calculator(FormulaTokenizer tokenizer, OperationFactory operationFactory)
+    public Calculator(FormulaTokenizer tokenizer)
     {
         this.tokenizer = tokenizer;
-        this.operationFactory = operationFactory;
     }
 
-    public TResult Calculate<TResult>(string formula, Dictionary<string, object>? variables = null)
+    public TResult Calculate<TResult>(string formula, Dictionary<string, Operand>? variables = null)
+    {
+        Token lastOperand = this.Calculate(formula, variables);
+
+        if (lastOperand is not Operand<TResult> resultToken)
+        {
+            throw new CalculateException(
+                CalculateExceptionCode.InvalidResultType,
+                $"Result is of type {lastOperand.GetType()}, but expected {typeof(Operand<TResult>)}");
+        }
+
+        return resultToken.Value;
+    }
+
+    public Token Calculate(string formula, Dictionary<string, Operand>? variables = null)
     {
         if (string.IsNullOrWhiteSpace(formula))
         {
-            throw new ArgumentNullException();
+            throw new ArgumentNullException(nameof(formula));
         }
 
         Stack<Token> operands = new();
-        Stack<OperationBase> operations = new();
-        Token resultToken;
-        Token? lastToken = null;
+        Stack<Operation.Operation> operations = new();
 
         foreach (Token token in this.tokenizer.GetTokens(formula))
         {
-            switch (token.Type)
+            switch (token)
             {
-                case TokenType.Decimal:
-                case TokenType.Bool:
-                    operands.Push(token);
+                case Subformula subformula:
+                    operands.Push(this.Calculate(subformula.Text));
                     break;
-                case TokenType.Subformula:
-                        resultToken = this.Calculate<Token>(token.Text);
-                    operands.Push(resultToken);
-                    break;
-                case TokenType.Variable:
-                    if (variables == null || !variables.ContainsKey(token.Text))
+                case VariableOperand variableOperand:
+                    if (variables == null || !variables.ContainsKey(variableOperand.Name))
                     {
                         throw new CalculateException(CalculateExceptionCode.UnknownVariable);
                     }
 
-                    TokenType? variableType = this.tokenizer.DetectTokenType(variables[token.Text]);
-                    if (variableType == null ||
-                        !this.tokenizer.IsValueTokenType(variableType.Value))
+                    Type variableType = variables[variableOperand.Name].GetType();
+                    if (!variableType.IsGenericType || variableType.GetGenericTypeDefinition() != typeof(Operand<>))
                     {
-                        throw new CalculateException(CalculateExceptionCode.StringVariable);
+                        throw new CalculateException(CalculateExceptionCode.InvalidVariableType);
                     }
 
-                    Token variableToken = new(variables[token.Text].ToString(), variableType.Value);
-
-                    operands.Push(variableToken);
+                    operands.Push(variables[variableOperand.Name]);
                     break;
-                default:
-                    OperationBase operation = this.operationFactory.Create(token, lastToken == null || lastToken.Type == TokenType.Operation);
-
+                case Operand:
+                    operands.Push(token);
+                    break;
+                case Operation.Operation operation:
                     while (operations.Count > 0)
                     {
-                        OperationBase previousOperation = operations.Peek();
+                        Operation.Operation previousOperation = operations.Peek();
 
                         if (previousOperation.Priority >= operation.Priority)
                         {
@@ -76,8 +79,6 @@ public class Calculator
                     operations.Push(operation);
                     break;
             }
-
-            lastToken = token;
         }
 
         while (operations.Count > 0)
@@ -90,42 +91,24 @@ public class Calculator
             throw new CalculateException(CalculateExceptionCode.NotSingleResult);
         }
 
-        resultToken = operands.Pop();
-
-        TResult result;
-
-        if (typeof(Token) == typeof(TResult))
-        {
-            result = (TResult)Convert.ChangeType(resultToken, typeof(TResult));
-        }
-        else
-        {
-            result = resultToken.GetValue<TResult>();
-        }
-
-        return result;
+        return operands.Pop();
     }
 
-    public decimal Calculate(string formula, Dictionary<string, object>? variables = null)
+    private void ExecuteOperation(Stack<Token> operands, Stack<Operation.Operation> operations)
     {
-        return this.Calculate<decimal>(formula, variables);
-    }
+        Operation.Operation operation = operations.Pop();
 
-    private void ExecuteOperation(Stack<Token> operands, Stack<OperationBase> operations)
-    {
-        OperationBase operation = operations.Pop();
-
-        if (operands.Count < operation.OperandsCount)
+        if (operands.Count < operation.MinOperandsCount)
         {
             throw new CalculateException(CalculateExceptionCode.MissingOperand);
         }
 
-        Token[] operandTokens = Enumerable.Range(0, operation.OperandsCount)
+        Token[] operandTokens = Enumerable.Range(0, Math.Min(operation.MaxOperandsCount, operands.Count))
             .Select(_ => operands.Pop())
             .Reverse()
             .ToArray();
 
-        Token result = operation.Perform(operandTokens);
+        Token result = operation.Execute(operandTokens);
 
         operands.Push(result);
     }

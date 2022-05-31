@@ -1,4 +1,4 @@
-﻿using Calculator.Core.Enum;
+﻿ using Calculator.Core.Operands;
 using Calculator.Core.Parser;
 using Xunit;
 
@@ -56,7 +56,7 @@ public class VariableParserTest
     private void AssertVariableTokenEqual(Token? token, string value)
     {
         Assert.NotNull(token);
-        Assert.Equal(TokenType.Variable, token.Type);
-        Assert.Equal(value, token.Text);
+        VariableOperand variableToken = Assert.IsType<VariableOperand>(token);
+        Assert.Equal(value, variableToken.Name);
     }
 }

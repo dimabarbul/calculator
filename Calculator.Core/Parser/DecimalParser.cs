@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Calculator.Core.Enum;
+using Calculator.Core.Operands;
 
 namespace Calculator.Core.Parser;
 
 public class DecimalParser : IParser
 {
+    private const string Zero = "0";
+
     public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
     {
         token = null;
@@ -36,7 +38,8 @@ public class DecimalParser : IParser
             return false;
         }
 
-        token = new Token(formula[..index].ToString(), TokenType.Decimal);
+        string tokenText = index == 1 && formula[0] == '.' ? Zero : formula[..index].ToString();
+        token = new Operand<decimal>(decimal.Parse(tokenText));
         parsedLength = index;
 
         return true;

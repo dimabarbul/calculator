@@ -1,47 +1,55 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Calculator.Core.Enum;
+using Calculator.Core.Operation;
 
 namespace Calculator.Core.Parser;
 
 public class FunctionParser : IParser
 {
+    private readonly Dictionary<string, Function> operations;
+
+    public FunctionParser(IEnumerable<Operation.Operation> operations)
+    {
+        this.operations = operations
+            .Where(o => o is Function)
+            .Cast<Function>()
+            .ToDictionary(o => o.FunctionName);
+    }
+
     public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
     {
         token = null;
         parsedLength = default;
+
+        Token? foundFunction = null;
 
         if (formula.IsEmpty)
         {
             return false;
         }
 
-        int index = 0;
-        while (index < formula.Length &&
-            this.IsValidFunctionNameChar(formula[index], isFirstChar: index == 0))
+        foreach ((string text, Function function) in this.operations)
         {
-            index++;
+            if (formula.StartsWith(text, StringComparison.Ordinal))
+            {
+                foundFunction = function;
+                parsedLength = text.Length;
+            }
         }
 
-        if (index == 0)
-        {
-            return false;
-        }
-
-        if (index >= formula.Length - 1 ||
-            !this.IsOpeningBracket(formula[index]))
+        if (foundFunction == null)
         {
             return false;
         }
 
-        token = new Token(formula[..index].ToString(), TokenType.Operation);
-        parsedLength = index;
+        if (parsedLength == formula.Length ||
+            !this.IsOpeningBracket(formula[parsedLength]))
+        {
+            return false;
+        }
+
+        token = foundFunction;
 
         return true;
-    }
-
-    private bool IsValidFunctionNameChar(char c, bool isFirstChar)
-    {
-        return (!isFirstChar && char.IsDigit(c)) || char.IsLetter(c) || c == '_';
     }
 
     private bool IsOpeningBracket(char c)

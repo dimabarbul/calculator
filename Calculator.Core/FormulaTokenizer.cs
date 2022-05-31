@@ -24,11 +24,10 @@ public class FormulaTokenizer
         ReadOnlyMemory<char> sanitizedFormula = new Regex(@"\s+").Replace(formula, string.Empty).AsMemory();
 
         int index = 0;
-        Token? token;
 
         while (index < sanitizedFormula.Length)
         {
-            token = null;
+            Token? token = null;
             foreach (IParser parser in this.parsers)
             {
                 if (parser.TryParse(sanitizedFormula[index..].Span, out token, out int parsedLength))
@@ -45,37 +44,5 @@ public class FormulaTokenizer
 
             yield return token;
         }
-    }
-
-    public TokenType? DetectTokenType(object value)
-    {
-        Token? token = null;
-        string stringValue = value.ToString();
-        int parsedLength = default;
-
-        foreach (IParser parser in this.parsers)
-        {
-            if (parser.TryParse(stringValue, out token, out parsedLength))
-            {
-                break;
-            }
-        }
-
-        if (token == null)
-        {
-            return null;
-        }
-
-        if (stringValue.Length != parsedLength)
-        {
-            return null;
-        }
-
-        return token.Type;
-    }
-
-    public bool IsValueTokenType(TokenType type)
-    {
-        return type is TokenType.Bool or TokenType.Decimal;
     }
 }

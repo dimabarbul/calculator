@@ -1,10 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Calculator.Core.Enum;
 
 namespace Calculator.Core.Parser;
 
 public class SubformulaParser : IParser
 {
+    private static readonly char[] OpeningBrackets = { '(', '[', '{', '<' };
+    private static readonly char[] ClosingBrackets = { ')', ']', '}', '>' };
+
     public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
     {
         token = null;
@@ -33,16 +35,14 @@ public class SubformulaParser : IParser
             {
                 char previousOpeningParenthesis = openingParenthesis.Pop();
 
-                if (!this.AreParenthesisOfSameType(previousOpeningParenthesis, formula[index]))
+                if (!this.AreBracketsOfSameType(previousOpeningParenthesis, formula[index]))
                 {
                     break;
                 }
 
                 if (0 == openingParenthesis.Count)
                 {
-                    string subformula = formula[1..index].ToString();
-
-                    token = new Token(subformula, TokenType.Subformula);
+                    token = new Subformula(formula[1..index].ToString());
 
                     break;
                 }
@@ -51,7 +51,7 @@ public class SubformulaParser : IParser
 
         if (token != null)
         {
-            parsedLength = token.Text.Length + 2;
+            parsedLength = ((Subformula)token).Text.Length + 2;
         }
 
         return token != null;
@@ -59,21 +59,16 @@ public class SubformulaParser : IParser
 
     private bool IsOpeningParenthesis(char c)
     {
-        return new[] { '(', '[', '{', '<' }.Contains(c);
+        return OpeningBrackets.Contains(c);
     }
 
     private bool IsClosingParenthesis(char c)
     {
-        return new[] { ')', ']', '}', '>' }.Contains(c);
+        return ClosingBrackets.Contains(c);
     }
 
-    private bool AreParenthesisOfSameType(char openingParenthesis, char closingParenthesis)
+    private bool AreBracketsOfSameType(char openingBrackets, char closingBrackets)
     {
-        return (
-            (openingParenthesis == '(' && closingParenthesis == ')')
-            || (openingParenthesis == '[' && closingParenthesis == ']')
-            || (openingParenthesis == '{' && closingParenthesis == '}')
-            || (openingParenthesis == '<' && closingParenthesis == '>')
-        );
+        return Array.IndexOf(OpeningBrackets, openingBrackets) == Array.IndexOf(ClosingBrackets, closingBrackets);
     }
 }

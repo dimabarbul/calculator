@@ -1,5 +1,4 @@
-﻿using Calculator.Core.Enum;
-using Calculator.Core.Parser;
+﻿using Calculator.Core.Parser;
 using Xunit;
 
 namespace Calculator.Core.Tests.Parser;
@@ -83,7 +82,7 @@ public class SubformulaParserTest
     private void AssertSubformulaTokenEqual(Token? token, string value)
     {
         Assert.NotNull(token);
-        Assert.Equal(TokenType.Subformula, token.Type);
-        Assert.Equal(value, token.GetValue());
+        Subformula subformulaToken = Assert.IsType<Subformula>(token);
+        Assert.Equal(value, subformulaToken.Text);
     }
 }

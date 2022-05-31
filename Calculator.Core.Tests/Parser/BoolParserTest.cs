@@ -1,4 +1,4 @@
-﻿using Calculator.Core.Enum;
+﻿using Calculator.Core.Operands;
 using Calculator.Core.Parser;
 using Xunit;
 
@@ -47,7 +47,7 @@ public class BoolParserTest
     private void AssertBoolTokenEqual(Token? token, bool value)
     {
         Assert.NotNull(token);
-        Assert.Equal(TokenType.Bool, token.Type);
-        Assert.Equal(value, token.GetValue());
+        Operand<bool> boolToken = Assert.IsType<Operand<bool>>(token);
+        Assert.Equal(value, boolToken.Value);
     }
 }

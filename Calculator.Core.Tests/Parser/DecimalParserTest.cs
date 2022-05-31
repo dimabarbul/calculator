@@ -1,4 +1,4 @@
-﻿using Calculator.Core.Enum;
+﻿using Calculator.Core.Operands;
 using Calculator.Core.Parser;
 using Xunit;
 
@@ -38,7 +38,7 @@ public class DecimalParserTest
     private void AssertDecimalTokenEqual(Token? token, decimal value)
     {
         Assert.NotNull(token);
-        Assert.Equal(TokenType.Decimal, token.Type);
-        Assert.Equal(value, token.GetValue());
+        Operand<decimal> decimalToken = Assert.IsType<Operand<decimal>>(token);
+        Assert.Equal(value, decimalToken.Value);
     }
 }

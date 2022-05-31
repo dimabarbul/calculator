@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Calculator.Core.Enum;
+using Calculator.Core.Operands;
 
 namespace Calculator.Core.Parser;
 
@@ -27,7 +27,7 @@ public class VariableParser : IParser
             return false;
         }
 
-        token = new Token(formula[1..index].ToString(), TokenType.Variable);
+        token = new VariableOperand(formula[1..index].ToString());
         parsedLength = index;
 
         return true;

@@ -1,4 +1,6 @@
-﻿using Calculator.Core.Enum;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Calculator.Core.Operation;
 using Calculator.Core.Parser;
 using Xunit;
 
@@ -6,7 +8,12 @@ namespace Calculator.Core.Tests.Parser;
 
 public class FunctionParserTest
 {
-    private FunctionParser parser = new();
+    private readonly FunctionParser parser;
+
+    public FunctionParserTest(IEnumerable<IParser> parsers)
+    {
+        this.parser = (FunctionParser)parsers.Single(p => p is FunctionParser);
+    }
 
     [Fact]
     public void TryParse_OperationAtBeginning_CorrectOperation()
@@ -14,7 +21,7 @@ public class FunctionParserTest
         Token? token;
         this.parser.TryParse("floor(1.2)", out token, out _);
 
-        this.AssertOperationTokenEqual(token, "floor");
+        this.AssertFunctionTokenEqual(token, "floor");
     }
 
     [Fact]
@@ -27,12 +34,12 @@ public class FunctionParserTest
     }
 
     [Fact]
-    public void TryParse_UnknownOperation_CorrectOperation()
+    public void TryParse_UnknownOperation_Null()
     {
         Token? token;
         this.parser.TryParse("some_unknown_function()", out token, out _);
 
-        this.AssertOperationTokenEqual(token, "some_unknown_function");
+        Assert.Null(token);
     }
 
     [Fact]
@@ -50,16 +57,16 @@ public class FunctionParserTest
         Token? token;
 
         this.parser.TryParse("ceil(3)", out token, out _);
-        this.AssertOperationTokenEqual(token, "ceil");
+        this.AssertFunctionTokenEqual(token, "ceil");
 
         this.parser.TryParse("ceil<3>", out token, out _);
-        this.AssertOperationTokenEqual(token, "ceil");
+        this.AssertFunctionTokenEqual(token, "ceil");
 
         this.parser.TryParse("ceil[3]", out token, out _);
-        this.AssertOperationTokenEqual(token, "ceil");
+        this.AssertFunctionTokenEqual(token, "ceil");
 
         this.parser.TryParse("ceil{3}", out token, out _);
-        this.AssertOperationTokenEqual(token, "ceil");
+        this.AssertFunctionTokenEqual(token, "ceil");
     }
 
     [Fact]
@@ -71,10 +78,10 @@ public class FunctionParserTest
         Assert.Null(token);
     }
 
-    private void AssertOperationTokenEqual(Token? token, string value)
+    private void AssertFunctionTokenEqual(Token? token, string value)
     {
         Assert.NotNull(token);
-        Assert.Equal(TokenType.Operation, token.Type);
-        Assert.Equal(value, token.GetValue());
+        Function functionToken = Assert.IsAssignableFrom<Function>(token);
+        Assert.Equal(value, functionToken.FunctionName);
     }
 }

@@ -8,27 +8,39 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddCalculator(this IServiceCollection services)
     {
-        return AddParsers(services)
+        return services
+            .AddParsers()
+            .AddOperations()
             .AddScoped<Calculator>()
-            .AddScoped<FormulaTokenizer>()
-            .AddScoped<OperationFactory>();
+            .AddScoped<FormulaTokenizer>();
     }
 
-    private static IServiceCollection AddParsers(IServiceCollection services)
+    private static IServiceCollection AddParsers(this IServiceCollection services)
     {
-        Assembly? entryAssembly = Assembly.GetEntryAssembly();
+        return services.AddImplementations<IParser>();
+    }
 
-        if (entryAssembly != null)
+    private static IServiceCollection AddOperations(this IServiceCollection services)
+    {
+        return services.AddImplementations<Operation.Operation>();
+    }
+
+    private static IServiceCollection AddImplementations<TServiceType>(this IServiceCollection services)
+    {
+        foreach (Type parserType in GetAllTypes()
+                     .Where(t => t.IsAssignableTo(typeof(TServiceType)))
+                     .Where(t => t.IsClass && !t.IsAbstract))
         {
-            foreach (Type parserType in entryAssembly.GetReferencedAssemblies()
-                         .SelectMany(an => Assembly.Load(an).GetTypes())
-                         .Where(t => t.IsAssignableTo(typeof(IParser)))
-                         .Where(t => t.IsClass && !t.IsAbstract))
-            {
-                services.AddScoped(typeof(IParser), parserType);
-            }
+            services.AddScoped(typeof(TServiceType), parserType);
         }
 
         return services;
+    }
+
+    private static IEnumerable<Type> GetAllTypes()
+    {
+        return Assembly.GetCallingAssembly()
+            .GetReferencedAssemblies()
+            .SelectMany(an => Assembly.Load(an).GetTypes());
     }
 }

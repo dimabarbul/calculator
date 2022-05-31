@@ -2,9 +2,9 @@
 
 public enum CalculateExceptionCode
 {
-    UnknownOperation = 1,
-    NotSingleResult = 2,
-    MissingOperand = 3,
-    UnknownVariable = 4,
-    StringVariable = 5,
+    NotSingleResult = 1,
+    MissingOperand = 2,
+    UnknownVariable = 3,
+    InvalidResultType = 4,
+    InvalidVariableType = 5,
 }
