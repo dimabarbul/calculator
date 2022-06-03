@@ -27,7 +27,7 @@ public class VariableParser : IParser
             return false;
         }
 
-        token = new VariableOperand(formula[1..index].ToString());
+        token = new Variable(formula[1..index].ToString());
         parsedLength = index;
 
         return true;

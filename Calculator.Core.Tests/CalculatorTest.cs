@@ -255,25 +255,51 @@ public class CalculatorTest
     }
 
     [Fact]
-    public void Calculate_VariableVariable_ThrowsException()
+    public void Calculate_ListOperand_Correct()
     {
-        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate<decimal>(
-            "$a",
-            new Dictionary<string, Operand>
-            {
-                { "a", new VariableOperand("b") },
-            }
-        ));
-        Assert.Equal((int)CalculateExceptionCode.InvalidVariableType, exception.Code);
+        Token token = this.calculator.Calculate("(1, 2, 3)");
+
+        ListOperand listOperand = Assert.IsType<ListOperand>(token);
+        Operand<decimal> decimalOperand = Assert.IsType<Operand<decimal>>(listOperand.Operands[0]);
+        Assert.Equal(1, decimalOperand.Value);
+
+        decimalOperand = Assert.IsType<Operand<decimal>>(listOperand.Operands[1]);
+        Assert.Equal(2, decimalOperand.Value);
+
+        decimalOperand = Assert.IsType<Operand<decimal>>(listOperand.Operands[2]);
+        Assert.Equal(3, decimalOperand.Value);
     }
 
     [Theory]
-    [InlineData("1+-1", 0)]
-    [InlineData("1-+1", 0)]
-    public void Calculate_UnaryOperatorInTheMiddleOfFormula_CorrectlyDetected(string formula, decimal expected)
+    [InlineData("min(1, 2, 3)", 1)]
+    [InlineData("min((-1), (-2), (-3))", -3)]
+    [InlineData("min((-7), 9)", -7)]
+    public void Calculate_MinFunction_Correct(string formula, decimal expected)
     {
         decimal actual = this.calculator.Calculate<decimal>(formula);
 
         Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData("max(1, 2, 3)", 3)]
+    [InlineData("max((-1), (-2), (-3))", -1)]
+    [InlineData("max((-9), 7)", 7)]
+    public void Calculate_MaxFunction_Correct(string formula, decimal expected)
+    {
+        decimal actual = this.calculator.Calculate<decimal>(formula);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData("1+-1")]
+    [InlineData("1-+1")]
+    public void Calculate_UnaryOperatorInTheMiddleOfFormula_ThrowsException(string formula)
+    {
+        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate<decimal>(
+            formula
+        ));
+        Assert.Equal((int)CalculateExceptionCode.SubsequentOperators, exception.Code);
     }
 }

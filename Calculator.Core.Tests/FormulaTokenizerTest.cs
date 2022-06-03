@@ -134,9 +134,9 @@ public class FormulaTokenizerTest
         Token[] tokens = this.tokenizer.GetTokens("$test + $test2").ToArray();
 
         Assert.Equal(3, tokens.Length);
-        AssertExtensions.TokenIs<VariableOperand>(tokens[0], o => Assert.Equal("test", o.Name));
+        AssertExtensions.TokenIs<Variable>(tokens[0], o => Assert.Equal("test", o.Name));
         AssertExtensions.TokenIs<Operator>(tokens[1], o => Assert.Equal("+", o.Text));
-        AssertExtensions.TokenIs<VariableOperand>(tokens[2], o => Assert.Equal("test2", o.Name));
+        AssertExtensions.TokenIs<Variable>(tokens[2], o => Assert.Equal("test2", o.Name));
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class FormulaTokenizerTest
         AssertExtensions.TokenIs<Function>(tokens[0], o => Assert.Equal("ceil", o.FunctionName));
         AssertExtensions.TokenIs<Subformula>(tokens[1], o => Assert.Equal("1", o.Text));
         AssertExtensions.TokenIs<Operator>(tokens[2], o => Assert.Equal("/", o.Text));
-        AssertExtensions.TokenIs<VariableOperand>(tokens[3], o => Assert.Equal("test", o.Name));
+        AssertExtensions.TokenIs<Variable>(tokens[3], o => Assert.Equal("test", o.Name));
     }
 
     [Fact]

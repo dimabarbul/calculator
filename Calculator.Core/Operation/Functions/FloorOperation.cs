@@ -1,24 +1,16 @@
-﻿using Calculator.Core.Enum;
+﻿using Calculator.Core.Extensions;
 using Calculator.Core.Operands;
 
 namespace Calculator.Core.Operation.Functions;
 
 internal class FloorOperation : Function
 {
-    public FloorOperation()
-        : base(OperationPriority.Unary, 1)
-    {
-    }
-
     public override string FunctionName => "floor";
 
-    public override Token Execute(params Token[] operands)
+    protected override Token ExecuteFunction(params Operand[] operands)
     {
-        if (operands[0] is not Operand<decimal> decimalOperand)
-        {
-            throw new ArgumentException("floor can only be applied to decimal operand", nameof(operands));
-        }
+        Operand<decimal>[] decimalOperands = operands.CheckCount(1).As<decimal>();
 
-        return new Operand<decimal>(Math.Floor(decimalOperand.Value));
+        return new Operand<decimal>(Math.Floor(decimalOperands[0].Value));
     }
 }

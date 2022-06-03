@@ -1,6 +1,7 @@
 ﻿using Calculator.Core.Enum;
 using Calculator.Core.Exception;
 using Calculator.Core.Operands;
+using Calculator.Core.Operation;
 
 namespace Calculator.Core;
 
@@ -36,6 +37,7 @@ public class Calculator
 
         Stack<Token> operands = new();
         Stack<Operation.Operation> operations = new();
+        bool isLastTokenOperator = false;
 
         foreach (Token token in this.tokenizer.GetTokens(formula))
         {
@@ -44,24 +46,29 @@ public class Calculator
                 case Subformula subformula:
                     operands.Push(this.Calculate(subformula.Text));
                     break;
-                case VariableOperand variableOperand:
-                    if (variables == null || !variables.ContainsKey(variableOperand.Name))
+                case Variable variable:
+                    if (variables == null || !variables.ContainsKey(variable.Name))
                     {
                         throw new CalculateException(CalculateExceptionCode.UnknownVariable);
                     }
 
-                    Type variableType = variables[variableOperand.Name].GetType();
+                    Type variableType = variables[variable.Name].GetType();
                     if (!variableType.IsGenericType || variableType.GetGenericTypeDefinition() != typeof(Operand<>))
                     {
                         throw new CalculateException(CalculateExceptionCode.InvalidVariableType);
                     }
 
-                    operands.Push(variables[variableOperand.Name]);
+                    operands.Push(variables[variable.Name]);
                     break;
                 case Operand:
                     operands.Push(token);
                     break;
                 case Operation.Operation operation:
+                    if (isLastTokenOperator && operation is Operator)
+                    {
+                        throw new CalculateException(CalculateExceptionCode.SubsequentOperators);
+                    }
+
                     while (operations.Count > 0)
                     {
                         Operation.Operation previousOperation = operations.Peek();
@@ -79,6 +86,8 @@ public class Calculator
                     operations.Push(operation);
                     break;
             }
+
+            isLastTokenOperator = token is Operator;
         }
 
         while (operations.Count > 0)

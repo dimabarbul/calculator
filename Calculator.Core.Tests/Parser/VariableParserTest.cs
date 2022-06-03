@@ -56,7 +56,7 @@ public class VariableParserTest
     private void AssertVariableTokenEqual(Token? token, string value)
     {
         Assert.NotNull(token);
-        VariableOperand variableToken = Assert.IsType<VariableOperand>(token);
+        Variable variableToken = Assert.IsType<Variable>(token);
         Assert.Equal(value, variableToken.Name);
     }
 }

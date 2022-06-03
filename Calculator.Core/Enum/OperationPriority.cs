@@ -2,6 +2,7 @@
 
 public enum OperationPriority
 {
+    Comma = 0,
     Add = 1,
     Subtract = 1,
     Multiply = 2,

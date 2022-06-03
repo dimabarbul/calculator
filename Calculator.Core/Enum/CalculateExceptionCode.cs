@@ -7,4 +7,5 @@ public enum CalculateExceptionCode
     UnknownVariable = 3,
     InvalidResultType = 4,
     InvalidVariableType = 5,
+    SubsequentOperators = 6,
 }

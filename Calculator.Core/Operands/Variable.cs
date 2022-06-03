@@ -1,8 +1,8 @@
 ﻿namespace Calculator.Core.Operands;
 
-public class VariableOperand : Operand
+public class Variable : Token
 {
-    public VariableOperand(string name)
+    public Variable(string name)
     {
         this.Name = name;
     }
