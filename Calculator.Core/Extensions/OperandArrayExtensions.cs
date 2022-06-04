@@ -4,33 +4,35 @@ namespace Calculator.Core.Extensions;
 
 public static class OperandArrayExtensions
 {
-    public static Operand[] CheckCount(this Operand[] operands, int count)
+    public static IReadOnlyList<Operand> CheckCount(this IReadOnlyList<Operand> operands, int count)
     {
-        if (operands.Length != count)
+        if (operands.Count != count)
         {
-            throw new ArgumentException($"Expected {count} operands, got {operands.Length}");
+            throw new ArgumentException($"Expected {count} operands, got {operands.Count}");
         }
 
         return operands;
     }
 
-    public static Operand<TValue>[] As<TValue>(this Operand[] operands)
+    public static void CheckValueType<TValue>(this IReadOnlyList<Operand> operands)
     {
-        if (operands.Any(o => o is not Operand<TValue>))
+        foreach (Operand operand in operands)
         {
-            throw new ArgumentException($"Expected all operands to be of type {typeof(Operand<TValue>)}");
+            if (operand is not Operand<TValue>)
+            {
+                throw new ArgumentException($"Expected all operands to be of type {typeof(Operand<TValue>)}");
+            }
         }
-
-        return operands
-            .Cast<Operand<TValue>>()
-            .ToArray();
     }
 
-    public static TValue[] GetValues<TValue>(this Operand[] operands)
+    public static void CheckAllOperands(this IList<Token> tokens)
     {
-        return operands
-            .As<TValue>()
-            .Select(o => o.Value)
-            .ToArray();
+        foreach (Token token in tokens)
+        {
+            if (token is not Operand)
+            {
+                throw new ArgumentException($"Expected all operands to be of type {typeof(Operand)}");
+            }
+        }
     }
 }

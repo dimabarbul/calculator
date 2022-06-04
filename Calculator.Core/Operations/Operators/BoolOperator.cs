@@ -10,18 +10,22 @@ internal abstract class BoolOperator : Operator
     {
     }
 
-    public override Token Execute(params Token[] operands)
+    public override Token Execute(IList<Token> operands)
     {
         this.ValidateOperandsCount(operands);
 
-        if (operands.Any(o => o is not Operand<bool>))
+        bool[] boolValues = new bool[operands.Count];
+        for (int i = 0; i < operands.Count; i++)
         {
-            throw new ArgumentException("Decimal operation can be performed only on decimal operands", nameof(operands));
+            if (operands[i] is not Operand<bool> boolOperand)
+            {
+                throw new ArgumentException("Decimal operation can be performed only on decimal operands", nameof(operands));
+            }
+
+            boolValues[i] = boolOperand.Value;
         }
 
-        bool result = this.GetBoolResult(
-            operands.Cast<Operand<bool>>().Select(o => o.Value).ToArray()
-        );
+        bool result = this.GetBoolResult(boolValues);
 
         return new Operand<bool>(result);
     }

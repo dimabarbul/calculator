@@ -1,4 +1,5 @@
 ﻿using Calculator.Core.Enums;
+using Calculator.Core.Extensions;
 using Calculator.Core.Operands;
 
 namespace Calculator.Core.Operations.Operators;
@@ -12,12 +13,9 @@ public class CommaOperator : Operator
 
     public override string Text => ",";
 
-    public override Token Execute(params Token[] operands)
+    public override Token Execute(IList<Token> operands)
     {
-        if (operands.Any(o => o is not Operand))
-        {
-            throw new ArgumentException("Comma operator can operate only operands.", nameof(operands));
-        }
+        operands.CheckAllOperands();
 
         if (operands[0] is ListOperand listOperand)
         {

@@ -75,7 +75,7 @@ public class FormulaTokenizerTest
         Token[] tokens = this.tokenizer.GetTokens("1 + (2 + 3)").ToArray();
 
         Assert.Equal(3, tokens.Length);
-        AssertExtensions.TokenIs<Subformula>(tokens[2], o => Assert.Equal("2+3", o.Text));
+        AssertExtensions.TokenIs<Subformula>(tokens[2], o => Assert.Equal("2 + 3", o.Text));
     }
 
     [Fact]
@@ -118,9 +118,9 @@ public class FormulaTokenizerTest
     }
 
     [Theory]
-    [InlineData("[1 + 2]", "1+2")]
-    [InlineData("{ 5.2 }", "5.2")]
-    [InlineData("<8 / 0>", "8/0")]
+    [InlineData("[1 + 2]", "1 + 2")]
+    [InlineData("{ 5.2 }", " 5.2 ")]
+    [InlineData("<8 / 0>", "8 / 0")]
     public void GetTokens_DifferentBrackets_ParsedAsSubformula(string formula, string subformula)
     {
         Token[] tokens = this.tokenizer.GetTokens(formula).ToArray();

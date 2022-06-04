@@ -16,10 +16,12 @@ public class CalculatorTest
         this.calculator = calculator;
     }
 
-    [Fact]
-    public void Calculate_EmptyFormula_Zero()
+    [Theory]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Calculate_EmptyFormula_Zero(string formula)
     {
-        Assert.Throws<ArgumentNullException>(() => this.calculator.Calculate<decimal>(string.Empty));
+        Assert.Throws<ArgumentNullException>(() => this.calculator.Calculate<decimal>(formula));
     }
 
     [Fact]

@@ -7,10 +7,13 @@ internal class FloorOperation : Function
 {
     public override string FunctionName => "floor";
 
-    protected override Token ExecuteFunction(params Operand[] operands)
+    protected override Token ExecuteFunction(IReadOnlyList<Operand> operands)
     {
-        Operand<decimal>[] decimalOperands = operands.CheckCount(1).As<decimal>();
+        operands
+            .CheckCount(1)
+            .CheckValueType<decimal>();
+        Operand<decimal> decimalOperand = (Operand<decimal>)operands[0];
 
-        return new Operand<decimal>(Math.Floor(decimalOperands[0].Value));
+        return new Operand<decimal>(Math.Floor(decimalOperand.Value));
     }
 }

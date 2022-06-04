@@ -10,18 +10,23 @@ internal abstract class DecimalOperator : Operator
     {
     }
 
-    public override Token Execute(params Token[] operands)
+    public override Token Execute(IList<Token> operands)
     {
         this.ValidateOperandsCount(operands);
 
-        if (operands.Any(o => o is not Operand<decimal>))
+        decimal[] decimalValues = new decimal[operands.Count];
+        for (int i = 0; i < operands.Count; i++)
         {
-            throw new ArgumentException("Decimal operation can be performed only on decimal operands", nameof(operands));
+            if (operands[i] is not Operand<decimal> decimalOperand)
+            {
+                throw new ArgumentException("Decimal operation can be performed only on decimal operands", nameof(operands));
+            }
+
+            decimalValues[i] = decimalOperand.Value;
         }
 
-        decimal result = this.GetDecimalResult(
-            operands.Cast<Operand<decimal>>().Select(o => o.Value).ToArray()
-        );
+
+        decimal result = this.GetDecimalResult(decimalValues);
 
         return new Operand<decimal>(result);
     }

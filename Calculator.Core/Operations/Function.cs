@@ -10,17 +10,23 @@ public abstract class Function : Operation
     {
     }
 
-    public override Token Execute(params Token[] operands)
+    public override Token Execute(IList<Token> operands)
     {
-        Operand[] functionOperands;
+        IReadOnlyList<Operand> functionOperands;
 
         if (operands[0] is ListOperand listOperand)
         {
-            functionOperands = listOperand.Operands.ToArray();
+            functionOperands = listOperand.Operands;
         }
         else
         {
-            functionOperands = operands.Cast<Operand>().ToArray();
+            Operand[] convertedOperands = new Operand[operands.Count];
+            for (int i = 0; i < operands.Count; i++)
+            {
+                convertedOperands[i] = (Operand)operands[i];
+            }
+
+            functionOperands = convertedOperands;
         }
 
         return this.ExecuteFunction(functionOperands);
@@ -28,5 +34,5 @@ public abstract class Function : Operation
 
     public abstract string FunctionName { get; }
 
-    protected abstract Token ExecuteFunction(params Operand[] operands);
+    protected abstract Token ExecuteFunction(IReadOnlyList<Operand> operands);
 }

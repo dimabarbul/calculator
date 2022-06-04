@@ -8,7 +8,7 @@ public class ListOperand : Operand
 
     public ListOperand(params Operand[] operands)
     {
-        this.operands = new(operands);
+        this.operands = new List<Operand>(operands);
     }
 
     public void Add(Operand operand)

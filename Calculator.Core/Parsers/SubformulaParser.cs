@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Calculator.Core.Parsers;
 
@@ -59,12 +60,12 @@ public class SubformulaParser : IParser
 
     private bool IsOpeningParenthesis(char c)
     {
-        return OpeningBrackets.Contains(c);
+        return ((IList)OpeningBrackets).Contains(c);
     }
 
     private bool IsClosingParenthesis(char c)
     {
-        return ClosingBrackets.Contains(c);
+        return ((IList)ClosingBrackets).Contains(c);
     }
 
     private bool AreBracketsOfSameType(char openingBrackets, char closingBrackets)

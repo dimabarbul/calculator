@@ -5,14 +5,17 @@ namespace Calculator.Core.Parsers;
 
 public class OperatorParser : IParser
 {
-    private readonly Dictionary<string, Operator> operations;
+    private readonly Dictionary<string, Operator> operations = new();
 
     public OperatorParser(IEnumerable<Operation> operations)
     {
-        this.operations = operations
-            .Where(o => o is Operator)
-            .Cast<Operator>()
-            .ToDictionary(o => o.Text);
+        foreach (Operation operation in operations)
+        {
+            if (operation is Operator @operator)
+            {
+                this.operations[@operator.Text] = @operator;
+            }
+        }
     }
 
     public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)

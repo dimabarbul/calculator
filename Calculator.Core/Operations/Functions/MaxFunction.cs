@@ -7,12 +7,22 @@ public class MaxFunction : Function
 {
     public override string FunctionName => "max";
 
-    protected override Token ExecuteFunction(params Operand[] operands)
+    protected override Token ExecuteFunction(IReadOnlyList<Operand> operands)
     {
-        Operand<decimal>[] decimalOperands = operands.As<decimal>();
+        operands.CheckValueType<decimal>();
 
-        decimal maxValue = decimalOperands.Max(o => o.Value);
+        Operand<decimal> result = (Operand<decimal>)operands[0];
 
-        return decimalOperands.First(o => o.Value == maxValue);
+        for (int i = 1; i < operands.Count; i++)
+        {
+            Operand<decimal> operand = ((Operand<decimal>)operands[i]);
+            decimal value = operand.Value;
+            if (value > result.Value)
+            {
+                result = operand;
+            }
+        }
+
+        return result;
     }
 }

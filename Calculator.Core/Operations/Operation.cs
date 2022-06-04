@@ -15,13 +15,13 @@ public abstract class Operation : Token
         this.MinOperandsCount = minOperandsCount ?? maxOperandsCount;
     }
 
-    protected void ValidateOperandsCount(Token[] operands)
+    protected void ValidateOperandsCount(IList<Token> operands)
     {
-        if (operands.Length < this.MinOperandsCount || operands.Length > this.MaxOperandsCount)
+        if (operands.Count < this.MinOperandsCount || operands.Count > this.MaxOperandsCount)
         {
-            throw new ArgumentException($"Operands count is invalid. Expected: {this.MinOperandsCount} to {this.MaxOperandsCount}, got: {operands.Length}");
+            throw new ArgumentException($"Operands count is invalid. Expected: {this.MinOperandsCount} to {this.MaxOperandsCount}, got: {operands.Count}");
         }
     }
 
-    public abstract Token Execute(params Token[] operands);
+    public abstract Token Execute(IList<Token> operands);
 }

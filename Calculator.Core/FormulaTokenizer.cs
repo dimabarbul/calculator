@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq;
 using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Parsers;
@@ -21,12 +21,18 @@ public class FormulaTokenizer
             yield break;
         }
 
-        ReadOnlyMemory<char> sanitizedFormula = new Regex(@"\s+").Replace(formula, string.Empty).AsMemory();
+        ReadOnlyMemory<char> sanitizedFormula = formula.AsMemory();
 
         int index = 0;
 
         while (index < sanitizedFormula.Length)
         {
+            if (char.IsWhiteSpace(sanitizedFormula.Span[index]))
+            {
+                index++;
+                continue;
+            }
+
             Token? token = null;
             foreach (IParser parser in this.parsers)
             {

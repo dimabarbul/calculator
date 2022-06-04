@@ -5,14 +5,17 @@ namespace Calculator.Core.Parsers;
 
 public class FunctionParser : IParser
 {
-    private readonly Dictionary<string, Function> operations;
+    private readonly Dictionary<string, Function> operations = new();
 
     public FunctionParser(IEnumerable<Operation> operations)
     {
-        this.operations = operations
-            .Where(o => o is Function)
-            .Cast<Function>()
-            .ToDictionary(o => o.FunctionName);
+        foreach (Operation operation in operations)
+        {
+            if (operation is Function function)
+            {
+                this.operations[function.FunctionName] = function;
+            }
+        }
     }
 
     public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)

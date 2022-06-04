@@ -11,6 +11,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.ConsoleApp", "Ca
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Core.DependencyInjection", "Calculator.Core.DependencyInjection\Calculator.Core.DependencyInjection.csproj", "{A446143B-51F5-4015-9D32-FAECB53DD3A2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{9E0D863B-75C6-4647-B40C-64890BCBBDB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Collections", "libs\Calculator.Collections\Calculator.Collections.csproj", "{590C9796-49FE-42D7-90AB-57E6C93484A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console.Collections.Tests", "libs\Console.Collections.Tests\Console.Collections.Tests.csproj", "{B5392614-0FF3-4AFE-9FFA-2C4E94C5D319}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +39,20 @@ Global
 		{A446143B-51F5-4015-9D32-FAECB53DD3A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A446143B-51F5-4015-9D32-FAECB53DD3A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A446143B-51F5-4015-9D32-FAECB53DD3A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{590C9796-49FE-42D7-90AB-57E6C93484A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590C9796-49FE-42D7-90AB-57E6C93484A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590C9796-49FE-42D7-90AB-57E6C93484A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590C9796-49FE-42D7-90AB-57E6C93484A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5392614-0FF3-4AFE-9FFA-2C4E94C5D319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5392614-0FF3-4AFE-9FFA-2C4E94C5D319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5392614-0FF3-4AFE-9FFA-2C4E94C5D319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5392614-0FF3-4AFE-9FFA-2C4E94C5D319}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{590C9796-49FE-42D7-90AB-57E6C93484A3} = {9E0D863B-75C6-4647-B40C-64890BCBBDB5}
+		{B5392614-0FF3-4AFE-9FFA-2C4E94C5D319} = {9E0D863B-75C6-4647-B40C-64890BCBBDB5}
 	EndGlobalSection
 EndGlobal

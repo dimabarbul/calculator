@@ -1,4 +1,5 @@
-﻿using Calculator.Core.Enums;
+﻿using Calculator.Collections;
+using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Calculator.Core.Operations;
@@ -35,8 +36,8 @@ public class Calculator
             throw new ArgumentNullException(nameof(formula));
         }
 
-        Stack<Token> operands = new();
-        Stack<Operation> operations = new();
+        MyStack<Token> operands = new();
+        MyStack<Operation> operations = new();
         bool isLastTokenOperator = false;
 
         foreach (Token token in this.tokenizer.GetTokens(formula))
@@ -103,7 +104,7 @@ public class Calculator
         return operands.Pop();
     }
 
-    private void ExecuteOperation(Stack<Token> operands, Stack<Operation> operations)
+    private void ExecuteOperation(MyStack<Token> operands, MyStack<Operation> operations)
     {
         Operation operation = operations.Pop();
 
@@ -112,10 +113,8 @@ public class Calculator
             throw new CalculateException(CalculateExceptionCode.MissingOperand);
         }
 
-        Token[] operandTokens = Enumerable.Range(0, Math.Min(operation.MaxOperandsCount, operands.Count))
-            .Select(_ => operands.Pop())
-            .Reverse()
-            .ToArray();
+        int count = Math.Min(operation.MaxOperandsCount, operands.Count);
+        ArraySegment<Token> operandTokens = operands.Pop(count);
 
         Token result = operation.Execute(operandTokens);
 
