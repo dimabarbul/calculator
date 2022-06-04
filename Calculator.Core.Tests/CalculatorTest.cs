@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Calculator.Core.Enum;
-using Calculator.Core.Exception;
+using Calculator.Core.Enums;
+using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Xunit;
 

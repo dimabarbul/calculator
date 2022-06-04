@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
-using Calculator.Core.Parser;
+using Calculator.Core.Operations;
+using Calculator.Core.Parsers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Calculator.Core.DependencyInjection;
@@ -22,7 +23,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddOperations(this IServiceCollection services)
     {
-        return services.AddImplementations<Operation.Operation>();
+        return services.AddImplementations<Operation>();
     }
 
     private static IServiceCollection AddImplementations<TServiceType>(this IServiceCollection services)

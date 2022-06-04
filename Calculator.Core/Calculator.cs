@@ -1,7 +1,7 @@
-﻿using Calculator.Core.Enum;
-using Calculator.Core.Exception;
+﻿using Calculator.Core.Enums;
+using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
-using Calculator.Core.Operation;
+using Calculator.Core.Operations;
 
 namespace Calculator.Core;
 
@@ -36,7 +36,7 @@ public class Calculator
         }
 
         Stack<Token> operands = new();
-        Stack<Operation.Operation> operations = new();
+        Stack<Operation> operations = new();
         bool isLastTokenOperator = false;
 
         foreach (Token token in this.tokenizer.GetTokens(formula))
@@ -63,7 +63,7 @@ public class Calculator
                 case Operand:
                     operands.Push(token);
                     break;
-                case Operation.Operation operation:
+                case Operation operation:
                     if (isLastTokenOperator && operation is Operator)
                     {
                         throw new CalculateException(CalculateExceptionCode.SubsequentOperators);
@@ -71,7 +71,7 @@ public class Calculator
 
                     while (operations.Count > 0)
                     {
-                        Operation.Operation previousOperation = operations.Peek();
+                        Operation previousOperation = operations.Peek();
 
                         if (previousOperation.Priority >= operation.Priority)
                         {
@@ -103,9 +103,9 @@ public class Calculator
         return operands.Pop();
     }
 
-    private void ExecuteOperation(Stack<Token> operands, Stack<Operation.Operation> operations)
+    private void ExecuteOperation(Stack<Token> operands, Stack<Operation> operations)
     {
-        Operation.Operation operation = operations.Pop();
+        Operation operation = operations.Pop();
 
         if (operands.Count < operation.MinOperandsCount)
         {

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using Calculator.Core.Enum;
-using Calculator.Core.Exception;
-using Calculator.Core.Parser;
+using Calculator.Core.Enums;
+using Calculator.Core.Exceptions;
+using Calculator.Core.Parsers;
 
 namespace Calculator.Core;
 
