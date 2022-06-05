@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
-using Calculator.Core.Operations;
 using Calculator.Core.Tests.Extensions;
+using Calculator.Core.Tokens;
 using Xunit;
 
 namespace Calculator.Core.Tests;
@@ -28,18 +29,16 @@ public class FormulaTokenizerTest
     [Fact]
     public void GetTokens_OneNumber_ReturnsNumberToken()
     {
-        string formula = "1";
+        const string formula = "1";
         Token[] tokens = this.tokenizer.GetTokens(formula).ToArray();
 
         Assert.Single(tokens);
-        this.AssertDecimalTokenEqual(tokens[0], 1);
+        this.AssertIntTokenEqual(tokens[0], 1);
     }
 
     [Theory]
-    [InlineData("-")]
-    [InlineData("+")]
-    [InlineData("*")]
-    [InlineData("/")]
+    [InlineData("plus")]
+    [InlineData("minus")]
     public void GetTokens_OneOperation_ReturnsOperationToken(string formula)
     {
         Token[] tokens = this.tokenizer.GetTokens(formula).ToArray();
@@ -49,76 +48,28 @@ public class FormulaTokenizerTest
         Assert.Equal(formula, operatorToken.Text);
     }
 
-    [Theory]
-    [InlineData(".34", 0.34)]
-    [InlineData(".", 0)]
-    public void GetTokens_NumberWithLeadingPeriod_CorrectNumberToken(string formula, decimal expectedValue)
-    {
-        Token[] tokens = this.tokenizer.GetTokens(formula).ToArray();
-        Assert.Single(tokens);
-        this.AssertDecimalTokenEqual(tokens[0], expectedValue);
-    }
-
     [Fact]
-    public void GetTokens_OperationBeforeLeadingPeriod_SeparateTokens()
+    public void GetTokens_MultipleOperators_ReturnsOperatorTokens()
     {
-        Token[] tokens = this.tokenizer.GetTokens("+.").ToArray();
-
-        Assert.Equal(2, tokens.Length);
-        AssertExtensions.TokenIs<Operator>(tokens[0], o => Assert.Equal("+", o.Text));
-        AssertExtensions.TokenIs<Operand<decimal>>(tokens[1], o => Assert.Equal(0, o.Value));
-    }
-
-    [Fact]
-    public void GetTokens_ExpressionInBrackets_IsSubformula()
-    {
-        Token[] tokens = this.tokenizer.GetTokens("1 + (2 + 3)").ToArray();
+        Token[] tokens = this.tokenizer.GetTokens("plus minus plus").ToArray();
 
         Assert.Equal(3, tokens.Length);
-        AssertExtensions.TokenIs<Subformula>(tokens[2], o => Assert.Equal("2 + 3", o.Text));
+        AssertExtensions.TokenIs<Operator>(tokens[0], o => Assert.Equal("plus", o.Text));
+        AssertExtensions.TokenIs<Operator>(tokens[1], o => Assert.Equal("minus", o.Text));
+        AssertExtensions.TokenIs<Operator>(tokens[2], o => Assert.Equal("plus", o.Text));
     }
 
     [Fact]
-    public void GetTokens_UnaryPlus_Parsed()
+    public void GetTokens_UnknownOperation_ThrowsException()
     {
-        Token[] tokens = this.tokenizer.GetTokens("+2").ToArray();
+        ParseException parseException = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("*").ToArray());
 
-        Assert.Equal(2, tokens.Length);
-        AssertExtensions.TokenIs<Operator>(tokens[0], o => Assert.Equal("+", o.Text));
-        this.AssertDecimalTokenEqual(tokens[1], 2);
-    }
-
-    [Fact]
-    public void GetTokens_UnaryMinus_Parsed()
-    {
-        Token[] tokens = this.tokenizer.GetTokens("-5").ToArray();
-
-        Assert.Equal(2, tokens.Length);
-        AssertExtensions.TokenIs<Operator>(tokens[0], o => Assert.Equal("-", o.Text));
-        this.AssertDecimalTokenEqual(tokens[1], 5);
+        Assert.Equal((int)ParseExceptionCode.UnparsedToken, parseException.Code);
     }
 
     [Theory]
-    [InlineData("true")]
-    [InlineData("false")]
-    public void GetTokens_TrueFalse_Parsed(string formula)
-    {
-        Token[] tokens = this.tokenizer.GetTokens(formula).ToArray();
-
-        Assert.Single(tokens);
-        AssertExtensions.TokenIs<Operand<bool>>(tokens[0], o => Assert.Equal(bool.Parse(formula), o.Value));
-    }
-
-    [Fact]
-    public void GetTokens_UnknownOperation_DontThrowException()
-    {
-        System.Exception? exception = Record.Exception(() => this.tokenizer.GetTokens("1+-2").ToArray());
-
-        Assert.Null(exception);
-    }
-
-    [Theory]
-    [InlineData("[1 + 2]", "1 + 2")]
+    [InlineData("(1 plus 2, 3)", "1 plus 2, 3")]
+    [InlineData("[1 plus 2]", "1 plus 2")]
     [InlineData("{ 5.2 }", " 5.2 ")]
     [InlineData("<8 / 0>", "8 / 0")]
     public void GetTokens_DifferentBrackets_ParsedAsSubformula(string formula, string subformula)
@@ -131,49 +82,69 @@ public class FormulaTokenizerTest
     [Fact]
     public void GetTokens_Variable_Parsed()
     {
-        Token[] tokens = this.tokenizer.GetTokens("$test + $test2").ToArray();
+        Token[] tokens = this.tokenizer.GetTokens("$test plus $test2").ToArray();
 
         Assert.Equal(3, tokens.Length);
         AssertExtensions.TokenIs<Variable>(tokens[0], o => Assert.Equal("test", o.Name));
-        AssertExtensions.TokenIs<Operator>(tokens[1], o => Assert.Equal("+", o.Text));
+        AssertExtensions.TokenIs<Operator>(tokens[1], o => Assert.Equal("plus", o.Text));
         AssertExtensions.TokenIs<Variable>(tokens[2], o => Assert.Equal("test2", o.Name));
-    }
-
-    [Fact]
-    public void GetTokens_VariableAndOperation_Parsed()
-    {
-        Token[] tokens = this.tokenizer.GetTokens("ceil(1) / $test").ToArray();
-
-        Assert.Equal(4, tokens.Length);
-        AssertExtensions.TokenIs<Function>(tokens[0], o => Assert.Equal("ceil", o.FunctionName));
-        AssertExtensions.TokenIs<Subformula>(tokens[1], o => Assert.Equal("1", o.Text));
-        AssertExtensions.TokenIs<Operator>(tokens[2], o => Assert.Equal("/", o.Text));
-        AssertExtensions.TokenIs<Variable>(tokens[3], o => Assert.Equal("test", o.Name));
     }
 
     [Fact]
     public void GetTokens_UnmatchedClosingBrackets_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens(")-1)").ToArray());
+        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens(")minus1").ToArray());
         Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
     }
 
     [Fact]
     public void GetTokens_NoClosingBrackets_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("2*(3-4").ToArray());
+        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("2*(3 minus 4").ToArray());
         Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
     }
 
     [Fact]
     public void GetTokens_ClosingBracketsOfDifferentType_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("2*(3-4>/4").ToArray());
+        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("2*(3 minus 4>/4").ToArray());
         Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
     }
 
-    private void AssertDecimalTokenEqual(Token token, decimal value)
+    private void AssertIntTokenEqual(Token token, int value)
     {
-        AssertExtensions.TokenIs<Operand<decimal>>(token, o => Assert.Equal(value, o.Value));
+        AssertExtensions.TokenIs<Operand<int>>(token, o => Assert.Equal(value, o.Value));
+    }
+
+    public class PlusOperator : Operator
+    {
+        public override string Text => "plus";
+
+        public PlusOperator()
+            : base(OperationPriority.Add, 2)
+        {
+        }
+
+        public override Token Execute(IList<Token> operands)
+        {
+            // implementation does not matter for the tests
+            return operands[0];
+        }
+    }
+
+    public class MinusOperator : Operator
+    {
+        public override string Text => "minus";
+
+        public MinusOperator()
+            : base(OperationPriority.Subtract, 2)
+        {
+        }
+
+        public override Token Execute(IList<Token> operands)
+        {
+            // implementation does not matter for the tests
+            return operands[0];
+        }
     }
 }

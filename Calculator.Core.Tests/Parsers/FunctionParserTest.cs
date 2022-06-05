@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Calculator.Core.Operations;
+using Calculator.Core.Operands;
 using Calculator.Core.Parsers;
+using Calculator.Core.Tokens;
 using Xunit;
 
 namespace Calculator.Core.Tests.Parsers;
@@ -18,63 +19,57 @@ public class FunctionParserTest
     [Fact]
     public void TryParse_OperationAtBeginning_CorrectOperation()
     {
-        Token? token;
-        this.parser.TryParse("floor(1.2)", out token, out _);
+        bool isParsed = this.parser.TryParse("test(1.2)", out Token? token, out _);
 
-        this.AssertFunctionTokenEqual(token, "floor");
+        Assert.True(isParsed);
+        this.AssertFunctionTokenEqual(token, "test");
     }
 
     [Fact]
     public void TryParse_OperationNotAtBeginning_Null()
     {
-        Token? token;
-        this.parser.TryParse("1-ceil(0.01)", out token, out _);
+        bool isParsed = this.parser.TryParse("1-test(0.01)", out Token? token, out _);
 
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_UnknownOperation_Null()
     {
-        Token? token;
-        this.parser.TryParse("some_unknown_function()", out token, out _);
+        bool isParsed = this.parser.TryParse("some_unknown_function()", out Token? token, out _);
 
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_StartsWithNumber_Null()
     {
-        Token? token;
-        this.parser.TryParse("2radians(180)", out token, out _);
+        bool isParsed = this.parser.TryParse("2radians(180)", out Token? token, out _);
 
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
-    [Fact]
-    public void TryParse_OperationFollowedByDifferentParenthesis_CorrectOperation()
+    [Theory]
+    [InlineData("test(3)")]
+    [InlineData("test<3>")]
+    [InlineData("test[3]")]
+    [InlineData("test{3}")]
+    public void TryParse_OperationFollowedByDifferentParenthesis_CorrectOperation(string formula)
     {
-        Token? token;
-
-        this.parser.TryParse("ceil(3)", out token, out _);
-        this.AssertFunctionTokenEqual(token, "ceil");
-
-        this.parser.TryParse("ceil<3>", out token, out _);
-        this.AssertFunctionTokenEqual(token, "ceil");
-
-        this.parser.TryParse("ceil[3]", out token, out _);
-        this.AssertFunctionTokenEqual(token, "ceil");
-
-        this.parser.TryParse("ceil{3}", out token, out _);
-        this.AssertFunctionTokenEqual(token, "ceil");
+        bool isParsed = this.parser.TryParse(formula, out Token? token, out _);
+        Assert.True(isParsed);
+        this.AssertFunctionTokenEqual(token, "test");
     }
 
     [Fact]
     public void TryParse_EmptyString_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse(string.Empty, out Token? token, out _);
 
-        this.parser.TryParse(string.Empty, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
@@ -83,5 +78,15 @@ public class FunctionParserTest
         Assert.NotNull(token);
         Function functionToken = Assert.IsAssignableFrom<Function>(token);
         Assert.Equal(value, functionToken.FunctionName);
+    }
+
+    public class TestFunction : Function
+    {
+        public override string FunctionName => "test";
+
+        protected override Token ExecuteFunction(IReadOnlyList<Operand> operands)
+        {
+            return operands[0];
+        }
     }
 }

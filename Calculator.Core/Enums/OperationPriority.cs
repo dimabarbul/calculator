@@ -8,6 +8,6 @@ public enum OperationPriority
     Multiply = 2,
     Divide = 2,
     Or = 3,
-    And = 3,
+    And = 4,
     Unary = 10,
 }

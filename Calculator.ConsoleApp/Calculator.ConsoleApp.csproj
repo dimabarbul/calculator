@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Calculator.Core.DependencyInjection\Calculator.Core.DependencyInjection.csproj" />
+    <ProjectReference Include="..\Calculator.Extra\Calculator.Extra.csproj" />
   </ItemGroup>
 
   <ItemGroup>

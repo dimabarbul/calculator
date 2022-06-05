@@ -2,7 +2,7 @@
 using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
-using Calculator.Core.Operations;
+using Calculator.Core.Tokens;
 
 namespace Calculator.Core;
 

@@ -1,4 +1,5 @@
 ﻿using Calculator.Core.DependencyInjection;
+using Calculator.Extra.Operators;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Calculator.ConsoleApp;
@@ -37,7 +38,7 @@ public class Program
     private static IServiceProvider SetupDI()
     {
         return new ServiceCollection()
-            .AddCalculator()
+            .AddCalculator(typeof(AddOperator).Assembly)
             .BuildServiceProvider(validateScopes: true);
     }
 }

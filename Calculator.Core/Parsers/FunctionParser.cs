@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Calculator.Core.Operations;
+using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Parsers;
 

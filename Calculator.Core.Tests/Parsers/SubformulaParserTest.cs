@@ -1,11 +1,12 @@
 ﻿using Calculator.Core.Parsers;
+using Calculator.Core.Tokens;
 using Xunit;
 
 namespace Calculator.Core.Tests.Parsers;
 
 public class SubformulaParserTest
 {
-    private SubformulaParser parser = new();
+    private readonly SubformulaParser parser = new();
 
     [Fact]
     public void TryParse_SubformulaAtBeginning_Correct()

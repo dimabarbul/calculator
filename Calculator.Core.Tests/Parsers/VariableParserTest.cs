@@ -1,11 +1,12 @@
 ﻿using Calculator.Core.Parsers;
+using Calculator.Core.Tokens;
 using Xunit;
 
 namespace Calculator.Core.Tests.Parsers;
 
 public class VariableParserTest
 {
-    private VariableParser parser = new();
+    private readonly VariableParser parser = new();
 
     [Fact]
     public void TryParse_VariableAtBeginning_Correct()

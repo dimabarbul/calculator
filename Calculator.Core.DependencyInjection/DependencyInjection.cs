@@ -1,36 +1,37 @@
 ﻿using System.Reflection;
-using Calculator.Core.Operations;
 using Calculator.Core.Parsers;
+using Calculator.Core.Tokens;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Calculator.Core.DependencyInjection;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddCalculator(this IServiceCollection services)
+    public static IServiceCollection AddCalculator(this IServiceCollection services, params Assembly[] extraAssemblies)
     {
         return services
-            .AddParsers()
-            .AddOperations()
+            .AddParsers(extraAssemblies)
+            .AddOperations(extraAssemblies)
             .AddScoped<Calculator>()
             .AddScoped<FormulaTokenizer>();
     }
 
-    private static IServiceCollection AddParsers(this IServiceCollection services)
+    private static IServiceCollection AddParsers(this IServiceCollection services, Assembly[] extraAssemblies)
     {
-        return services.AddImplementations<IParser>();
+        return services.AddImplementations<IParser>(extraAssemblies);
     }
 
-    private static IServiceCollection AddOperations(this IServiceCollection services)
+    private static IServiceCollection AddOperations(this IServiceCollection services, Assembly[] extraAssemblies)
     {
-        return services.AddImplementations<Operation>();
+        return services.AddImplementations<Operation>(extraAssemblies);
     }
 
-    private static IServiceCollection AddImplementations<TServiceType>(this IServiceCollection services)
+    private static IServiceCollection AddImplementations<TServiceType>(this IServiceCollection services,
+        Assembly[] extraAssemblies)
     {
-        foreach (Type parserType in GetAllTypes()
-                     .Where(t => t.IsAssignableTo(typeof(TServiceType)))
-                     .Where(t => t.IsClass && !t.IsAbstract))
+        foreach (Type parserType in GetAllTypes(extraAssemblies)
+            .Where(t => t.IsAssignableTo(typeof(TServiceType)))
+            .Where(t => t.IsClass && !t.IsAbstract))
         {
             services.AddScoped(typeof(TServiceType), parserType);
         }
@@ -38,10 +39,11 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IEnumerable<Type> GetAllTypes()
+    private static IEnumerable<Type> GetAllTypes(Assembly[] extraAssemblies)
     {
-        return Assembly.GetCallingAssembly()
-            .GetReferencedAssemblies()
-            .SelectMany(an => Assembly.Load(an).GetTypes());
+        return AppDomain.CurrentDomain
+            .GetAssemblies()
+            .Concat(extraAssemblies)
+            .SelectMany(a => a.GetTypes());
     }
 }

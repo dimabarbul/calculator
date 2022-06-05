@@ -1,4 +1,5 @@
 ﻿using Calculator.Core.Operands;
+using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Extensions;
 
@@ -14,18 +15,18 @@ public static class OperandArrayExtensions
         return operands;
     }
 
-    public static void CheckValueType<TValue>(this IReadOnlyList<Operand> operands)
+    public static void CheckValueType<TValue>(this IEnumerable<Token> tokens)
     {
-        foreach (Operand operand in operands)
+        foreach (Token token in tokens)
         {
-            if (operand is not Operand<TValue>)
+            if (token is not Operand<TValue>)
             {
                 throw new ArgumentException($"Expected all operands to be of type {typeof(Operand<TValue>)}");
             }
         }
     }
 
-    public static void CheckAllOperands(this IList<Token> tokens)
+    public static void CheckAllOperands(this IEnumerable<Token> tokens)
     {
         foreach (Token token in tokens)
         {
