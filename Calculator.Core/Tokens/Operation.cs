@@ -1,14 +1,15 @@
-﻿using Calculator.Core.Enums;
-
-namespace Calculator.Core.Tokens;
+﻿namespace Calculator.Core.Tokens;
 
 public abstract class Operation : Token
 {
-    public OperationPriority Priority { get; }
+    protected const int LowestPriority = 0;
+    protected const int HighestPriority = 0;
+
+    public int Priority { get; }
     public int MaxOperandsCount { get; }
     public int MinOperandsCount { get; }
 
-    protected Operation(OperationPriority priority, int maxOperandsCount, int? minOperandsCount = null)
+    protected Operation(int priority, int maxOperandsCount, int? minOperandsCount = null)
     {
         this.Priority = priority;
         this.MaxOperandsCount = maxOperandsCount;

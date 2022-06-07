@@ -1,4 +1,4 @@
-﻿using Calculator.Core.Enums;
+﻿using Calculator.Extra.Enums;
 
 namespace Calculator.Extra.Operators;
 

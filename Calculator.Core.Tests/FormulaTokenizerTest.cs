@@ -121,7 +121,7 @@ public class FormulaTokenizerTest
         public override string Text => "plus";
 
         public PlusOperator()
-            : base(OperationPriority.Add, 2)
+            : base(LowestPriority, 2)
         {
         }
 
@@ -137,7 +137,7 @@ public class FormulaTokenizerTest
         public override string Text => "minus";
 
         public MinusOperator()
-            : base(OperationPriority.Subtract, 2)
+            : base(LowestPriority, 2)
         {
         }
 

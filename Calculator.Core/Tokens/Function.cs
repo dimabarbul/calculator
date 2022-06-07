@@ -1,12 +1,11 @@
-﻿using Calculator.Core.Enums;
-using Calculator.Core.Operands;
+﻿using Calculator.Core.Operands;
 
 namespace Calculator.Core.Tokens;
 
 public abstract class Function : Operation
 {
     protected Function()
-        : base(OperationPriority.Unary, 1)
+        : base(HighestPriority, 1)
     {
     }
 

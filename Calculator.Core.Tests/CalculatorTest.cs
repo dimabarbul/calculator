@@ -199,7 +199,7 @@ public class CalculatorTest
         public IReadOnlyList<Token[]> Calls => this.calls.AsReadOnly();
 
         public CalcHighPriorityOperator()
-            : base((OperationPriority)1, 2)
+            : base(1, 2)
         {
         }
 

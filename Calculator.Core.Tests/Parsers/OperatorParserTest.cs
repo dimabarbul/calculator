@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Calculator.Core.Enums;
 using Calculator.Core.Extensions;
 using Calculator.Core.Operands;
 using Calculator.Core.Parsers;
@@ -68,7 +67,7 @@ public class OperatorParserTest
         public override string Text => "×";
 
         public MultiplyOperator()
-            : base(OperationPriority.Multiply, 2)
+            : base(LowestPriority, 2)
         {
         }
 

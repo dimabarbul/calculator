@@ -1,5 +1,4 @@
-﻿using Calculator.Core.Enums;
-using Calculator.Core.Extensions;
+﻿using Calculator.Core.Extensions;
 using Calculator.Core.Operands;
 using Calculator.Core.Tokens;
 
@@ -8,7 +7,7 @@ namespace Calculator.Core.Operators;
 public class CommaOperator : Operator
 {
     public CommaOperator()
-        : base(OperationPriority.Comma, 2)
+        : base(LowestPriority, 2)
     {
     }
 

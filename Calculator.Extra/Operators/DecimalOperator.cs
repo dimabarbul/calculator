@@ -1,13 +1,13 @@
-﻿using Calculator.Core.Enums;
-using Calculator.Core.Operands;
+﻿using Calculator.Core.Operands;
 using Calculator.Core.Tokens;
+using Calculator.Extra.Enums;
 
 namespace Calculator.Extra.Operators;
 
 public abstract class DecimalOperator : Operator
 {
     protected DecimalOperator(OperationPriority priority, int operandsCount, int? minOperandsCount = null)
-        : base(priority, operandsCount, minOperandsCount)
+        : base((int)(LowestPriority + priority), operandsCount, minOperandsCount)
     {
     }
 
