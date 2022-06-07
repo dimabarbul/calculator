@@ -22,8 +22,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Calculator.Core.DependencyInjection\Calculator.Core.DependencyInjection.csproj" />
-      <ProjectReference Include="..\Calculator.Extra\Calculator.Extra.csproj" />
+      <ProjectReference Include="..\..\src\Calculator.Core.DependencyInjection\Calculator.Core.DependencyInjection.csproj" />
+      <ProjectReference Include="..\..\src\Calculator.Extra\Calculator.Extra.csproj" />
     </ItemGroup>
 
 </Project>

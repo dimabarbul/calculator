@@ -26,12 +26,25 @@ public class Program
         }
         else
         {
-            System.Console.Write("Enter formula: ");
-            string? formula = System.Console.ReadLine();
-            if (!string.IsNullOrWhiteSpace(formula))
+            Console.Write("Enter formula: ");
+            string? formula = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(formula))
             {
-                System.Console.WriteLine("{0} = {1}", formula, calculator.Calculate(formula));
+                return;
             }
+
+            long usedBytes = GC.GetTotalAllocatedBytes(true);
+            decimal result = calculator.Calculate<decimal>(formula);
+            usedBytes = GC.GetTotalAllocatedBytes(true) - usedBytes;
+
+            Console.WriteLine("{0} = {1}", formula, result);
+
+            Console.WriteLine($"Allocated (1st run): {usedBytes} bytes");
+
+            usedBytes = GC.GetTotalAllocatedBytes(true);
+            calculator.Calculate<decimal>(formula);
+            usedBytes = GC.GetTotalAllocatedBytes(true) - usedBytes;
+            Console.WriteLine($"Allocated (2nd run): {usedBytes} bytes");
         }
     }
 
