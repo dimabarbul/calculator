@@ -50,13 +50,13 @@ public class Calculator
                 case Variable variable:
                     if (variables == null || !variables.ContainsKey(variable.Name))
                     {
-                        throw new CalculateException(CalculateExceptionCode.UnknownVariable);
+                        throw new CalculateException(CalculateExceptionCode.UnknownVariable, $"Unknown variable {variable.Name}");
                     }
 
                     Type variableType = variables[variable.Name].GetType();
                     if (!variableType.IsGenericType || variableType.GetGenericTypeDefinition() != typeof(Operand<>))
                     {
-                        throw new CalculateException(CalculateExceptionCode.InvalidVariableType);
+                        throw new CalculateException(CalculateExceptionCode.InvalidVariableType, $"Invalid type of variable {variable.Name}");
                     }
 
                     operands.Push(variables[variable.Name]);
@@ -67,7 +67,7 @@ public class Calculator
                 case Operation operation:
                     if (isLastTokenOperator && operation is Operator)
                     {
-                        throw new CalculateException(CalculateExceptionCode.SubsequentOperators);
+                        throw new CalculateException(CalculateExceptionCode.SubsequentOperators, "Subsequent operators are not allowed");
                     }
 
                     while (operations.Count > 0)
@@ -98,7 +98,7 @@ public class Calculator
 
         if (operands.Count != 1)
         {
-            throw new CalculateException(CalculateExceptionCode.NotSingleResult);
+            throw new CalculateException(CalculateExceptionCode.NotSingleResult, $"Expected formula {formula} to produce single result, but got {operands.Count}");
         }
 
         return operands.Pop();
@@ -110,7 +110,7 @@ public class Calculator
 
         if (operands.Count < operation.MinOperandsCount)
         {
-            throw new CalculateException(CalculateExceptionCode.MissingOperand);
+            throw new CalculateException(CalculateExceptionCode.MissingOperand, $"Operation expected from {operation.MinOperandsCount} to {operation.MaxOperandsCount} operands, but there are only {operands.Count} left");
         }
 
         int count = Math.Min(operation.MaxOperandsCount, operands.Count);
