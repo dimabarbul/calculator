@@ -21,10 +21,12 @@ public class CalculatorTest
     {
         this.calculator = calculator;
 
-        this.lowPriorityOperator = (LowPriorityOperator)operations.First(o => o is LowPriorityOperator);
-        this.highPriorityOperator = (HighPriorityOperator)operations.First(o => o is HighPriorityOperator);
-        this.myUnaryOperator = (MyUnaryOperator)operations.First(o => o is MyUnaryOperator);
-        this.myFunction = (MyFunction)operations.First(o => o is MyFunction);
+        Operation[] operationsArray = operations.ToArray();
+
+        this.lowPriorityOperator = (LowPriorityOperator)operationsArray.First(o => o is LowPriorityOperator);
+        this.highPriorityOperator = (HighPriorityOperator)operationsArray.First(o => o is HighPriorityOperator);
+        this.myUnaryOperator = (MyUnaryOperator)operationsArray.First(o => o is MyUnaryOperator);
+        this.myFunction = (MyFunction)operationsArray.First(o => o is MyFunction);
     }
 
     [Theory]
@@ -220,7 +222,7 @@ public class CalculatorTest
 
         Assert.Equal(MyFunction.ReturnValue, result);
         Assert.Equal(1, this.myFunction.Calls.Count);
-        Assert.Equal(Array.Empty<Token>(), this.myFunction.Calls[0]);
+        Assert.Equal(Array.Empty<Operand>(), this.myFunction.Calls[0]);
     }
 
     public class LowPriorityOperator : BinaryOperator

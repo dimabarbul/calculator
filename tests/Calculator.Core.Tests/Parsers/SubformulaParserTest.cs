@@ -12,72 +12,68 @@ public class SubformulaParserTest
     [Fact]
     public void TryParse_SubformulaAtBeginning_Correct()
     {
-        Token? token;
-        this.parser.TryParse("(1+2)-4", this.context, out token, out _);
+        bool isParsed = this.parser.TryParse("(1+2)-4", this.context, out Token? token, out _);
 
+        Assert.True(isParsed);
         this.AssertSubformulaTokenEqual(token, "1+2");
     }
 
     [Fact]
     public void TryParse_SubformulaNotAtBeginning_Null()
     {
-        Token? token;
-        this.parser.TryParse("1+(2*4)", this.context, out token, out _);
+        bool isParsed = this.parser.TryParse("1+(2*4)", this.context, out Token? token, out _);
 
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
-    [Fact]
-    public void TryParse_DifferentParenthesis_Correct()
+    [Theory]
+    [InlineData("(-4)", "-4")]
+    [InlineData("[0-9]", "0-9")]
+    [InlineData("{7+3}", "7+3")]
+    [InlineData("<1+3>*4", "1+3")]
+    public void TryParse_DifferentParenthesis_Correct(string formula, string expected)
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse(formula, this.context, out Token? token, out _);
 
-        this.parser.TryParse("[0-9]", this.context, out token, out _);
+        Assert.True(isParsed);
         Assert.NotNull(token);
-        this.AssertSubformulaTokenEqual(token, "0-9");
-
-        this.parser.TryParse("{7+3}", this.context, out token, out _);
-        Assert.NotNull(token);
-        this.AssertSubformulaTokenEqual(token, "7+3");
-
-        this.parser.TryParse("<1+3>*4", this.context, out token, out _);
-        Assert.NotNull(token);
-        this.AssertSubformulaTokenEqual(token, "1+3");
+        this.AssertSubformulaTokenEqual(token, expected);
     }
 
     [Fact]
     public void TryParse_NoClosingParenthesis_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("(1-2", this.context, out Token? token, out _);
 
-        this.parser.TryParse("(1-2", this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_ClosingParenthesisOfDifferentType_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("<3}", this.context, out Token? token, out _);
 
-        this.parser.TryParse("<3}", this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_CrossingParenthesisGroupsOfDifferentTypes_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("(1+<3-4)*1>", this.context, out Token? token, out _);
 
-        this.parser.TryParse("(1+<3-4)*1>", this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_EmptyString_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse(string.Empty, this.context, out Token? token, out _);
 
-        this.parser.TryParse(string.Empty, this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 

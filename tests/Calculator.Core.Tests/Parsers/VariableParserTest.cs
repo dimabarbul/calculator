@@ -12,45 +12,45 @@ public class VariableParserTest
     [Fact]
     public void TryParse_VariableAtBeginning_Correct()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("$test", this.context, out Token? token, out _);
 
-        this.parser.TryParse("$test", this.context, out token, out _);
+        Assert.True(isParsed);
         this.AssertVariableTokenEqual(token, "test");
     }
 
     [Fact]
     public void TryParse_VariableNotAtBeginning_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("2*$test", this.context, out Token? token, out _);
 
-        this.parser.TryParse("2*$test", this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_VariableFollowedByParenthesis_Correct()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("$test()", this.context, out Token? token, out _);
 
-        this.parser.TryParse("$test()", this.context, out token, out _);
+        Assert.True(isParsed);
         this.AssertVariableTokenEqual(token, "test");
     }
 
     [Fact]
     public void TryParse_StartsWithDigit_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse("$4fun", this.context, out Token? token, out _);
 
-        this.parser.TryParse("$4fun", this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
     [Fact]
     public void TryParse_EmptyString_Null()
     {
-        Token? token;
+        bool isParsed = this.parser.TryParse(string.Empty, this.context, out Token? token, out _);
 
-        this.parser.TryParse(string.Empty, this.context, out token, out _);
+        Assert.False(isParsed);
         Assert.Null(token);
     }
 
