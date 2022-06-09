@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Parsers;
@@ -18,7 +19,8 @@ public class FunctionParser : IParser
         }
     }
 
-    public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
+    public bool TryParse(ReadOnlySpan<char> formula, ParsingContext context, [NotNullWhen(true)] out Token? token,
+        out int parsedLength)
     {
         token = null;
         parsedLength = default;
@@ -44,19 +46,8 @@ public class FunctionParser : IParser
             return false;
         }
 
-        if (parsedLength == formula.Length ||
-            !this.IsOpeningBracket(formula[parsedLength]))
-        {
-            return false;
-        }
-
         token = foundFunction;
 
         return true;
-    }
-
-    private bool IsOpeningBracket(char c)
-    {
-        return c is '{' or '[' or '(' or '<';
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Parsers;
@@ -9,7 +10,8 @@ public class SubformulaParser : IParser
     private static readonly char[] OpeningBrackets = { '(', '[', '{', '<' };
     private static readonly char[] ClosingBrackets = { ')', ']', '}', '>' };
 
-    public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
+    public bool TryParse(ReadOnlySpan<char> formula, ParsingContext context, [NotNullWhen(true)] out Token? token,
+        out int parsedLength)
     {
         token = null;
         parsedLength = default;

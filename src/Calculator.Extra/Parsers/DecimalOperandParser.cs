@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Calculator.Core.Operands;
 using Calculator.Core.Parsers;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
 
 namespace Calculator.Extra.Parsers;
@@ -9,7 +10,8 @@ public class DecimalOperandParser : IParser
 {
     private const string Zero = "0";
 
-    public bool TryParse(ReadOnlySpan<char> formula, [NotNullWhen(true)] out Token? token, out int parsedLength)
+    public bool TryParse(ReadOnlySpan<char> formula, ParsingContext context, [NotNullWhen(true)] out Token? token,
+        out int parsedLength)
     {
         token = null;
         parsedLength = default;

@@ -17,13 +17,18 @@ public class Calculator
 
     public TResult Calculate<TResult>(string formula, Dictionary<string, Operand>? variables = null)
     {
-        Token lastOperand = this.Calculate(formula, variables);
+        Token result = this.Calculate(formula, variables);
 
-        if (lastOperand is not Operand<TResult> resultToken)
+        if (result is NullToken)
+        {
+            throw new ArgumentNullException(nameof(formula));
+        }
+
+        if (result is not Operand<TResult> resultToken)
         {
             throw new CalculateException(
                 CalculateExceptionCode.InvalidResultType,
-                $"Result is of type {lastOperand.GetType()}, but expected {typeof(Operand<TResult>)}");
+                $"Result is of type {result.GetType()}, but expected {typeof(Operand<TResult>)}");
         }
 
         return resultToken.Value;
@@ -33,12 +38,12 @@ public class Calculator
     {
         if (string.IsNullOrWhiteSpace(formula))
         {
-            throw new ArgumentNullException(nameof(formula));
+            return NullToken.Instance;
         }
 
+        // TODO: extract some class?
         MyStack<Token> operands = new();
         MyStack<Operation> operations = new();
-        bool isLastTokenOperator = false;
 
         foreach (Token token in this.tokenizer.GetTokens(formula))
         {
@@ -65,30 +70,37 @@ public class Calculator
                     operands.Push(token);
                     break;
                 case Operation operation:
-                    if (isLastTokenOperator && operation is Operator)
+                    if (operation.IsLeftToRight)
                     {
-                        throw new CalculateException(CalculateExceptionCode.SubsequentOperators, "Subsequent operators are not allowed");
-                    }
-
-                    while (operations.Count > 0)
-                    {
-                        Operation previousOperation = operations.Peek();
-
-                        if (previousOperation.Priority >= operation.Priority)
+                        while (operations.Count > 0)
                         {
+                            Operation previousOperation = operations.Peek();
+
+                            if (previousOperation.IsLeftToRight)
+                            {
+                                break;
+                            }
+
                             this.ExecuteOperation(operands, operations);
                         }
-                        else
+
+                        while (operations.Count > 0)
                         {
-                            break;
+                            Operation previousOperation = operations.Peek();
+
+                            if (previousOperation.Priority <= operation.Priority &&
+                                (previousOperation.Priority != operation.Priority || !previousOperation.IsLeftToRight))
+                            {
+                                break;
+                            }
+
+                            this.ExecuteOperation(operands, operations);
                         }
                     }
 
                     operations.Push(operation);
                     break;
             }
-
-            isLastTokenOperator = token is Operator;
         }
 
         while (operations.Count > 0)
@@ -108,12 +120,12 @@ public class Calculator
     {
         Operation operation = operations.Pop();
 
-        if (operands.Count < operation.MinOperandsCount)
+        if (operands.Count < operation.OperandsCount)
         {
-            throw new CalculateException(CalculateExceptionCode.MissingOperand, $"Operation expected from {operation.MinOperandsCount} to {operation.MaxOperandsCount} operands, but there are only {operands.Count} left");
+            throw new CalculateException(CalculateExceptionCode.MissingOperand, $"Operation expected {operation.OperandsCount} operands, but there are only {operands.Count} left");
         }
 
-        int count = Math.Min(operation.MaxOperandsCount, operands.Count);
+        int count = Math.Min(operation.OperandsCount, operands.Count);
         ArraySegment<Token> operandTokens = operands.Pop(count);
 
         Token result = operation.Execute(operandTokens);

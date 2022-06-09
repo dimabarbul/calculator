@@ -1,6 +1,5 @@
 ﻿using System;
 using Calculator.Core.Tokens;
-using Xunit;
 
 namespace Calculator.Core.Tests.Extensions;
 

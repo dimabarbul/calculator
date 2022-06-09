@@ -2,10 +2,10 @@
 
 namespace Calculator.Extra.Operators;
 
-public class OrOperator : BoolOperator
+public class OrOperator : BoolBinaryOperator
 {
     public OrOperator()
-        : base(OperationPriority.Or, 2)
+        : base(OperationPriority.Or)
     {
     }
 

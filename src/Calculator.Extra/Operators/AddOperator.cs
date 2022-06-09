@@ -2,10 +2,10 @@
 
 namespace Calculator.Extra.Operators;
 
-public class AddOperator : DecimalOperator
+public class AddOperator : DecimalBinaryOperator
 {
     public AddOperator()
-        : base(OperationPriority.Add, 2, 1)
+        : base(OperationPriority.Add)
     {
     }
 

@@ -1,4 +1,6 @@
-﻿namespace Calculator.Core.Operands;
+﻿using Calculator.Core.Tokens;
+
+namespace Calculator.Core.Operands;
 
 public class ListOperand : Operand
 {

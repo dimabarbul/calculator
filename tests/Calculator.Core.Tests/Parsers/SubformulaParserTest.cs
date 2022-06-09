@@ -1,18 +1,19 @@
 ﻿using Calculator.Core.Parsers;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
-using Xunit;
 
 namespace Calculator.Core.Tests.Parsers;
 
 public class SubformulaParserTest
 {
     private readonly SubformulaParser parser = new();
+    private readonly ParsingContext context = ParsingContext.Initial;
 
     [Fact]
     public void TryParse_SubformulaAtBeginning_Correct()
     {
         Token? token;
-        this.parser.TryParse("(1+2)-4", out token, out _);
+        this.parser.TryParse("(1+2)-4", this.context, out token, out _);
 
         this.AssertSubformulaTokenEqual(token, "1+2");
     }
@@ -21,7 +22,7 @@ public class SubformulaParserTest
     public void TryParse_SubformulaNotAtBeginning_Null()
     {
         Token? token;
-        this.parser.TryParse("1+(2*4)", out token, out _);
+        this.parser.TryParse("1+(2*4)", this.context, out token, out _);
 
         Assert.Null(token);
     }
@@ -31,15 +32,15 @@ public class SubformulaParserTest
     {
         Token? token;
 
-        this.parser.TryParse("[0-9]", out token, out _);
+        this.parser.TryParse("[0-9]", this.context, out token, out _);
         Assert.NotNull(token);
         this.AssertSubformulaTokenEqual(token, "0-9");
 
-        this.parser.TryParse("{7+3}", out token, out _);
+        this.parser.TryParse("{7+3}", this.context, out token, out _);
         Assert.NotNull(token);
         this.AssertSubformulaTokenEqual(token, "7+3");
 
-        this.parser.TryParse("<1+3>*4", out token, out _);
+        this.parser.TryParse("<1+3>*4", this.context, out token, out _);
         Assert.NotNull(token);
         this.AssertSubformulaTokenEqual(token, "1+3");
     }
@@ -49,7 +50,7 @@ public class SubformulaParserTest
     {
         Token? token;
 
-        this.parser.TryParse("(1-2", out token, out _);
+        this.parser.TryParse("(1-2", this.context, out token, out _);
         Assert.Null(token);
     }
 
@@ -58,7 +59,7 @@ public class SubformulaParserTest
     {
         Token? token;
 
-        this.parser.TryParse("<3}", out token, out _);
+        this.parser.TryParse("<3}", this.context, out token, out _);
         Assert.Null(token);
     }
 
@@ -67,7 +68,7 @@ public class SubformulaParserTest
     {
         Token? token;
 
-        this.parser.TryParse("(1+<3-4)*1>", out token, out _);
+        this.parser.TryParse("(1+<3-4)*1>", this.context, out token, out _);
         Assert.Null(token);
     }
 
@@ -76,7 +77,7 @@ public class SubformulaParserTest
     {
         Token? token;
 
-        this.parser.TryParse(string.Empty, out token, out _);
+        this.parser.TryParse(string.Empty, this.context, out token, out _);
         Assert.Null(token);
     }
 

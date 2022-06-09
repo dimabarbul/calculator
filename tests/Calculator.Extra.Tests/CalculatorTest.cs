@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Calculator.Core.Operands;
+using Calculator.Core.Tokens;
 
 namespace Calculator.Extra.Tests;
 
@@ -72,5 +73,21 @@ public class CalculatorTest
                 }
             )
         );
+    }
+
+    [Fact]
+    public void Calculate_OperatorAndFunction_Calculated()
+    {
+        decimal result = this.calculator.Calculate<decimal>("1 + ceil(1.5)");
+
+        Assert.Equal(3, result);
+    }
+
+    [Fact]
+    public void Calculate_LogicalOperatorWithNot_Calculated()
+    {
+        bool result = this.calculator.Calculate<bool>("true && !false");
+
+        Assert.True(result);
     }
 }

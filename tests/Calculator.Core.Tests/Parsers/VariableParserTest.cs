@@ -1,19 +1,20 @@
 ﻿using Calculator.Core.Parsers;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
-using Xunit;
 
 namespace Calculator.Core.Tests.Parsers;
 
 public class VariableParserTest
 {
     private readonly VariableParser parser = new();
+    private readonly ParsingContext context = ParsingContext.Initial;
 
     [Fact]
     public void TryParse_VariableAtBeginning_Correct()
     {
         Token? token;
 
-        this.parser.TryParse("$test", out token, out _);
+        this.parser.TryParse("$test", this.context, out token, out _);
         this.AssertVariableTokenEqual(token, "test");
     }
 
@@ -22,7 +23,7 @@ public class VariableParserTest
     {
         Token? token;
 
-        this.parser.TryParse("2*$test", out token, out _);
+        this.parser.TryParse("2*$test", this.context, out token, out _);
         Assert.Null(token);
     }
 
@@ -31,7 +32,7 @@ public class VariableParserTest
     {
         Token? token;
 
-        this.parser.TryParse("$test()", out token, out _);
+        this.parser.TryParse("$test()", this.context, out token, out _);
         this.AssertVariableTokenEqual(token, "test");
     }
 
@@ -40,7 +41,7 @@ public class VariableParserTest
     {
         Token? token;
 
-        this.parser.TryParse("$4fun", out token, out _);
+        this.parser.TryParse("$4fun", this.context, out token, out _);
         Assert.Null(token);
     }
 
@@ -49,7 +50,7 @@ public class VariableParserTest
     {
         Token? token;
 
-        this.parser.TryParse(string.Empty, out token, out _);
+        this.parser.TryParse(string.Empty, this.context, out token, out _);
         Assert.Null(token);
     }
 

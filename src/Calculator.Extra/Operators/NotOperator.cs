@@ -1,18 +1,19 @@
-﻿using Calculator.Extra.Enums;
+﻿using Calculator.Core.Operands;
+using Calculator.Core.Tokens;
 
 namespace Calculator.Extra.Operators;
 
-public class NotOperator : BoolOperator
+public class NotOperator : UnaryOperator
 {
-    public NotOperator()
-        : base(OperationPriority.Unary, 1)
-    {
-    }
-
     public override string Text => "!";
 
-    protected override bool GetBoolResult(params bool[] operands)
+    protected override Operand ExecuteUnaryOperator(Operand operand)
     {
-        return !operands[0];
+        if (operand is not Operand<bool> boolOperand)
+        {
+            throw new ArgumentException($"Operator {this.Text} can be performed only on boolean operand");
+        }
+
+        return new Operand<bool>(!boolOperand.Value);
     }
 }

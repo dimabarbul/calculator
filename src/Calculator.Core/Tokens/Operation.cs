@@ -6,21 +6,21 @@ public abstract class Operation : Token
     protected const int HighestPriority = 0;
 
     public int Priority { get; }
-    public int MaxOperandsCount { get; }
-    public int MinOperandsCount { get; }
+    public int OperandsCount { get; }
+    public bool IsLeftToRight { get; }
 
-    protected Operation(int priority, int maxOperandsCount, int? minOperandsCount = null)
+    protected Operation(int priority, int operandsCount, bool isLeftToRight = true)
     {
         this.Priority = priority;
-        this.MaxOperandsCount = maxOperandsCount;
-        this.MinOperandsCount = minOperandsCount ?? maxOperandsCount;
+        this.OperandsCount = operandsCount;
+        this.IsLeftToRight = isLeftToRight;
     }
 
     protected void ValidateOperandsCount(IList<Token> operands)
     {
-        if (operands.Count < this.MinOperandsCount || operands.Count > this.MaxOperandsCount)
+        if (operands.Count != this.OperandsCount)
         {
-            throw new ArgumentException($"Operands count is invalid. Expected: {this.MinOperandsCount} to {this.MaxOperandsCount}, got: {operands.Count}");
+            throw new ArgumentException($"Operands count is invalid. Expected: {this.OperandsCount}, got: {operands.Count}");
         }
     }
 

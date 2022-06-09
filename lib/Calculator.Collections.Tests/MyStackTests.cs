@@ -1,6 +1,4 @@
-﻿using Calculator.Collections;
-
-namespace Calculator.Collections.Tests;
+﻿namespace Calculator.Collections.Tests;
 
 public class MyStackTests
 {

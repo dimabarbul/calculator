@@ -1,11 +1,12 @@
-﻿using Calculator.Core.Operands;
+﻿using System.Linq;
+using Calculator.Core.Operands;
 
 namespace Calculator.Core.Tokens;
 
 public abstract class Function : Operation
 {
     protected Function()
-        : base(HighestPriority, 1)
+        : base(HighestPriority, 1, isLeftToRight: false)
     {
     }
 
@@ -16,6 +17,10 @@ public abstract class Function : Operation
         if (operands[0] is ListOperand listOperand)
         {
             functionOperands = listOperand.Operands;
+        }
+        else if (operands[0] is NullToken)
+        {
+            functionOperands = Array.Empty<Operand>();
         }
         else
         {

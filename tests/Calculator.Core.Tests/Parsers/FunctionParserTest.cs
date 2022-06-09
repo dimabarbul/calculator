@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Calculator.Core.Operands;
 using Calculator.Core.Parsers;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
-using Xunit;
 
 namespace Calculator.Core.Tests.Parsers;
 
 public class FunctionParserTest
 {
     private readonly FunctionParser parser;
+    private readonly ParsingContext context = ParsingContext.Initial;
 
     public FunctionParserTest(IEnumerable<IParser> parsers)
     {
@@ -19,7 +19,7 @@ public class FunctionParserTest
     [Fact]
     public void TryParse_OperationAtBeginning_CorrectOperation()
     {
-        bool isParsed = this.parser.TryParse("test(1.2)", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("test(1.2)", this.context, out Token? token, out _);
 
         Assert.True(isParsed);
         this.AssertFunctionTokenEqual(token, "test");
@@ -28,7 +28,7 @@ public class FunctionParserTest
     [Fact]
     public void TryParse_OperationNotAtBeginning_Null()
     {
-        bool isParsed = this.parser.TryParse("1-test(0.01)", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("1-test(0.01)", this.context, out Token? token, out _);
 
         Assert.False(isParsed);
         Assert.Null(token);
@@ -37,7 +37,7 @@ public class FunctionParserTest
     [Fact]
     public void TryParse_UnknownOperation_Null()
     {
-        bool isParsed = this.parser.TryParse("some_unknown_function()", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("some_unknown_function()", this.context, out Token? token, out _);
 
         Assert.False(isParsed);
         Assert.Null(token);
@@ -46,7 +46,7 @@ public class FunctionParserTest
     [Fact]
     public void TryParse_StartsWithNumber_Null()
     {
-        bool isParsed = this.parser.TryParse("2radians(180)", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("2radians(180)", this.context, out Token? token, out _);
 
         Assert.False(isParsed);
         Assert.Null(token);
@@ -59,7 +59,7 @@ public class FunctionParserTest
     [InlineData("test{3}")]
     public void TryParse_OperationFollowedByDifferentParenthesis_CorrectOperation(string formula)
     {
-        bool isParsed = this.parser.TryParse(formula, out Token? token, out _);
+        bool isParsed = this.parser.TryParse(formula, this.context, out Token? token, out _);
         Assert.True(isParsed);
         this.AssertFunctionTokenEqual(token, "test");
     }
@@ -67,7 +67,7 @@ public class FunctionParserTest
     [Fact]
     public void TryParse_EmptyString_Null()
     {
-        bool isParsed = this.parser.TryParse(string.Empty, out Token? token, out _);
+        bool isParsed = this.parser.TryParse(string.Empty, this.context, out Token? token, out _);
 
         Assert.False(isParsed);
         Assert.Null(token);

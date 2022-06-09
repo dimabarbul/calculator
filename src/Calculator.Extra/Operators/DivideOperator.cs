@@ -2,10 +2,10 @@
 
 namespace Calculator.Extra.Operators;
 
-public class DivideOperator : DecimalOperator
+public class DivideOperator : DecimalBinaryOperator
 {
     public DivideOperator()
-        : base(OperationPriority.Divide, 2)
+        : base(OperationPriority.Divide)
     {
     }
 

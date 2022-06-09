@@ -1,4 +1,5 @@
 ﻿using Calculator.Core.Operands;
+using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
 using Calculator.Extra.Parsers;
 
@@ -7,11 +8,12 @@ namespace Calculator.Extra.Tests.Parsers;
 public class BoolOperandParserTest
 {
     private readonly BoolOperandParser parser = new();
+    private readonly ParsingContext context = ParsingContext.Initial;
 
     [Fact]
     public void TryParse_TrueAtBeginning_Correct()
     {
-        bool isParsed = this.parser.TryParse("true", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("true", this.context, out Token? token, out _);
 
         Assert.True(isParsed);
         this.AssertBoolTokenEqual(token, true);
@@ -20,7 +22,7 @@ public class BoolOperandParserTest
     [Fact]
     public void TryParse_FalseAtBeginning_Correct()
     {
-        bool isParsed = this.parser.TryParse("false", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("false", this.context, out Token? token, out _);
 
         Assert.True(isParsed);
         this.AssertBoolTokenEqual(token, false);
@@ -29,7 +31,7 @@ public class BoolOperandParserTest
     [Fact]
     public void TryParse_BoolNotAtBeginning_Null()
     {
-        bool isParsed = this.parser.TryParse("1||false", out Token? token, out _);
+        bool isParsed = this.parser.TryParse("1||false", this.context, out Token? token, out _);
 
         Assert.False(isParsed);
         Assert.Null(token);
@@ -38,7 +40,7 @@ public class BoolOperandParserTest
     [Fact]
     public void TryParse_EmptyString_Null()
     {
-        bool isParsed = this.parser.TryParse(string.Empty, out Token? token, out _);
+        bool isParsed = this.parser.TryParse(string.Empty, this.context, out Token? token, out _);
 
         Assert.False(isParsed);
         Assert.Null(token);

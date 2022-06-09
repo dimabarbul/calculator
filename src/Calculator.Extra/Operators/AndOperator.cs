@@ -2,10 +2,10 @@
 
 namespace Calculator.Extra.Operators;
 
-public class AndOperator : BoolOperator
+public class AndOperator : BoolBinaryOperator
 {
     public AndOperator()
-        : base(OperationPriority.And, 2)
+        : base(OperationPriority.And)
     {
     }
 

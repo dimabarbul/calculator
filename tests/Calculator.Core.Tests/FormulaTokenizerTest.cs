@@ -5,7 +5,6 @@ using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Calculator.Core.Tests.Extensions;
 using Calculator.Core.Tokens;
-using Xunit;
 
 namespace Calculator.Core.Tests;
 
@@ -36,29 +35,6 @@ public class FormulaTokenizerTest
         this.AssertIntTokenEqual(tokens[0], 1);
     }
 
-    [Theory]
-    [InlineData("plus")]
-    [InlineData("minus")]
-    public void GetTokens_OneOperation_ReturnsOperationToken(string formula)
-    {
-        Token[] tokens = this.tokenizer.GetTokens(formula).ToArray();
-
-        Assert.Single(tokens);
-        Operator operatorToken = Assert.IsAssignableFrom<Operator>(tokens[0]);
-        Assert.Equal(formula, operatorToken.Text);
-    }
-
-    [Fact]
-    public void GetTokens_MultipleOperators_ReturnsOperatorTokens()
-    {
-        Token[] tokens = this.tokenizer.GetTokens("plus minus plus").ToArray();
-
-        Assert.Equal(3, tokens.Length);
-        AssertExtensions.TokenIs<Operator>(tokens[0], o => Assert.Equal("plus", o.Text));
-        AssertExtensions.TokenIs<Operator>(tokens[1], o => Assert.Equal("minus", o.Text));
-        AssertExtensions.TokenIs<Operator>(tokens[2], o => Assert.Equal("plus", o.Text));
-    }
-
     [Fact]
     public void GetTokens_UnknownOperation_ThrowsException()
     {
@@ -86,7 +62,7 @@ public class FormulaTokenizerTest
 
         Assert.Equal(3, tokens.Length);
         AssertExtensions.TokenIs<Variable>(tokens[0], o => Assert.Equal("test", o.Name));
-        AssertExtensions.TokenIs<Operator>(tokens[1], o => Assert.Equal("plus", o.Text));
+        AssertExtensions.TokenIs<BinaryOperator>(tokens[1], o => Assert.Equal("plus", o.Text));
         AssertExtensions.TokenIs<Variable>(tokens[2], o => Assert.Equal("test2", o.Name));
     }
 
@@ -116,12 +92,12 @@ public class FormulaTokenizerTest
         AssertExtensions.TokenIs<Operand<int>>(token, o => Assert.Equal(value, o.Value));
     }
 
-    public class PlusOperator : Operator
+    public class PlusOperator : BinaryOperator
     {
         public override string Text => "plus";
 
         public PlusOperator()
-            : base(LowestPriority, 2)
+            : base(LowestPriority)
         {
         }
 
@@ -132,12 +108,12 @@ public class FormulaTokenizerTest
         }
     }
 
-    public class MinusOperator : Operator
+    public class MinusOperator : BinaryOperator
     {
         public override string Text => "minus";
 
         public MinusOperator()
-            : base(LowestPriority, 2)
+            : base(LowestPriority)
         {
         }
 

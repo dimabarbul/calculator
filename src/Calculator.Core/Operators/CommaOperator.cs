@@ -4,10 +4,10 @@ using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Operators;
 
-public class CommaOperator : Operator
+public class CommaOperator : BinaryOperator
 {
     public CommaOperator()
-        : base(LowestPriority, 2)
+        : base(LowestPriority)
     {
     }
 

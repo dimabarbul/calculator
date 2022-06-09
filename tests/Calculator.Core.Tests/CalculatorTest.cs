@@ -6,35 +6,48 @@ using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Calculator.Core.Tests.Extensions;
 using Calculator.Core.Tokens;
-using Xunit;
 
 namespace Calculator.Core.Tests;
 
 public class CalculatorTest
 {
     private readonly Calculator calculator;
-    private readonly CalcLowPriorityOperator lowPriorityOperator;
-    private readonly CalcHighPriorityOperator highPriorityOperator;
+    private readonly LowPriorityOperator lowPriorityOperator;
+    private readonly HighPriorityOperator highPriorityOperator;
+    private readonly MyUnaryOperator myUnaryOperator;
+    private readonly MyFunction myFunction;
 
     public CalculatorTest(Calculator calculator, IEnumerable<Operation> operations)
     {
         this.calculator = calculator;
 
-        this.lowPriorityOperator = (CalcLowPriorityOperator)operations.First(o => o is CalcLowPriorityOperator);
-        this.highPriorityOperator = (CalcHighPriorityOperator)operations.First(o => o is CalcHighPriorityOperator);
+        this.lowPriorityOperator = (LowPriorityOperator)operations.First(o => o is LowPriorityOperator);
+        this.highPriorityOperator = (HighPriorityOperator)operations.First(o => o is HighPriorityOperator);
+        this.myUnaryOperator = (MyUnaryOperator)operations.First(o => o is MyUnaryOperator);
+        this.myFunction = (MyFunction)operations.First(o => o is MyFunction);
     }
 
     [Theory]
     [InlineData("")]
     [InlineData(" ")]
-    public void Calculate_EmptyFormula_ThrowsException(string formula)
+    public void Calculate_EmptyFormulaWithTypedResult_ThrowsException(string formula)
     {
         Assert.Throws<ArgumentNullException>(() => this.calculator.Calculate<int>(formula));
     }
 
     [Theory]
-    [InlineData("1 low 2", CalcLowPriorityOperator.ReturnValue)]
-    [InlineData("1 high 2", CalcHighPriorityOperator.ReturnValue)]
+    [InlineData("")]
+    [InlineData(" ")]
+    public void Calculate_EmptyFormulaWithTokenResult_ReturnsNullToken(string formula)
+    {
+        Token result = this.calculator.Calculate(formula);
+
+        Assert.Equal(NullToken.Instance, result);
+    }
+
+    [Theory]
+    [InlineData("1 low 2", LowPriorityOperator.ReturnValue)]
+    [InlineData("1 high 2", HighPriorityOperator.ReturnValue)]
     public void Calculate_OneOperation_Calculated(string formula, int result)
     {
         Assert.Equal(result, this.calculator.Calculate<int>(formula));
@@ -61,9 +74,9 @@ public class CalculatorTest
             o => Assert.Equal(1, o.Value));
         AssertExtensions.TokenIs<Operand<int>>(
             this.lowPriorityOperator.Calls[0][1],
-            o => Assert.Equal(CalcHighPriorityOperator.ReturnValue, o.Value));
+            o => Assert.Equal(HighPriorityOperator.ReturnValue, o.Value));
 
-        Assert.Equal(CalcLowPriorityOperator.ReturnValue, result);
+        Assert.Equal(LowPriorityOperator.ReturnValue, result);
     }
 
     [Theory]
@@ -88,12 +101,12 @@ public class CalculatorTest
         Assert.Equal(2, this.highPriorityOperator.Calls[0].Length);
         AssertExtensions.TokenIs<Operand<int>>(
             this.highPriorityOperator.Calls[0][0],
-            o => Assert.Equal(CalcLowPriorityOperator.ReturnValue, o.Value));
+            o => Assert.Equal(LowPriorityOperator.ReturnValue, o.Value));
         AssertExtensions.TokenIs<Operand<int>>(
             this.highPriorityOperator.Calls[0][1],
             o => Assert.Equal(3, o.Value));
 
-        Assert.Equal(CalcHighPriorityOperator.ReturnValue, result);
+        Assert.Equal(HighPriorityOperator.ReturnValue, result);
     }
 
     [Fact]
@@ -106,22 +119,22 @@ public class CalculatorTest
     [Fact]
     public void Calculate_SeveralResults_ThrowsCalculateException()
     {
-        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate<int>("1 2"));
-        Assert.Equal((int)CalculateExceptionCode.NotSingleResult, exception.Code);
+        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("1 2"));
+        Assert.Equal((int)ParseExceptionCode.MisplacedToken, exception.Code);
     }
 
     [Fact]
     public void Calculate_BinaryOperationMissingLeftOperand_ThrowsException()
     {
-        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate<int>("low 2"));
-        Assert.Equal((int)CalculateExceptionCode.MissingOperand, exception.Code);
+        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("low 2"));
+        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
     }
 
     [Fact]
     public void Calculate_BinaryOperationMissingBothOperands_ThrowsException()
     {
-        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate<int>("high"));
-        Assert.Equal((int)CalculateExceptionCode.MissingOperand, exception.Code);
+        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("high"));
+        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
     }
 
     [Fact]
@@ -159,13 +172,58 @@ public class CalculatorTest
     [InlineData("1 low high 1")]
     public void Calculate_SeveralOperatorsInRow_ThrowsException(string formula)
     {
-        CalculateException exception = Assert.Throws<CalculateException>(() => this.calculator.Calculate<int>(
+        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>(
             formula
         ));
-        Assert.Equal((int)CalculateExceptionCode.SubsequentOperators, exception.Code);
+        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
     }
 
-    public class CalcLowPriorityOperator : Operator
+    [Theory]
+    [InlineData("unary 1", 1)]
+    [InlineData("unary func(1)", 1)]
+    [InlineData("unary unary unary 1", 3)]
+    [InlineData("1 high unary 1", 1)]
+    [InlineData("1 high (unary 1)", 1)]
+    [InlineData("(unary 1) low 1", 1)]
+    public void Calculate_UnaryOperatorInCorrectContext_Calculated(string formula, int unaryOperatorCallsCount)
+    {
+        Exception? exception = Record.Exception(() => this.calculator.Calculate(formula));
+
+        Assert.Null(exception);
+        Assert.Equal(unaryOperatorCallsCount, this.myUnaryOperator.Calls.Count);
+    }
+
+    [Theory]
+    [InlineData("1 unary 1")]
+    [InlineData("func(1) unary 1")]
+    [InlineData("1 unary high 1")]
+    [InlineData("1 high (1 unary 1)")]
+    [InlineData("unary")]
+    public void Calculate_UnaryOperatorInWrongContext_ThrowsException(string formula)
+    {
+        Assert.Throws<ParseException>(() => this.calculator.Calculate(formula));
+    }
+
+    [Theory]
+    [InlineData("func")]
+    public void Calculate_FunctionInWrongContext_ThrowsException(string formula)
+    {
+        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate(formula));
+
+        Assert.Equal((int)ParseExceptionCode.UnexpectedEnd, exception.Code);
+    }
+
+    [Fact]
+    public void Calculate_FunctionWithoutArguments_Calculated()
+    {
+        int result = this.calculator.Calculate<int>("func()");
+
+        Assert.Equal(MyFunction.ReturnValue, result);
+        Assert.Equal(1, this.myFunction.Calls.Count);
+        Assert.Equal(Array.Empty<Token>(), this.myFunction.Calls[0]);
+    }
+
+    public class LowPriorityOperator : BinaryOperator
     {
         public const int ReturnValue = 0;
 
@@ -175,8 +233,8 @@ public class CalculatorTest
 
         public IReadOnlyList<Token[]> Calls => this.calls.AsReadOnly();
 
-        public CalcLowPriorityOperator()
-            : base(0, 2)
+        public LowPriorityOperator()
+            : base(0)
         {
         }
 
@@ -188,7 +246,7 @@ public class CalculatorTest
         }
     }
 
-    public class CalcHighPriorityOperator : Operator
+    public class HighPriorityOperator : BinaryOperator
     {
         public const int ReturnValue = 1;
 
@@ -198,12 +256,48 @@ public class CalculatorTest
 
         public IReadOnlyList<Token[]> Calls => this.calls.AsReadOnly();
 
-        public CalcHighPriorityOperator()
-            : base(1, 2)
+        public HighPriorityOperator()
+            : base(1)
         {
         }
 
         public override Token Execute(IList<Token> operands)
+        {
+            this.calls.Add(operands.ToArray());
+
+            return new Operand<int>(ReturnValue);
+        }
+    }
+
+    public class MyUnaryOperator : UnaryOperator
+    {
+        public const int ReturnValue = 2;
+
+        private readonly List<Token> calls = new();
+
+        public override string Text => "unary";
+
+        protected override Operand ExecuteUnaryOperator(Operand operand)
+        {
+            this.calls.Add(operand);
+
+            return new Operand<int>(ReturnValue);
+        }
+
+        public IReadOnlyList<Token> Calls => this.calls.AsReadOnly();
+    }
+
+    public class MyFunction : Function
+    {
+        public const int ReturnValue = 3;
+
+        private readonly List<Operand[]> calls = new();
+
+        public override string FunctionName => "func";
+
+        public IReadOnlyList<Operand[]> Calls => this.calls.AsReadOnly();
+
+        protected override Token ExecuteFunction(IReadOnlyList<Operand> operands)
         {
             this.calls.Add(operands.ToArray());
 

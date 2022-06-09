@@ -4,10 +4,10 @@ using Calculator.Extra.Enums;
 
 namespace Calculator.Extra.Operators;
 
-public abstract class DecimalOperator : Operator
+public abstract class DecimalBinaryOperator : BinaryOperator
 {
-    protected DecimalOperator(OperationPriority priority, int operandsCount, int? minOperandsCount = null)
-        : base((int)(LowestPriority + priority), operandsCount, minOperandsCount)
+    protected DecimalBinaryOperator(OperationPriority priority)
+        : base((int)(LowestPriority + priority))
     {
     }
 
