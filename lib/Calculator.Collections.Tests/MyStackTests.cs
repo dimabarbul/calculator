@@ -51,25 +51,25 @@ public class MyStackTests
         stack.Push(2);
         stack.Push(3);
 
-        ArraySegment<int> popped = stack.Pop(2);
+        IReadOnlyList<int> popped = stack.Pop(2);
 
         Assert.Equal(2, popped.Count);
-        Assert.Equal(popped, new[] { 2, 3 });
+        Assert.Equal(new[] { 2, 3 }, popped);
         Assert.Equal(1, stack.Count);
     }
 
     [Fact]
-    public void CanPopArrayWithSigleElement()
+    public void CanPopArrayWithSingleElement()
     {
         MyStack<int> stack = new();
         stack.Push(1);
         stack.Push(2);
         stack.Push(3);
 
-        ArraySegment<int> popped = stack.Pop(1);
+        IReadOnlyList<int> popped = stack.Pop(1);
 
         Assert.Single(popped);
-        Assert.Equal(popped, new[] { 3 });
+        Assert.Equal(new[] { 3 }, popped);
         Assert.Equal(2, stack.Count);
     }
 

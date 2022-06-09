@@ -11,7 +11,7 @@ public abstract class DecimalBinaryOperator : BinaryOperator
     {
     }
 
-    public override Token Execute(IList<Token> operands)
+    public override Token Execute(IReadOnlyList<Token> operands)
     {
         this.ValidateOperandsCount(operands);
 

@@ -7,7 +7,7 @@ public abstract class UnaryOperator : Operation
     {
     }
 
-    public override Token Execute(IList<Token> operands)
+    public override Token Execute(IReadOnlyList<Token> operands)
     {
         if (operands.Count > 1)
         {

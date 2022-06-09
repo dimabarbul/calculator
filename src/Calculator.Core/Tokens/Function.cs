@@ -10,7 +10,7 @@ public abstract class Function : Operation
     {
     }
 
-    public override Token Execute(IList<Token> operands)
+    public override Token Execute(IReadOnlyList<Token> operands)
     {
         IReadOnlyList<Operand> functionOperands;
 

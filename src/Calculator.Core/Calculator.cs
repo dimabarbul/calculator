@@ -126,7 +126,7 @@ public class Calculator
         }
 
         int count = Math.Min(operation.OperandsCount, operands.Count);
-        ArraySegment<Token> operandTokens = operands.Pop(count);
+        IReadOnlyList<Token> operandTokens = operands.Pop(count);
 
         Token result = operation.Execute(operandTokens);
 

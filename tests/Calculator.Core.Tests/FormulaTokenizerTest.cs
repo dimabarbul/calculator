@@ -101,7 +101,7 @@ public class FormulaTokenizerTest
         {
         }
 
-        public override Token Execute(IList<Token> operands)
+        public override Token Execute(IReadOnlyList<Token> operands)
         {
             // implementation does not matter for the tests
             return operands[0];
@@ -117,7 +117,7 @@ public class FormulaTokenizerTest
         {
         }
 
-        public override Token Execute(IList<Token> operands)
+        public override Token Execute(IReadOnlyList<Token> operands)
         {
             // implementation does not matter for the tests
             return operands[0];

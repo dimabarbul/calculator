@@ -48,7 +48,7 @@ public class MyStack<T>
         return this.items[this.size - 1];
     }
 
-    public ArraySegment<T> Pop(int count)
+    public IReadOnlyList<T> Pop(int count)
     {
         if (count < 1)
         {

@@ -238,7 +238,7 @@ public class CalculatorTest
         {
         }
 
-        public override Token Execute(IList<Token> operands)
+        public override Token Execute(IReadOnlyList<Token> operands)
         {
             this.calls.Add(operands.ToArray());
 
@@ -261,7 +261,7 @@ public class CalculatorTest
         {
         }
 
-        public override Token Execute(IList<Token> operands)
+        public override Token Execute(IReadOnlyList<Token> operands)
         {
             this.calls.Add(operands.ToArray());
 

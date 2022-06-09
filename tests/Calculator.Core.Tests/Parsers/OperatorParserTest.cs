@@ -88,7 +88,7 @@ public class OperatorParserTest
         {
         }
 
-        public override Token Execute(IList<Token> operands)
+        public override Token Execute(IReadOnlyList<Token> operands)
         {
             operands.CheckValueType<decimal>();
 

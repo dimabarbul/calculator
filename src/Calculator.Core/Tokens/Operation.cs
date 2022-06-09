@@ -16,7 +16,7 @@ public abstract class Operation : Token
         this.IsLeftToRight = isLeftToRight;
     }
 
-    protected void ValidateOperandsCount(IList<Token> operands)
+    protected void ValidateOperandsCount(IReadOnlyList<Token> operands)
     {
         if (operands.Count != this.OperandsCount)
         {
@@ -24,5 +24,5 @@ public abstract class Operation : Token
         }
     }
 
-    public abstract Token Execute(IList<Token> operands);
+    public abstract Token Execute(IReadOnlyList<Token> operands);
 }
