@@ -33,18 +33,9 @@ public static class Program
                 return;
             }
 
-            long usedBytes = GC.GetTotalAllocatedBytes(true);
             decimal result = calculator.Calculate<decimal>(formula);
-            usedBytes = GC.GetTotalAllocatedBytes(true) - usedBytes;
 
             Console.WriteLine("{0} = {1}", formula, result);
-
-            Console.WriteLine($"Allocated (1st run): {usedBytes} bytes");
-
-            usedBytes = GC.GetTotalAllocatedBytes(true);
-            calculator.Calculate<decimal>(formula);
-            usedBytes = GC.GetTotalAllocatedBytes(true) - usedBytes;
-            Console.WriteLine($"Allocated (2nd run): {usedBytes} bytes");
         }
     }
 
