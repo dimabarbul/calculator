@@ -50,7 +50,7 @@ public class Calculator
             switch (token)
             {
                 case Subformula subformula:
-                    operands.Push(this.Calculate(subformula.Text));
+                    operands.Push(this.Calculate(subformula.Text, variables));
                     break;
                 case Variable variable:
                     if (variables == null || !variables.ContainsKey(variable.Name))

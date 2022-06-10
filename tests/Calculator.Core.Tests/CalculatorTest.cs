@@ -225,6 +225,19 @@ public class CalculatorTest
         Assert.Equal(Array.Empty<Operand>(), this.myFunction.Calls[0]);
     }
 
+    [Fact]
+    public void Calculate_VariableInSubformula_Calculated()
+    {
+        Operand<decimal> operand = new(1);
+
+        Token result = this.calculator.Calculate("($var)", new Dictionary<string, Operand>()
+        {
+            {"var", operand},
+        });
+
+        Assert.Equal(operand, result);
+    }
+
     public class LowPriorityOperator : BinaryOperator
     {
         public const int ReturnValue = 0;
