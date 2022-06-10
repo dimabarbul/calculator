@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Calculator.Core.Operands;
+﻿using Calculator.Core.Operands;
 
 namespace Calculator.Core.Tokens;
 

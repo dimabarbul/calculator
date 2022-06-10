@@ -25,8 +25,6 @@ public class FunctionParser : IParser
         token = null;
         parsedLength = default;
 
-        Token? foundFunction = null;
-
         if (formula.IsEmpty)
         {
             return false;
@@ -36,18 +34,13 @@ public class FunctionParser : IParser
         {
             if (formula.StartsWith(text, StringComparison.Ordinal))
             {
-                foundFunction = function;
+                token = function;
                 parsedLength = text.Length;
+
+                return true;
             }
         }
 
-        if (foundFunction == null)
-        {
-            return false;
-        }
-
-        token = foundFunction;
-
-        return true;
+        return false;
     }
 }

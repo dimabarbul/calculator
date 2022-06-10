@@ -25,13 +25,15 @@ public class IntParser : IParser
             }
         }
 
-        if (i > 0)
+        if (i == 0)
         {
-            int result = int.Parse(formula[..i]);
-            token = new Operand<int>(result);
-            parsedLength = i;
+            return false;
         }
 
-        return token != null;
+        int result = int.Parse(formula[..i]);
+        token = new Operand<int>(result);
+        parsedLength = i;
+
+        return true;
     }
 }

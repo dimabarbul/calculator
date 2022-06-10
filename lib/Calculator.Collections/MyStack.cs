@@ -76,7 +76,8 @@ public class MyStack<T>
 
     private void Grow()
     {
-        int newSize = this.capacity * 2;
+        this.capacity *= 2;
+        int newSize = this.capacity;
         Array.Resize(ref this.items, newSize);
     }
 }

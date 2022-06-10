@@ -23,7 +23,7 @@ public class CommaOperator : BinaryOperator
         }
         else
         {
-            listOperand = new((Operand)operands[0], (Operand)operands[1]);
+            listOperand = new ListOperand((Operand)operands[0], (Operand)operands[1]);
         }
 
         return listOperand;

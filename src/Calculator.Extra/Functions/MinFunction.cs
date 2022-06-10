@@ -16,7 +16,7 @@ public class MinFunction : Function
 
         for (int i = 1; i < operands.Count; i++)
         {
-            Operand<decimal> operand = ((Operand<decimal>)operands[i]);
+            Operand<decimal> operand = (Operand<decimal>)operands[i];
             decimal value = operand.Value;
             if (value < result.Value)
             {

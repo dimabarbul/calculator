@@ -8,5 +8,4 @@ public enum OperationPriority
     Divide = 2,
     Or = 3,
     And = 4,
-    Unary = 5,
 }

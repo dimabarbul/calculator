@@ -45,7 +45,7 @@ public class CalculatorTest
                 "$var1",
                 new Dictionary<string, Operand>
                 {
-                    { "var1", new Operand<decimal>(4.5m) }
+                    { "var1", new Operand<decimal>(4.5m) },
                 }
             )
         );
@@ -54,7 +54,7 @@ public class CalculatorTest
                 "$testVar",
                 new Dictionary<string, Operand>
                 {
-                    { "testVar", new Operand<bool>(true) }
+                    { "testVar", new Operand<bool>(true) },
                 }
             )
         );
@@ -69,7 +69,7 @@ public class CalculatorTest
                 "2.5 * $my_var",
                 new Dictionary<string, Operand>
                 {
-                    { "my_var", new Operand<decimal>(3) }
+                    { "my_var", new Operand<decimal>(3) },
                 }
             )
         );
