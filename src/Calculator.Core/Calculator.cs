@@ -41,7 +41,6 @@ public class Calculator
             return NullToken.Instance;
         }
 
-        // TODO: extract some class?
         MyStack<Token> operands = new();
         MyStack<Operation> operations = new();
 

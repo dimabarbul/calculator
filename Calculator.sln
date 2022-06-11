@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Collections", "l
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Collections.Tests", "lib\Calculator.Collections.Tests\Calculator.Collections.Tests.csproj", "{DE089AD5-8385-439E-9D15-2EC4762336EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.ConsoleApp", "samples\Calculator.ConsoleApp\Calculator.ConsoleApp.csproj", "{09A64D23-BCCD-481F-B53D-25A30469C14D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Samples.SimlpeUsage", "samples\Calculator.Samples.SimlpeUsage\Calculator.Samples.SimlpeUsage.csproj", "{09A64D23-BCCD-481F-B53D-25A30469C14D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Core.Tests", "tests\Calculator.Core.Tests\Calculator.Core.Tests.csproj", "{8E9D8A84-A02D-495A-8616-3529D74FBC55}"
 EndProject

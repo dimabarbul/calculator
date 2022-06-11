@@ -2,7 +2,7 @@
 using Calculator.Extra.Operators;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Calculator.ConsoleApp;
+namespace Calculator.Samples.SimlpeUsage;
 
 public static class Program
 {
