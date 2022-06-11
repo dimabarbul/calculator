@@ -1,8 +1,9 @@
 ﻿using Calculator.Core.DependencyInjection;
 using Calculator.Extra.Operators;
+using Calculator.Samples.ExtendingCalculator.Operators;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Calculator.Samples.SimlpeUsage;
+namespace Calculator.Samples.SimpleUsage;
 
 public static class Program
 {
@@ -42,7 +43,9 @@ public static class Program
     private static IServiceProvider SetupDI()
     {
         return new ServiceCollection()
-            .AddCalculator(typeof(AddOperator).Assembly)
+            .AddCalculator(
+                typeof(AddOperator).Assembly,
+                typeof(LengthOperator).Assembly)
             .BuildServiceProvider(validateScopes: true);
     }
 }

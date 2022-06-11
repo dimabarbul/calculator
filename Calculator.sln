@@ -19,11 +19,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Collections", "l
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Collections.Tests", "lib\Calculator.Collections.Tests\Calculator.Collections.Tests.csproj", "{DE089AD5-8385-439E-9D15-2EC4762336EA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Samples.SimlpeUsage", "samples\Calculator.Samples.SimlpeUsage\Calculator.Samples.SimlpeUsage.csproj", "{09A64D23-BCCD-481F-B53D-25A30469C14D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Samples.SimpleUsage", "samples\Calculator.Samples.SimpleUsage\Calculator.Samples.SimpleUsage.csproj", "{09A64D23-BCCD-481F-B53D-25A30469C14D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Core.Tests", "tests\Calculator.Core.Tests\Calculator.Core.Tests.csproj", "{8E9D8A84-A02D-495A-8616-3529D74FBC55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Extra.Tests", "tests\Calculator.Extra.Tests\Calculator.Extra.Tests.csproj", "{C6FB1D32-30CF-43CF-9BD7-8B72366EEC76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Samples.ExtendingCalculator.Tests", "samples\Calculator.Samples.ExtendingCalculator.Tests\Calculator.Samples.ExtendingCalculator.Tests.csproj", "{07DB7E64-2D97-498C-9DF4-6D2B197A30EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Calculator.Samples.ExtendingCalculator", "samples\Calculator.Samples.ExtendingCalculator\Calculator.Samples.ExtendingCalculator.csproj", "{75B3675F-A7F5-4B28-A725-BD2A47918874}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{C6FB1D32-30CF-43CF-9BD7-8B72366EEC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6FB1D32-30CF-43CF-9BD7-8B72366EEC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6FB1D32-30CF-43CF-9BD7-8B72366EEC76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07DB7E64-2D97-498C-9DF4-6D2B197A30EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07DB7E64-2D97-498C-9DF4-6D2B197A30EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07DB7E64-2D97-498C-9DF4-6D2B197A30EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07DB7E64-2D97-498C-9DF4-6D2B197A30EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75B3675F-A7F5-4B28-A725-BD2A47918874}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75B3675F-A7F5-4B28-A725-BD2A47918874}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75B3675F-A7F5-4B28-A725-BD2A47918874}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75B3675F-A7F5-4B28-A725-BD2A47918874}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,5 +85,7 @@ Global
 		{09A64D23-BCCD-481F-B53D-25A30469C14D} = {4EBD3981-43B0-49B0-B22A-232B83C375AE}
 		{8E9D8A84-A02D-495A-8616-3529D74FBC55} = {A197C227-A78B-4920-9397-1D5AEF40865D}
 		{C6FB1D32-30CF-43CF-9BD7-8B72366EEC76} = {A197C227-A78B-4920-9397-1D5AEF40865D}
+		{07DB7E64-2D97-498C-9DF4-6D2B197A30EE} = {4EBD3981-43B0-49B0-B22A-232B83C375AE}
+		{75B3675F-A7F5-4B28-A725-BD2A47918874} = {4EBD3981-43B0-49B0-B22A-232B83C375AE}
 	EndGlobalSection
 EndGlobal

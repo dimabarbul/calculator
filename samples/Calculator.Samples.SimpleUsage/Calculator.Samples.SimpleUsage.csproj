@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Calculator.Core.DependencyInjection\Calculator.Core.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\src\Calculator.Extra\Calculator.Extra.csproj" />
+    <ProjectReference Include="..\Calculator.Samples.ExtendingCalculator\Calculator.Samples.ExtendingCalculator.csproj" />
   </ItemGroup>
 
   <ItemGroup>
