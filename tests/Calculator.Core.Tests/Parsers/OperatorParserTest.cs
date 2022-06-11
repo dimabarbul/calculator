@@ -11,11 +11,12 @@ namespace Calculator.Core.Tests.Parsers;
 public class OperatorParserTest
 {
     private readonly OperatorParser parser;
-    private readonly ParsingContext context = new AfterOperandContext();
+    private readonly ParsingContext context;
 
     public OperatorParserTest(IEnumerable<IParser> parsers)
     {
         this.parser = (OperatorParser)parsers.Single(p => p is OperatorParser);
+        this.context = ParsingContext.Initial.SetNextToken(new ListOperand());
     }
 
     [Fact]

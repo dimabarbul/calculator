@@ -1,4 +1,7 @@
-﻿using Calculator.Core.ParsingContexts;
+﻿using System.Collections.Generic;
+using Calculator.Core.Operands;
+using Calculator.Core.ParsingContexts;
+using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Tests.ParsingContexts;
 
@@ -21,7 +24,7 @@ public class ParsingContextTest
     [Fact]
     public void AfterOperand()
     {
-        ParsingContext context = new AfterOperandContext();
+        ParsingContext context = ParsingContext.Initial.SetNextToken(new ListOperand());
 
         Assert.True(context.IsEndAllowed);
         Assert.True(context.IsBinaryOperatorAllowed);
@@ -35,7 +38,7 @@ public class ParsingContextTest
     [Fact]
     public void AfterVariable()
     {
-        ParsingContext context = new AfterVariableContext();
+        ParsingContext context = ParsingContext.Initial.SetNextToken(new Variable("test"));
 
         Assert.True(context.IsEndAllowed);
         Assert.True(context.IsBinaryOperatorAllowed);
@@ -49,7 +52,9 @@ public class ParsingContextTest
     [Fact]
     public void AfterBinaryOperator()
     {
-        ParsingContext context = new AfterBinaryOperatorContext();
+        ParsingContext context = ParsingContext.Initial
+            .SetNextToken(new ListOperand())
+            .SetNextToken(new MyBinaryOperator());
 
         Assert.False(context.IsEndAllowed);
         Assert.False(context.IsBinaryOperatorAllowed);
@@ -63,7 +68,7 @@ public class ParsingContextTest
     [Fact]
     public void AfterUnaryOperator()
     {
-        ParsingContext context = new AfterUnaryOperatorContext();
+        ParsingContext context = ParsingContext.Initial.SetNextToken(new MyUnaryOperator());
 
         Assert.False(context.IsEndAllowed);
         Assert.False(context.IsBinaryOperatorAllowed);
@@ -77,7 +82,7 @@ public class ParsingContextTest
     [Fact]
     public void AfterSubformula()
     {
-        ParsingContext context = new AfterSubformulaContext();
+        ParsingContext context = ParsingContext.Initial.SetNextToken(new Subformula(""));
 
         Assert.True(context.IsEndAllowed);
         Assert.True(context.IsBinaryOperatorAllowed);
@@ -91,7 +96,7 @@ public class ParsingContextTest
     [Fact]
     public void AfterFunction()
     {
-        ParsingContext context = new AfterFunctionContext();
+        ParsingContext context = ParsingContext.Initial.SetNextToken(new MyFunction());
 
         Assert.False(context.IsEndAllowed);
         Assert.False(context.IsBinaryOperatorAllowed);
@@ -100,5 +105,40 @@ public class ParsingContextTest
         Assert.True(context.IsSubformulaAllowed);
         Assert.False(context.IsVariableAllowed);
         Assert.False(context.IsOperandAllowed);
+    }
+
+    private class MyBinaryOperator : BinaryOperator
+    {
+        public override string Text => nameof(ParsingContextTest) + "binary";
+
+        public MyBinaryOperator()
+            : base(LowestPriority)
+        {
+        }
+
+        public override Token Execute(IReadOnlyList<Token> operands)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    private class MyUnaryOperator : UnaryOperator
+    {
+        public override string Text => nameof(ParsingContextTest) + "unary";
+
+        protected override Operand ExecuteUnaryOperator(Operand operand)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    private class MyFunction : Function
+    {
+        public override string FunctionName => nameof(ParsingContextTest) + "func";
+
+        protected override Token ExecuteFunction(IReadOnlyList<Operand> operands)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

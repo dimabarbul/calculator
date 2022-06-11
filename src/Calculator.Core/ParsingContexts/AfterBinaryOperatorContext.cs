@@ -1,6 +1,6 @@
 ﻿namespace Calculator.Core.ParsingContexts;
 
-public record AfterBinaryOperatorContext() : ParsingContext(
+internal record AfterBinaryOperatorContext() : ParsingContext(
     IsEndAllowed: false,
     IsBinaryOperatorAllowed: false,
     IsUnaryOperatorAllowed: true,
