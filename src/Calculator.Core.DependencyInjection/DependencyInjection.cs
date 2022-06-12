@@ -9,27 +9,28 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddCalculator(this IServiceCollection services, params Assembly[] extraAssemblies)
     {
+        Type[] allTypes = GetAllTypes(extraAssemblies).ToArray();
+
         return services
-            .AddParsers(extraAssemblies)
-            .AddOperations(extraAssemblies)
+            .AddParsers(allTypes)
+            .AddOperations(allTypes)
             .AddScoped<Calculator>()
             .AddScoped<FormulaTokenizer>();
     }
 
-    private static IServiceCollection AddParsers(this IServiceCollection services, Assembly[] extraAssemblies)
+    private static IServiceCollection AddParsers(this IServiceCollection services, Type[] types)
     {
-        return services.AddImplementations<IParser>(extraAssemblies);
+        return services.AddImplementations<IParser>(types);
     }
 
-    private static IServiceCollection AddOperations(this IServiceCollection services, Assembly[] extraAssemblies)
+    private static IServiceCollection AddOperations(this IServiceCollection services, Type[] types)
     {
-        return services.AddImplementations<Operation>(extraAssemblies);
+        return services.AddImplementations<Operation>(types);
     }
 
-    private static IServiceCollection AddImplementations<TServiceType>(this IServiceCollection services,
-        Assembly[] extraAssemblies)
+    private static IServiceCollection AddImplementations<TServiceType>(this IServiceCollection services, Type[] types)
     {
-        foreach (Type parserType in GetAllTypes(extraAssemblies)
+        foreach (Type parserType in types
             .Where(t => t.IsAssignableTo(typeof(TServiceType)))
             .Where(t => t.IsClass && !t.IsAbstract))
         {
