@@ -23,13 +23,10 @@ public abstract class Function : Operation
         }
         else
         {
-            Operand[] convertedOperands = new Operand[operands.Count];
-            for (int i = 0; i < operands.Count; i++)
+            functionOperands = new[]
             {
-                convertedOperands[i] = (Operand)operands[i];
-            }
-
-            functionOperands = convertedOperands;
+                (Operand)operands[0],
+            };
         }
 
         return this.ExecuteFunction(functionOperands);

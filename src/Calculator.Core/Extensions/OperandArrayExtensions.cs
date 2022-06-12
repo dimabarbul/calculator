@@ -25,15 +25,4 @@ public static class OperandArrayExtensions
             }
         }
     }
-
-    public static void CheckAllOperands(this IEnumerable<Token> tokens)
-    {
-        foreach (Token token in tokens)
-        {
-            if (token is not Operand)
-            {
-                throw new ArgumentException($"Expected all operands to be of type {typeof(Operand)}");
-            }
-        }
-    }
 }

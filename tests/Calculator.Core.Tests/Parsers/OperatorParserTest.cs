@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Calculator.Core.Extensions;
 using Calculator.Core.Operands;
 using Calculator.Core.Parsers;
 using Calculator.Core.ParsingContexts;
@@ -89,11 +89,15 @@ public class OperatorParserTest
         {
         }
 
-        public override Token Execute(IReadOnlyList<Token> operands)
+        protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
         {
-            operands.CheckValueType<decimal>();
+            if (leftOperand is not Operand<decimal> leftDecimalOperand
+                || rightOperand is not Operand<decimal> rightDecimalOperand)
+            {
+                throw new ArgumentException("Multiply operation can be performed only on decimal operands");
+            }
 
-            return new Operand<decimal>(((Operand<decimal>)operands[0]).Value * ((Operand<decimal>)operands[1]).Value);
+            return new Operand<decimal>(leftDecimalOperand.Value * rightDecimalOperand.Value);
         }
     }
 

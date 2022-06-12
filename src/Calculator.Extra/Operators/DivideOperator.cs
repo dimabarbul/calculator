@@ -2,7 +2,7 @@
 
 namespace Calculator.Extra.Operators;
 
-public class DivideOperator : DecimalBinaryOperator
+public class DivideOperator : BinaryOperator<decimal>
 {
     public DivideOperator()
         : base(OperationPriority.Divide)
@@ -11,8 +11,8 @@ public class DivideOperator : DecimalBinaryOperator
 
     public override string Text => "/";
 
-    protected override decimal GetDecimalResult(params decimal[] operands)
+    protected override decimal GetResult(decimal leftOperand, decimal rightOperand)
     {
-        return operands[0] / operands[1];
+        return leftOperand / rightOperand;
     }
 }

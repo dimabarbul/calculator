@@ -2,7 +2,7 @@
 
 namespace Calculator.Extra.Operators;
 
-public class SubtractOperator : DecimalBinaryOperator
+public class SubtractOperator : BinaryOperator<decimal>
 {
     public SubtractOperator()
         : base(OperationPriority.Subtract)
@@ -11,13 +11,8 @@ public class SubtractOperator : DecimalBinaryOperator
 
     public override string Text => "-";
 
-    protected override decimal GetDecimalResult(params decimal[] operands)
+    protected override decimal GetResult(decimal leftOperand, decimal rightOperand)
     {
-        if (operands.Length == 1)
-        {
-            return -operands[0];
-        }
-
-        return operands[0] - operands[1];
+        return leftOperand - rightOperand;
     }
 }

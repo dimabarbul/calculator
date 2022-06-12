@@ -242,20 +242,20 @@ public class CalculatorTest
     {
         public const int ReturnValue = 0;
 
-        private readonly List<Token[]> calls = new();
+        private readonly List<Operand[]> calls = new();
 
         public override string Text => "low";
 
-        public IReadOnlyList<Token[]> Calls => this.calls.AsReadOnly();
+        public IReadOnlyList<Operand[]> Calls => this.calls.AsReadOnly();
 
         public LowPriorityOperator()
             : base(0)
         {
         }
 
-        public override Token Execute(IReadOnlyList<Token> operands)
+        protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
         {
-            this.calls.Add(operands.ToArray());
+            this.calls.Add(new[] { leftOperand, rightOperand });
 
             return new Operand<int>(ReturnValue);
         }
@@ -265,20 +265,20 @@ public class CalculatorTest
     {
         public const int ReturnValue = 1;
 
-        private readonly List<Token[]> calls = new();
+        private readonly List<Operand[]> calls = new();
 
         public override string Text => "high";
 
-        public IReadOnlyList<Token[]> Calls => this.calls.AsReadOnly();
+        public IReadOnlyList<Operand[]> Calls => this.calls.AsReadOnly();
 
         public HighPriorityOperator()
             : base(1)
         {
         }
 
-        public override Token Execute(IReadOnlyList<Token> operands)
+        protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
         {
-            this.calls.Add(operands.ToArray());
+            this.calls.Add(new[] { leftOperand, rightOperand });
 
             return new Operand<int>(ReturnValue);
         }

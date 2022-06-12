@@ -18,6 +18,8 @@ public class DecimalOperandParser : IParser
 
         int index = 0;
         bool decimalPointEncountered = false;
+        int integerRepresentation = 0;
+        byte decimalPlaces = 0;
         while (index < formula.Length)
         {
             if (formula[index] == '.')
@@ -33,6 +35,15 @@ public class DecimalOperandParser : IParser
             {
                 break;
             }
+            else
+            {
+                if (decimalPointEncountered)
+                {
+                    decimalPlaces++;
+                }
+
+                integerRepresentation = integerRepresentation * 10 + (formula[index] - '0');
+            }
 
             index++;
         }
@@ -42,8 +53,7 @@ public class DecimalOperandParser : IParser
             return false;
         }
 
-        string tokenText = index == 1 && formula[0] == '.' ? Zero : formula[..index].ToString();
-        token = new Operand<decimal>(decimal.Parse(tokenText));
+        token = new Operand<decimal>(new decimal(integerRepresentation, 0, 0, false, decimalPlaces));
         parsedLength = index;
 
         return true;

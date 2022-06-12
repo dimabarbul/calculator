@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
@@ -101,10 +100,10 @@ public class FormulaTokenizerTest
         {
         }
 
-        public override Token Execute(IReadOnlyList<Token> operands)
+        protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
         {
             // implementation does not matter for the tests
-            return operands[0];
+            return leftOperand;
         }
     }
 
@@ -117,10 +116,10 @@ public class FormulaTokenizerTest
         {
         }
 
-        public override Token Execute(IReadOnlyList<Token> operands)
+        protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
         {
             // implementation does not matter for the tests
-            return operands[0];
+            return leftOperand;
         }
     }
 }

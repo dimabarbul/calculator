@@ -20,7 +20,7 @@ public class BoolOperandParser : IParser
         token = null;
         parsedLength = default;
 
-        if (formula.StartsWith(TrueString, StringComparison.OrdinalIgnoreCase))
+        if (formula.StartsWith(TrueString, StringComparison.Ordinal))
         {
             token = True;
             parsedLength = TrueString.Length;
@@ -28,7 +28,7 @@ public class BoolOperandParser : IParser
             return true;
         }
 
-        if (formula.StartsWith(FalseString, StringComparison.OrdinalIgnoreCase))
+        if (formula.StartsWith(FalseString, StringComparison.Ordinal))
         {
             token = False;
             parsedLength = FalseString.Length;

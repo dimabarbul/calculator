@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Calculator.Core.ParsingContexts;
 using Calculator.Core.Tokens;
 
@@ -7,6 +6,8 @@ namespace Calculator.Core.Parsers;
 
 public class SubformulaParser : IParser
 {
+    private const int DefaultBracketsStackSize = 4;
+
     private static readonly char[] OpeningBrackets = { '(', '[', '{', '<' };
     private static readonly char[] ClosingBrackets = { ')', ']', '}', '>' };
 
@@ -26,7 +27,7 @@ public class SubformulaParser : IParser
             return false;
         }
 
-        Stack<char> openingParenthesis = new();
+        Stack<char> openingParenthesis = new(DefaultBracketsStackSize);
         openingParenthesis.Push(formula[0]);
 
         for (int index = 1; index < formula.Length; index++)
@@ -63,12 +64,12 @@ public class SubformulaParser : IParser
 
     private bool IsOpeningParenthesis(char c)
     {
-        return ((IList)OpeningBrackets).Contains(c);
+        return Array.IndexOf(OpeningBrackets, c) != -1;
     }
 
     private bool IsClosingParenthesis(char c)
     {
-        return ((IList)ClosingBrackets).Contains(c);
+        return Array.IndexOf(ClosingBrackets, c) != -1;
     }
 
     private bool AreBracketsOfSameType(char openingBrackets, char closingBrackets)

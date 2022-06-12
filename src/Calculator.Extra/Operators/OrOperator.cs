@@ -2,7 +2,7 @@
 
 namespace Calculator.Extra.Operators;
 
-public class OrOperator : BoolBinaryOperator
+public class OrOperator : BinaryOperator<bool>
 {
     public OrOperator()
         : base(OperationPriority.Or)
@@ -11,8 +11,8 @@ public class OrOperator : BoolBinaryOperator
 
     public override string Text => "||";
 
-    protected override bool GetBoolResult(params bool[] operands)
+    protected override bool GetResult(bool leftOperand, bool rightOperand)
     {
-        return operands[0] || operands[1];
+        return leftOperand || rightOperand;
     }
 }

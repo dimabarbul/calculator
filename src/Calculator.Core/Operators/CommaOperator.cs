@@ -1,5 +1,4 @@
-﻿using Calculator.Core.Extensions;
-using Calculator.Core.Operands;
+﻿using Calculator.Core.Operands;
 using Calculator.Core.Tokens;
 
 namespace Calculator.Core.Operators;
@@ -13,17 +12,15 @@ public class CommaOperator : BinaryOperator
 
     public override string Text => ",";
 
-    public override Token Execute(IReadOnlyList<Token> operands)
+    protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
     {
-        operands.CheckAllOperands();
-
-        if (operands[0] is ListOperand listOperand)
+        if (leftOperand is ListOperand listOperand)
         {
-            listOperand.Add((Operand)operands[1]);
+            listOperand.Add(rightOperand);
         }
         else
         {
-            listOperand = new ListOperand((Operand)operands[0], (Operand)operands[1]);
+            listOperand = new ListOperand(leftOperand, rightOperand);
         }
 
         return listOperand;

@@ -45,6 +45,8 @@ Functions:
 
 ## Extending Calculator
 
+Core classes:
+
 ```mermaid
 classDiagram
 

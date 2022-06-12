@@ -116,7 +116,7 @@ public class ParsingContextTest
         {
         }
 
-        public override Token Execute(IReadOnlyList<Token> operands)
+        protected override Token ExecuteBinaryOperator(Operand leftOperand, Operand rightOperand)
         {
             throw new System.NotImplementedException();
         }

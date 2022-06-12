@@ -2,7 +2,7 @@
 
 namespace Calculator.Extra.Operators;
 
-public class AndOperator : BoolBinaryOperator
+public class AndOperator : BinaryOperator<bool>
 {
     public AndOperator()
         : base(OperationPriority.And)
@@ -11,8 +11,8 @@ public class AndOperator : BoolBinaryOperator
 
     public override string Text => "&&";
 
-    protected override bool GetBoolResult(params bool[] operands)
+    protected override bool GetResult(bool leftOperand, bool rightOperand)
     {
-        return operands[0] && operands[1];
+        return leftOperand && rightOperand;
     }
 }
