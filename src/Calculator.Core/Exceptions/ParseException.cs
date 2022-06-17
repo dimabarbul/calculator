@@ -1,16 +1,9 @@
-﻿using Calculator.Core.Enums;
+﻿namespace Calculator.Core.Exceptions;
 
-namespace Calculator.Core.Exceptions;
-
-public class ParseException : ExceptionWithCode
+public abstract class ParseException : Exception
 {
-    public ParseException(ParseExceptionCode code, string formula, int index)
-        : this(code, $"Cannot parse formula {formula}, last position: {index}")
-    {
-    }
-
-    public ParseException(ParseExceptionCode code, string message)
-        : base((int)code, message)
+    protected ParseException(string message, Exception? innerException = null)
+        : base(message, innerException)
     {
     }
 }

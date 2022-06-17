@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Parsers;
 using Calculator.Core.ParsingContexts;
@@ -25,13 +24,13 @@ public class FormulaTokenizer
             yield break;
         }
 
-        ReadOnlyMemory<char> sanitizedFormula = formula.AsMemory();
+        ReadOnlyMemory<char> formulaInMemory = formula.AsMemory();
 
         int index = 0;
 
-        while (index < sanitizedFormula.Length)
+        while (index < formulaInMemory.Length)
         {
-            if (char.IsWhiteSpace(sanitizedFormula.Span[index]))
+            if (char.IsWhiteSpace(formulaInMemory.Span[index]))
             {
                 index++;
                 continue;
@@ -40,7 +39,7 @@ public class FormulaTokenizer
             Token? token = null;
             foreach (IParser parser in this.parsers)
             {
-                if (parser.TryParse(sanitizedFormula[index..].Span, parsingContext, out token, out int parsedLength))
+                if (parser.TryParse(formulaInMemory[index..].Span, parsingContext, out token, out int parsedLength))
                 {
                     index += parsedLength;
                     break;
@@ -49,17 +48,24 @@ public class FormulaTokenizer
 
             if (token == null)
             {
-                throw new ParseException(ParseExceptionCode.UnparsedToken, formula, index);
+                throw new UnparsedTokenException(formula, index);
             }
 
-            parsingContext = parsingContext.SetNextToken(token);
+            try
+            {
+                parsingContext = parsingContext.SetNextToken(token);
+            }
+            catch (TokenNotAllowedInContextException e)
+            {
+                throw new MisplacedTokenException(formula, index, e.Token, e);
+            }
 
             yield return token;
         }
 
         if (!parsingContext.IsEndAllowed)
         {
-            throw new ParseException(ParseExceptionCode.UnexpectedEnd, "Unexpected end of formula");
+            throw new UnexpectedFormulaEndException(formula);
         }
     }
 }

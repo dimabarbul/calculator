@@ -1,11 +1,9 @@
-﻿using Calculator.Core.Enums;
+﻿namespace Calculator.Core.Exceptions;
 
-namespace Calculator.Core.Exceptions;
-
-public class CalculateException : ExceptionWithCode
+public abstract class CalculateException : Exception
 {
-    public CalculateException(CalculateExceptionCode code, string message)
-        : base((int)code, message)
+    protected CalculateException(string message, Exception? innerException = null)
+        : base(message, innerException)
     {
     }
 }

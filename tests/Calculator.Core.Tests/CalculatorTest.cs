@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Calculator.Core.Tests.Extensions;
@@ -114,43 +113,37 @@ public class CalculatorTest
     [Fact]
     public void Calculate_UnmatchedClosingParenthesis_ThrowsParseException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>(")"));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate<int>(")"));
     }
 
     [Fact]
     public void Calculate_SeveralResults_ThrowsCalculateException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("1 2"));
-        Assert.Equal((int)ParseExceptionCode.MisplacedToken, exception.Code);
+        Assert.Throws<MisplacedTokenException>(() => this.calculator.Calculate<int>("1 2"));
     }
 
     [Fact]
     public void Calculate_BinaryOperationMissingLeftOperand_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("low 2"));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate<int>("low 2"));
     }
 
     [Fact]
     public void Calculate_BinaryOperationMissingBothOperands_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("high"));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate<int>("high"));
     }
 
     [Fact]
     public void Calculate_NoClosingParenthesis_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("2 low (3 high 4"));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate<int>("2 low (3 high 4"));
     }
 
     [Fact]
     public void Calculate_ClosingParenthesisOfDifferentType_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>("2 low (3 high 4>"));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate<int>("2 low (3 high 4>"));
     }
 
     [Fact]
@@ -174,10 +167,7 @@ public class CalculatorTest
     [InlineData("1 low high 1")]
     public void Calculate_SeveralOperatorsInRow_ThrowsException(string formula)
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate<int>(
-            formula
-        ));
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate<int>(formula));
     }
 
     [Theory]
@@ -200,19 +190,17 @@ public class CalculatorTest
     [InlineData("func(1) unary 1")]
     [InlineData("1 unary high 1")]
     [InlineData("1 high (1 unary 1)")]
-    [InlineData("unary")]
     public void Calculate_UnaryOperatorInWrongContext_ThrowsException(string formula)
     {
-        Assert.Throws<ParseException>(() => this.calculator.Calculate(formula));
+        Assert.Throws<UnparsedTokenException>(() => this.calculator.Calculate(formula));
     }
 
     [Theory]
     [InlineData("func")]
-    public void Calculate_FunctionInWrongContext_ThrowsException(string formula)
+    [InlineData("unary")]
+    public void Calculate_UnexpectedFormulaEnd_ThrowsException(string formula)
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.calculator.Calculate(formula));
-
-        Assert.Equal((int)ParseExceptionCode.UnexpectedEnd, exception.Code);
+        Assert.Throws<UnexpectedFormulaEndException>(() => this.calculator.Calculate(formula));
     }
 
     [Fact]

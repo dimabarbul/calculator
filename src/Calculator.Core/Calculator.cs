@@ -1,5 +1,4 @@
 ﻿using Calculator.Collections;
-using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Calculator.Core.Tokens;
@@ -26,9 +25,7 @@ public class Calculator
 
         if (result is not Operand<TResult> resultToken)
         {
-            throw new CalculateException(
-                CalculateExceptionCode.InvalidResultType,
-                $"Result is of type {result.GetType()}, but expected {typeof(Operand<TResult>)}");
+            throw new InvalidResultTypeException(typeof(Operand<TResult>), result.GetType());
         }
 
         return resultToken.Value;
@@ -54,13 +51,13 @@ public class Calculator
                 case Variable variable:
                     if (variables == null || !variables.ContainsKey(variable.Name))
                     {
-                        throw new CalculateException(CalculateExceptionCode.UnknownVariable, $"Unknown variable {variable.Name}");
+                        throw new UnknownVariableException(variable);
                     }
 
                     Type variableType = variables[variable.Name].GetType();
                     if (!variableType.IsGenericType || variableType.GetGenericTypeDefinition() != typeof(Operand<>))
                     {
-                        throw new CalculateException(CalculateExceptionCode.InvalidVariableType, $"Invalid type of variable {variable.Name}");
+                        throw new InvalidVariableTypeException(variable);
                     }
 
                     operands.Push(variables[variable.Name]);
@@ -109,7 +106,7 @@ public class Calculator
 
         if (operands.Count != 1)
         {
-            throw new CalculateException(CalculateExceptionCode.NotSingleResult, $"Expected formula {formula} to produce single result, but got {operands.Count}");
+            throw new MultipleResultsException(formula, operands.Count);
         }
 
         return operands.Pop();
@@ -121,7 +118,7 @@ public class Calculator
 
         if (operands.Count < operation.OperandsCount)
         {
-            throw new CalculateException(CalculateExceptionCode.MissingOperand, $"Operation expected {operation.OperandsCount} operands, but there are only {operands.Count} left");
+            throw new MissingOperandException(operation.OperandsCount, operands.Count);
         }
 
         int count = Math.Min(operation.OperandsCount, operands.Count);

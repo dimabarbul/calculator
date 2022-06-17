@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Calculator.Core.Enums;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Operands;
 using Calculator.Core.Tests.Extensions;
@@ -37,9 +36,7 @@ public class FormulaTokenizerTest
     [Fact]
     public void GetTokens_UnknownOperation_ThrowsException()
     {
-        ParseException parseException = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("*").ToArray());
-
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, parseException.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.tokenizer.GetTokens("*").ToArray());
     }
 
     [Theory]
@@ -68,22 +65,19 @@ public class FormulaTokenizerTest
     [Fact]
     public void GetTokens_UnmatchedClosingBrackets_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens(")minus1").ToArray());
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.tokenizer.GetTokens(")minus1").ToArray());
     }
 
     [Fact]
     public void GetTokens_NoClosingBrackets_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("2*(3 minus 4").ToArray());
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.tokenizer.GetTokens("2*(3 minus 4").ToArray());
     }
 
     [Fact]
     public void GetTokens_ClosingBracketsOfDifferentType_ThrowsException()
     {
-        ParseException exception = Assert.Throws<ParseException>(() => this.tokenizer.GetTokens("2*(3 minus 4>/4").ToArray());
-        Assert.Equal((int)ParseExceptionCode.UnparsedToken, exception.Code);
+        Assert.Throws<UnparsedTokenException>(() => this.tokenizer.GetTokens("2*(3 minus 4>/4").ToArray());
     }
 
     private void AssertIntTokenEqual(Token token, int value)

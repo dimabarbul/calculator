@@ -1,5 +1,4 @@
-﻿using Calculator.Core.Enums;
-using Calculator.Core.Exceptions;
+﻿using Calculator.Core.Exceptions;
 using Calculator.Core.Tokens;
 
 namespace Calculator.Core.ParsingContexts;
@@ -32,8 +31,7 @@ public abstract record ParsingContext(
             Operand when this.IsOperandAllowed => OperandContext,
             Subformula when this.IsSubformulaAllowed => SubformulaContext,
             Variable when this.IsVariableAllowed => VariableContext,
-            _ => throw new ParseException(ParseExceptionCode.MisplacedToken,
-                $"Token {token.GetType()} is not allowed in this context"),
+            _ => throw new TokenNotAllowedInContextException(token),
         };
     }
 }
